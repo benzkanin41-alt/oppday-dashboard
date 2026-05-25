@@ -2,6 +2,20 @@
 
 Local dashboard สำหรับอ่าน Oppday แยกตามหุ้นและไตรมาส
 
+## Online
+
+GitHub Pages:
+
+```text
+https://benzkanin41-alt.github.io/oppday-dashboard/
+```
+
+Repository:
+
+```text
+https://github.com/benzkanin41-alt/oppday-dashboard
+```
+
 ## Run
 
 ```powershell
@@ -21,8 +35,11 @@ http://127.0.0.1:8766
 
 Dashboard จะสแกนไฟล์ `.docx`, `.md`, `.pdf`, `.txt` และจับคู่ไฟล์สรุป/PDF ที่เป็นหุ้นเดียวกันในไตรมาสเดียวกัน
 
+บน GitHub Pages จะ publish เฉพาะ static JSON/text เพื่อให้เปิดบน iPhone/iPad/Desktop ได้เร็ว ไม่ upload PDF ต้นฉบับก้อนใหญ่ขึ้น GitHub
+
 ## Refresh
 
 - กดปุ่ม refresh ในหน้า dashboard เพื่อ rescan ทันที
 - Server จะ rescan อัตโนมัติทุกวันเวลา 18:00 ขณะที่ `server.py` กำลังรันอยู่
 - API `/api/index` จะ refresh cache เองถ้า cache เกิน 15 นาที
+- Codex automation `Update OPPDAY dashboard data` จะ build/push static GitHub Pages data ทุกวันเวลา 18:00

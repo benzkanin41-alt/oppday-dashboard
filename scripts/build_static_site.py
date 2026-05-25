@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 import sys
@@ -9,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 WEB = ROOT / "web"
+CACHE = ROOT / ".build_cache" / "text"
 
 sys.path.insert(0, str(ROOT))
 import server  # noqa: E402
@@ -54,12 +56,38 @@ def public_item(item: dict, include_markdown: bool = False) -> dict:
     if include_markdown:
         markdown = ""
         markdown_id = item.get("primaryMarkdownId")
+        file_entry = None
         if markdown_id:
             file_entry = next((entry for entry in item["files"] if entry["id"] == markdown_id), None)
-            if file_entry:
-                markdown = server.read_text_file(Path(file_entry["path"]))
+        if file_entry:
+            markdown = cached_text(Path(file_entry["path"]))
+        elif item.get("primaryPdfId"):
+            pdf_file = next((entry for entry in item["files"] if entry["id"] == item["primaryPdfId"]), None)
+            filename = pdf_file["name"] if pdf_file else "PDF"
+            markdown = (
+                f"# {item['symbol']} {item['quarter']}\n\n"
+                f"รายการนี้เป็นไฟล์ PDF presentation: `{filename}`\n\n"
+                "เพื่อให้ GitHub Pages เปิดเร็วและ repo ไม่ใหญ่เกินไป dashboard online ยังไม่ publish PDF ต้นฉบับขึ้น GitHub "
+                "ให้อ่านไฟล์ PDF จาก local dashboard หรือ OneDrive ต้นทางแทน"
+            )
         safe["markdown"] = markdown
     return safe
+
+
+def cache_key(path: Path) -> str:
+    stat = path.stat()
+    raw = f"{path.resolve()}|{stat.st_size}|{stat.st_mtime_ns}"
+    return hashlib.sha1(raw.encode("utf-8", errors="ignore")).hexdigest()
+
+
+def cached_text(path: Path) -> str:
+    CACHE.mkdir(parents=True, exist_ok=True)
+    target = CACHE / f"{cache_key(path)}.md"
+    if target.exists():
+        return target.read_text(encoding="utf-8", errors="replace")
+    text = server.read_text_file(path)
+    target.write_text(text, encoding="utf-8")
+    return text
 
 
 def build() -> dict:

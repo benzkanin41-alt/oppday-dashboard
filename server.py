@@ -303,12 +303,38 @@ def ensure_cache(max_age_seconds: int = 900) -> None:
 def read_text_file(path: Path) -> str:
     if path.suffix.lower() == ".docx":
         return read_docx_as_markdown(path)
+    if path.suffix.lower() == ".pdf":
+        return read_pdf_as_markdown(path)
     for encoding in ("utf-8-sig", "utf-8", "cp874"):
         try:
             return path.read_text(encoding=encoding)
         except UnicodeDecodeError:
             continue
     return path.read_text(encoding="utf-8", errors="replace")
+
+
+def read_pdf_as_markdown(path: Path) -> str:
+    try:
+        from PyPDF2 import PdfReader
+    except Exception as exc:
+        return f"# {path.stem}\n\nไม่สามารถโหลดตัวอ่าน PDF ได้: {exc}"
+
+    try:
+        reader = PdfReader(str(path))
+        chunks = [f"# {path.stem}", ""]
+        for idx, page in enumerate(reader.pages, start=1):
+            text = page.extract_text() or ""
+            text = re.sub(r"\n{3,}", "\n\n", text).strip()
+            if text:
+                chunks.append(f"## Page {idx}")
+                chunks.append("")
+                chunks.append(text)
+                chunks.append("")
+        if len(chunks) <= 2:
+            chunks.append("ไม่พบข้อความที่ extract ได้จาก PDF นี้")
+        return "\n".join(chunks).strip()
+    except Exception as exc:
+        return f"# {path.stem}\n\nไม่สามารถอ่านข้อความจาก PDF นี้ได้: {exc}"
 
 
 def read_docx_as_markdown(path: Path) -> str:
