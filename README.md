@@ -39,6 +39,14 @@ Dashboard จะสแกนไฟล์ `.docx`, `.md`, `.pdf`, `.txt` แล�
 
 สำหรับ `1Q69` ให้ใช้ Markdown summary เป็นหลัก และถ้าบางรายการยังไม่มี Markdown แต่มี PDF เท่านั้น ระบบจะ extract ข้อความจาก PDF เป็น Markdown text สำหรับอ่าน online แทน ส่วน PDF historical สามารถ upload เพิ่มเป็นรอบๆ ภายหลังถ้าต้องการเปิดไฟล์ presentation ต้นฉบับบน online dashboard
 
+ถ้าเจอ PDF historical ที่ยังไม่มี Markdown ให้รัน:
+
+```powershell
+python -X utf8 .\scripts\convert_historical_pdfs_to_markdown.py
+```
+
+script จะสร้าง `.md` ไว้ใน OneDrive folder เดียวกับ PDF ต้นฉบับ และ dashboard จะใช้ Markdown นั้นในการ deploy ขึ้น GitHub Pages
+
 ## Refresh
 
 - กดปุ่ม refresh ในหน้า dashboard เพื่อ rescan ทันที
