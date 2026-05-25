@@ -37,6 +37,8 @@ Dashboard จะสแกนไฟล์ `.docx`, `.md`, `.pdf`, `.txt` แล�
 
 บน GitHub Pages จะ publish เฉพาะ static JSON/text เพื่อให้เปิดบน iPhone/iPad/Desktop ได้เร็ว ไม่ upload PDF ต้นฉบับก้อนใหญ่ขึ้น GitHub
 
+สำหรับ `1Q69` ให้ใช้ Markdown summary เป็นหลัก และถ้าบางรายการยังไม่มี Markdown แต่มี PDF เท่านั้น ระบบจะ extract ข้อความจาก PDF เป็น Markdown text สำหรับอ่าน online แทน ส่วน PDF historical สามารถ upload เพิ่มเป็นรอบๆ ภายหลังถ้าต้องการเปิดไฟล์ presentation ต้นฉบับบน online dashboard
+
 ## Refresh
 
 - กดปุ่ม refresh ในหน้า dashboard เพื่อ rescan ทันที

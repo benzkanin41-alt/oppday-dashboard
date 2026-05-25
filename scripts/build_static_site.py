@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 WEB = ROOT / "web"
 CACHE = ROOT / ".build_cache" / "text"
+PDF_TEXT_FALLBACK_QUARTERS = {"1Q69"}
 
 sys.path.insert(0, str(ROOT))
 import server  # noqa: E402
@@ -64,12 +65,15 @@ def public_item(item: dict, include_markdown: bool = False) -> dict:
         elif item.get("primaryPdfId"):
             pdf_file = next((entry for entry in item["files"] if entry["id"] == item["primaryPdfId"]), None)
             filename = pdf_file["name"] if pdf_file else "PDF"
-            markdown = (
-                f"# {item['symbol']} {item['quarter']}\n\n"
-                f"รายการนี้เป็นไฟล์ PDF presentation: `{filename}`\n\n"
-                "เพื่อให้ GitHub Pages เปิดเร็วและ repo ไม่ใหญ่เกินไป dashboard online ยังไม่ publish PDF ต้นฉบับขึ้น GitHub "
-                "ให้อ่านไฟล์ PDF จาก local dashboard หรือ OneDrive ต้นทางแทน"
-            )
+            if pdf_file and item.get("quarter") in PDF_TEXT_FALLBACK_QUARTERS:
+                markdown = cached_text(Path(pdf_file["path"]))
+            else:
+                markdown = (
+                    f"# {item['symbol']} {item['quarter']}\n\n"
+                    f"รายการนี้เป็นไฟล์ PDF presentation: `{filename}`\n\n"
+                    "เพื่อให้ GitHub Pages เปิดเร็วและ repo ไม่ใหญ่เกินไป dashboard online ยังไม่ publish PDF ต้นฉบับขึ้น GitHub "
+                    "ให้อ่านไฟล์ PDF จาก local dashboard หรือ OneDrive ต้นทางแทน"
+                )
         safe["markdown"] = markdown
     return safe
 
