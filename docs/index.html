@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OPPDAY Dashboard</title>
+    <link rel="stylesheet" href="static/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div>
+            <p class="eyebrow">Investor Workspace</p>
+            <h1>OPPDAY Dashboard</h1>
+          </div>
+          <button id="refreshBtn" class="icon-button" title="Refresh index">↻</button>
+        </div>
+
+        <div class="controls">
+          <label class="field">
+            <span>ค้นหาหุ้น</span>
+            <input id="searchInput" type="search" placeholder="เช่น KLINIQ, CPN, ASK" autocomplete="off" />
+          </label>
+
+          <label class="field">
+            <span>ไตรมาส</span>
+            <select id="quarterSelect">
+              <option value="">ทุกไตรมาส</option>
+            </select>
+          </label>
+
+          <div class="segmented" aria-label="Source filter">
+            <button class="active" data-source="">ทั้งหมด</button>
+            <button data-source="1Q69">1Q69</button>
+            <button data-source="PAST">PAST</button>
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div>
+            <strong id="itemCount">0</strong>
+            <span>รายการ</span>
+          </div>
+          <div>
+            <strong id="symbolCount">0</strong>
+            <span>หุ้น</span>
+          </div>
+          <div>
+            <strong id="markdownCount">0</strong>
+            <span>มีสรุป</span>
+          </div>
+          <div>
+            <strong id="pdfCount">0</strong>
+            <span>PDF</span>
+          </div>
+        </div>
+
+        <div class="status-line">
+          <span id="lastUpdated">กำลังโหลด index...</span>
+        </div>
+
+        <div id="results" class="results" aria-live="polite"></div>
+      </aside>
+
+      <main class="reader">
+        <section id="emptyState" class="empty-state">
+          <p class="eyebrow">Ready</p>
+          <h2>เลือกหุ้นจากรายการด้านซ้ายเพื่ออ่าน Oppday</h2>
+          <p>ค้นหาด้วย ticker หรือเลือกไตรมาส แล้ว dashboard จะแสดง Markdown summary ก่อน ถ้าไม่มีจะเปิด PDF presentation ให้ทันที</p>
+        </section>
+
+        <section id="detailPanel" class="detail-panel hidden">
+          <header class="detail-header">
+            <div>
+              <p id="detailMeta" class="eyebrow"></p>
+              <h2 id="detailTitle"></h2>
+              <p id="detailPath" class="path-line"></p>
+            </div>
+            <div class="detail-actions">
+              <button id="summaryTab" class="tab-button active">สรุป</button>
+              <button id="pdfTab" class="tab-button">PDF</button>
+              <a id="openPdfLink" class="open-link" target="_blank" rel="noreferrer">เปิดไฟล์</a>
+            </div>
+          </header>
+
+          <div id="fileList" class="file-list"></div>
+
+          <article id="markdownView" class="markdown-view"></article>
+          <div id="pdfView" class="pdf-view hidden">
+            <iframe id="pdfFrame" title="OPPDAY PDF"></iframe>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="static/app.js"></script>
+  </body>
+</html>
