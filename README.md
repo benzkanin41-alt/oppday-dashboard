@@ -47,6 +47,14 @@ python -X utf8 .\scripts\convert_historical_pdfs_to_markdown.py
 
 script จะสร้าง `.md` ไว้ใน OneDrive folder เดียวกับ PDF ต้นฉบับ และ dashboard จะใช้ Markdown นั้นในการ deploy ขึ้น GitHub Pages
 
+ถ้าต้องการแปลง PDF ของ `1Q69` ในโฟลเดอร์วันที่ใดวันที่หนึ่งเป็น Markdown ให้รัน:
+
+```powershell
+python -X utf8 .\scripts\convert_current_pdfs_to_markdown.py --folder "D:\OneDrive\stock\OPPDAY\1Q69\Oppday\สรุป oppday\2026-05-25"
+```
+
+script จะสร้าง `.md` ไว้ข้าง PDF ต้นฉบับใน OneDrive เช่นเดียวกัน
+
 ## Refresh
 
 - กดปุ่ม refresh ในหน้า dashboard เพื่อ rescan ทันที
