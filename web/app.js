@@ -231,10 +231,20 @@ function applyFilters() {
     const sourceOk = !source || item.source === source;
     return queryOk && quarterOk && sourceOk;
   });
-  if (query) {
-    state.filtered.sort((left, right) => searchRank(left, query) - searchRank(right, query));
-  }
+  state.filtered.sort((left, right) => compareItems(left, right, query));
   renderResults();
+}
+
+function compareItems(left, right, query) {
+  if (query) {
+    const rankDelta = searchRank(left, query) - searchRank(right, query);
+    if (rankDelta) return rankDelta;
+  }
+
+  const dateDelta = itemDateValue(right) - itemDateValue(left);
+  if (dateDelta) return dateDelta;
+
+  return (left.symbol || "").localeCompare(right.symbol || "", "th");
 }
 
 function searchRank(item, query) {
@@ -244,6 +254,11 @@ function searchRank(item, query) {
   if (symbol.startsWith(query)) return 1;
   if (title === query || title.startsWith(`${query} `)) return 2;
   return 10;
+}
+
+function itemDateValue(item) {
+  const time = Date.parse(item.eventDate || "");
+  return Number.isNaN(time) ? 0 : time;
 }
 
 function renderResults() {
