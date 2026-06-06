@@ -231,7 +231,19 @@ function applyFilters() {
     const sourceOk = !source || item.source === source;
     return queryOk && quarterOk && sourceOk;
   });
+  if (query) {
+    state.filtered.sort((left, right) => searchRank(left, query) - searchRank(right, query));
+  }
   renderResults();
+}
+
+function searchRank(item, query) {
+  const symbol = (item.symbol || "").toLowerCase();
+  const title = (item.title || "").toLowerCase();
+  if (symbol === query) return 0;
+  if (symbol.startsWith(query)) return 1;
+  if (title === query || title.startsWith(`${query} `)) return 2;
+  return 10;
 }
 
 function renderResults() {
