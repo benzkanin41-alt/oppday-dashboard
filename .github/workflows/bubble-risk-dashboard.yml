@@ -1,4 +1,4 @@
-﻿name: Update Bubble Risk Dashboard
+name: Update Bubble Risk Dashboard
 
 on:
   workflow_dispatch:
