@@ -1,0 +1,188 @@
+[
+  {
+    "name": "FRED series observations endpoint",
+    "url": "https://fred.stlouisfed.org/docs/api/fred/series_observations.html",
+    "publication_date": "No publication date shown; accessed 2026-07-02",
+    "used_for": "API design reference and FRED graph CSV source path."
+  },
+  {
+    "name": "SEC EDGAR APIs",
+    "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
+    "publication_date": "Last reviewed 2025-04-08 on SEC page",
+    "used_for": "Planned company facts/submissions adapter for valuation and fundamentals."
+  },
+  {
+    "name": "BIS central bank policy rates",
+    "url": "https://data.bis.org/topics/CBPOL",
+    "publication_date": "Latest release shown on BIS topic page; accessed 2026-07-02",
+    "used_for": "Planned cross-country policy-rate adapter."
+  },
+  {
+    "name": "BIS central bank total assets",
+    "url": "https://data.bis.org/topics/CBTA",
+    "publication_date": "Latest release shown on BIS topic page; accessed 2026-07-02",
+    "used_for": "Planned cross-country central-bank balance-sheet adapter."
+  },
+  {
+    "name": "GICS structure",
+    "url": "https://www.spglobal.com/spdji/en/landing/topic/gics/",
+    "publication_date": "Accessed 2026-07-02",
+    "used_for": "S&P 500 sector taxonomy design."
+  },
+  {
+    "name": "Nasdaq-100 methodology",
+    "url": "https://indexes.nasdaqomx.com/docs/Methodology_NDX.pdf",
+    "publication_date": "Copyright 2026",
+    "used_for": "Nasdaq-100 non-financial eligibility and modified market-cap weighting context."
+  },
+  {
+    "name": "Nasdaq historical quote API",
+    "url": "https://api.nasdaq.com/api/quote/{symbol}/historical",
+    "publication_date": "Data fetched 2026-07-02",
+    "used_for": "ETF proxy historical prices and volumes."
+  },
+  {
+    "name": "Cboe VIX overview",
+    "url": "https://www.cboe.com/tradable-products/vix",
+    "publication_date": "Market data as of 2026-07-02 on page",
+    "used_for": "VIX interpretation and sentiment source context."
+  },
+  {
+    "name": "yfinance project notes",
+    "url": "https://github.com/ranaroussi/yfinance",
+    "publication_date": "Latest release shown 2026-06-28; accessed 2026-07-02",
+    "used_for": "Yahoo Finance adapter caveat; Yahoo chart API was rate-limited in this run."
+  },
+  {
+    "name": "FRED U.S. Treasury 2Y/5Y/10Y/30Y constant maturity yields",
+    "url": "https://fred.stlouisfed.org/categories/115",
+    "publication_date": "Daily FRED Treasury series; accessed 2026-07-02",
+    "used_for": "U.S. 2Y, 5Y, 10Y, and 30Y Treasury yield curve chart and latest rates."
+  },
+  {
+    "name": "SET Index overview",
+    "url": "https://www.set.or.th/en/market/index/set/overview",
+    "publication_date": "SET page Last Update 2026-07-02; accessed 2026-07-02",
+    "used_for": "SET Index latest value and daily change snapshot."
+  },
+  {
+    "name": "SET mai Index overview",
+    "url": "https://www.set.or.th/en/market/index/mai/overview",
+    "publication_date": "SET page Last Update 2026-07-02; accessed 2026-07-02",
+    "used_for": "mai Index latest value and daily change snapshot."
+  },
+  {
+    "name": "ThaiBMA Government Bond Yield Curve",
+    "url": "https://www.thaibma.or.th/EN/Market/YieldCurve/Government.aspx",
+    "publication_date": "ThaiBMA yield curve latest available 2026-07-02; accessed 2026-07-02",
+    "used_for": "Thailand government bond 2Y, 5Y, 10Y, and 30Y yield curve chart and latest rates."
+  },
+  {
+    "name": "SET Market Overview statistics",
+    "url": "https://www.set.or.th/en/market/product/stock/overview",
+    "publication_date": "SET market statistics as of 2026-07-02; accessed 2026-07-02",
+    "used_for": "SET and mai trailing P/E, P/BV, market yield, index EPS, and current market statistics."
+  },
+  {
+    "name": "Nasdaq historical quote API 20Y chunks",
+    "url": "https://api.nasdaq.com/api/quote/{symbol}/historical",
+    "publication_date": "Data fetched 2026-07-02",
+    "used_for": "Top Watchlist ETF price-history charts with range filters."
+  },
+  {
+    "name": "Barrons / Dow Jones Market Data S&P 500 forward P/E",
+    "url": "https://www.barrons.com/livecoverage/stock-market-news-today-070126/card/the-s-p-500-is-cheaper-now-than-at-the-start-of-2026-MRZDSfrlkHg8xxAZmWD3",
+    "publication_date": "Published 2026-07-01; accessed 2026-07-02",
+    "used_for": "Forward P/E display for S&P 500 proxy only; not used in earnings-yield-gap calculation."
+  },
+  {
+    "name": "Yahoo Finance chart API since 1990",
+    "url": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
+    "publication_date": "Data fetched 2026-07-03",
+    "used_for": "Top Watchlist/index price-history charts from 1990 where available."
+  },
+  {
+    "name": "Yahoo Finance key-statistics embedded trailingPE",
+    "url": "https://finance.yahoo.com/quote/{symbol}/key-statistics/",
+    "publication_date": "Data fetched 2026-07-03",
+    "used_for": "Trailing P/E fallback for ETF/index proxy valuation rows."
+  },
+  {
+    "name": "State Street SPDR product pages Price/Earnings Ratio FY1",
+    "url": "https://www.ssga.com/us/en/intermediary/etfs",
+    "publication_date": "Data fetched 2026-07-03",
+    "used_for": "Forward P/E / FY1 P/E where available."
+  },
+  {
+    "name": "iShares official product pages P/E Ratio",
+    "url": "https://www.ishares.com/us/products",
+    "publication_date": "Data fetched 2026-07-03",
+    "used_for": "Portfolio P/E Ratio for iShares ETF proxies where available."
+  },
+  {
+    "name": "FRED macro froth indicators",
+    "url": "https://fred.stlouisfed.org/",
+    "publication_date": "Data fetched 2026-07-03",
+    "used_for": "Buffett indicator proxy, credit premium, HY OAS, VIX, yield curve, Fed assets, real policy proxy."
+  },
+  {
+    "name": "Cboe VIX historical price data",
+    "url": "https://www.cboe.com/tradable-products/vix/vix-historical-data",
+    "publication_date": "updated daily; latest observation 2026-07-02",
+    "used_for": "VIX complacency row and 5-year sparkline in Froth Components."
+  },
+  {
+    "name": "U.S. Treasury Daily Treasury Rates XML",
+    "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
+    "publication_date": "feed updated 2026-07-02T14:48:18Z; latest observation 2026-07-02",
+    "used_for": "Latest U.S. 10Y-2Y yield-curve row and yield-curve dashboard point."
+  },
+  {
+    "name": "New York Fed EFFR API",
+    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-05-19&endDate=2026-07-03&type=rate",
+    "publication_date": "latest EFFR observation 2026-07-01",
+    "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS."
+  },
+  {
+    "name": "TradingView SET:MAI daily history",
+    "url": "https://www.tradingview.com/symbols/SET-MAI/",
+    "publication_date": "Data fetched 2026-07-03; latest observation 2026-07-03",
+    "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
+  },
+  {
+    "name": "SEC Company Facts API",
+    "url": "https://data.sec.gov/api/xbrl/companyfacts/",
+    "publication_date": "Data fetched 2026-07-03",
+    "used_for": "Quarterly hyperscaler capex, Micron revenue/inventory/capex, and CoreWeave debt/PPE/capex/debt issuance."
+  },
+  {
+    "name": "Silicon Data GPU rental indexes via Business Insider",
+    "url": "https://www.businessinsider.com/ai-demand-boosts-gpu-prices-silicon-data-ceo-carmen-li-2026-4",
+    "publication_date": "Published 2026-04-06; accessed 2026-07-03",
+    "used_for": "Sparse GPU rental price observations for NeoCloud H100, NeoCloud B200, and Hyperscaler H100."
+  },
+  {
+    "name": "TechRadar H100 cloud rental observation",
+    "url": "https://www.techradar.com/pro/the-hidden-mathematics-of-ai-why-your-gpu-bills-dont-add-up",
+    "publication_date": "Published 2025-08-11; accessed 2026-07-03",
+    "used_for": "H100 hyperscaler rental observation around $8/hour."
+  },
+  {
+    "name": "Micron HBM sold-out reporting",
+    "url": "https://www.thetimes.com/business/technology/article/micron-semiconductor-ai-stock-volatile-7ftpl8v2j",
+    "publication_date": "Published 2026-06-28; accessed 2026-07-03",
+    "used_for": "HBM sold-out horizon and demand-fulfillment observation."
+  },
+  {
+    "name": "TSMC / Counterpoint advanced packaging observations",
+    "url": "https://www.tomshardware.com/tech-industry/global-semiconductor-foundry-market-hit-a-record-320-billion-in-2025",
+    "publication_date": "Published 2026-04-02; accessed 2026-07-03",
+    "used_for": "Advanced packaging capacity growth observation used in CoWoS normalized chart."
+  },
+  {
+    "name": "TSMC advanced-node capacity gap observation",
+    "url": "https://www.tomshardware.com/tech-industry/semiconductors/tsmc-csays-advanced-node-capacity-falls-short-of-ai-demand",
+    "publication_date": "Published 2025-11-25; accessed 2026-07-03",
+    "used_for": "Demand/capacity gap observation for advanced-node bottleneck context."
+  }
+]

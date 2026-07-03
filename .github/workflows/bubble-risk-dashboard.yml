@@ -1,0 +1,71 @@
+﻿name: Update Bubble Risk Dashboard
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 7 * * *'
+      timezone: 'Asia/Bangkok'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: bubble-risk-dashboard
+  cancel-in-progress: false
+
+jobs:
+  update-and-deploy:
+    runs-on: windows-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}bubble-risk-dashboard/
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Refresh source-backed dashboard data
+        shell: pwsh
+        run: |
+          cd bubble-risk-dashboard-src
+          python -X utf8 .\work\update_local_dashboard_full.py
+
+      - name: Publish refreshed static files into docs
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path docs\bubble-risk-dashboard | Out-Null
+          Copy-Item -LiteralPath bubble-risk-dashboard-src\outputs\dashboard\index.html -Destination docs\bubble-risk-dashboard\index.html -Force
+          Copy-Item -LiteralPath bubble-risk-dashboard-src\outputs\dashboard\data.json -Destination docs\bubble-risk-dashboard\data.json -Force
+          Copy-Item -LiteralPath bubble-risk-dashboard-src\outputs\dashboard\source-manifest.json -Destination docs\bubble-risk-dashboard\source-manifest.json -Force
+
+      - name: Commit refreshed data and chart history
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/bubble-risk-dashboard bubble-risk-dashboard-src/outputs/dashboard bubble-risk-dashboard-src/work/raw bubble-risk-dashboard-src/work/last_dashboard_update.json
+          git diff --cached --quiet
+          if ($LASTEXITCODE -ne 0) {
+            git commit -m "Update bubble risk dashboard data [skip ci]"
+            git push
+          }
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: docs
+
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

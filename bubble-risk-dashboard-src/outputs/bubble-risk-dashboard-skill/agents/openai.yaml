@@ -1,0 +1,8 @@
+interface:
+  display_name: "Bubble Risk Dashboard"
+  short_description: "Build source-backed bubble risk dashboards."
+  brand_color: "#245F86"
+  default_prompt: "Use $bubble-risk-dashboard to build a source-backed global bubble risk dashboard."
+
+policy:
+  allow_implicit_invocation: true
