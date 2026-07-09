@@ -80,7 +80,7 @@
   {
     "name": "SET Market Overview statistics",
     "url": "https://www.set.or.th/en/market/product/stock/overview",
-    "publication_date": "SET market statistics as of 2026-07-02; accessed 2026-07-02",
+    "publication_date": "SET market statistics as of 2026-07-08; accessed 2026-07-02",
     "used_for": "SET and mai trailing P/E, P/BV, market yield, index EPS, and current market statistics."
   },
   {
@@ -128,25 +128,25 @@
   {
     "name": "Cboe VIX historical price data",
     "url": "https://www.cboe.com/tradable-products/vix/vix-historical-data",
-    "publication_date": "updated daily; latest observation 2026-07-02",
+    "publication_date": "updated daily; latest observation 2026-07-08",
     "used_for": "VIX complacency row and 5-year sparkline in Froth Components."
   },
   {
     "name": "U.S. Treasury Daily Treasury Rates XML",
     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-    "publication_date": "feed updated 2026-07-02T14:48:18Z; latest observation 2026-07-02",
+    "publication_date": "feed updated 2026-07-08T15:51:21Z; latest observation 2026-07-08",
     "used_for": "Latest U.S. 10Y-2Y yield-curve row and yield-curve dashboard point."
   },
   {
     "name": "New York Fed EFFR API",
-    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-05-19&endDate=2026-07-03&type=rate",
-    "publication_date": "latest EFFR observation 2026-07-01",
+    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-05-25&endDate=2026-07-09&type=rate",
+    "publication_date": "latest EFFR observation 2026-07-07",
     "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS."
   },
   {
     "name": "TradingView SET:MAI daily history",
     "url": "https://www.tradingview.com/symbols/SET-MAI/",
-    "publication_date": "Data fetched 2026-07-03; latest observation 2026-07-03",
+    "publication_date": "Data fetched 2026-07-09; latest observation 2026-07-09",
     "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
   },
   {

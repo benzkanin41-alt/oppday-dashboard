@@ -3,6 +3,7 @@ name: Update Bubble Risk Dashboard
 on:
   workflow_dispatch:
   schedule:
+    # 07:00 Asia/Bangkok daily.
     - cron: '0 7 * * *'
       timezone: 'Asia/Bangkok'
 
@@ -35,6 +36,17 @@ jobs:
         run: |
           cd bubble-risk-dashboard-src
           python -X utf8 .\work\update_local_dashboard_full.py
+
+      - name: Validate refreshed dashboard
+        shell: pwsh
+        run: |
+          cd bubble-risk-dashboard-src
+          python -X utf8 .\work\validate_macro_v04_nonzero.py
+          python -X utf8 .\work\validate_froth_components_populated.py
+          python -X utf8 .\work\validate_thailand_heat_mai_treasury.py
+          python -X utf8 .\work\validate_final_dashboard.py
+          python -X utf8 .\work\validate_ai_direct_v08.py
+          python -X utf8 .\work\validate_layout_manifest_order.py
 
       - name: Publish refreshed static files into docs
         shell: pwsh
@@ -69,3 +81,4 @@ jobs:
       - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
