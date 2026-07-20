@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import csv
 import hashlib
 import json
 import mimetypes
@@ -17,10 +18,22 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 HOST = "127.0.0.1"
 PORT = int(os.environ.get("OPPDAY_DASHBOARD_PORT", "8766"))
-PAST_ROOT = Path(r"D:\OneDrive\stock\OPPDAY\PAST")
-CURRENT_ROOT = Path(r"D:\OneDrive\stock\OPPDAY\1Q69\Oppday\สรุป oppday")
+OPPDAY_ROOT = Path(os.environ.get("OPPDAY_ROOT", r"D:\OneDrive\stock\OPPDAY"))
+PAST_ROOT = Path(os.environ.get("OPPDAY_PAST_ROOT", str(OPPDAY_ROOT / "PAST")))
+SUMMARY_DIR_NAME = "\u0e2a\u0e23\u0e38\u0e1b oppday"
+# Compatibility alias for the older one-quarter conversion helper. Indexing no
+# longer depends on this path; every canonical quarter folder is discovered.
+CURRENT_ROOT = Path(
+    os.environ.get(
+        "OPPDAY_CURRENT_ROOT",
+        str(OPPDAY_ROOT / "1Q69" / "Oppday" / SUMMARY_DIR_NAME),
+    )
+)
 WEB_ROOT = Path(__file__).resolve().parent / "web"
 ALLOWED_EXTENSIONS = {".docx", ".md", ".pdf", ".txt"}
+COMPLETED_CONCLUSION_STATUSES = {"done", "done_transcript_only", "conclusion_done"}
+QUARTER_RE = re.compile(r"^[1-4]Q\d{2}$", re.IGNORECASE)
+ISO_DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 CURRENT_FILE_RE = re.compile(
     r"^(?P<symbol>.+?)-Earning call-(?P<quarter>[1-4]Q\d{2})$",
@@ -72,26 +85,148 @@ def normalise_symbol(symbol: str) -> str:
     return value.upper()
 
 
-def detect_current_file(path: Path) -> dict | None:
+def row_value(row: dict, *names: str) -> str:
+    for name in names:
+        value = row.get(name)
+        if value is not None and str(value).strip():
+            return str(value).strip()
+    return ""
+
+
+def read_workflow_status(path: Path) -> dict:
+    empty = {"authoritative": False, "by_key": {}, "by_ticker": {}}
+    if not path.exists():
+        return empty
+
+    text = ""
+    for encoding in ("utf-8-sig", "utf-8", "cp874"):
+        try:
+            text = path.read_text(encoding=encoding)
+            break
+        except UnicodeDecodeError:
+            continue
+        except OSError:
+            return empty
+    if not text.strip():
+        return empty
+
+    reader = csv.DictReader(text.splitlines())
+    fieldnames = {str(name).strip().lower() for name in (reader.fieldnames or [])}
+    status_column = next(
+        (name for name in ("conclusion_status", "agent6_status") if name in fieldnames),
+        "",
+    )
+    if not status_column:
+        # A legacy status file must not hide summaries simply because its schema
+        # predates the Agent 6 readiness contract.
+        return empty
+
+    by_key: dict[tuple[str, str], dict] = {}
+    by_ticker: dict[str, list[dict]] = {}
+    for raw_row in reader:
+        row = {
+            str(key).strip().lower(): (str(value).strip() if value is not None else "")
+            for key, value in raw_row.items()
+            if key is not None
+        }
+        ticker = normalise_symbol(row_value(row, "ticker", "symbol"))
+        if not ticker:
+            continue
+        event_date = row_value(row, "event_date", "eventdate", "oppday_date", "date")
+        conclusion_status = row_value(row, status_column).lower()
+        record = {
+            **row,
+            "_ticker": ticker,
+            "_event_date": event_date,
+            "_conclusion_status": conclusion_status,
+            "_run_id": row_value(row, "run_id", "runid"),
+            "_registration_id": row_value(row, "registration_id", "registrationid"),
+        }
+        by_key[(ticker, event_date)] = record
+        by_ticker.setdefault(ticker, []).append(record)
+
+    return {
+        "authoritative": True,
+        "by_key": by_key,
+        "by_ticker": by_ticker,
+    }
+
+
+def find_workflow_row(status_index: dict, symbol: str, event_date: str) -> dict | None:
+    ticker = normalise_symbol(symbol)
+    exact = status_index["by_key"].get((ticker, event_date))
+    if exact:
+        return exact
+    candidates = status_index["by_ticker"].get(ticker, [])
+    if len(candidates) == 1:
+        return candidates[0]
+    return None
+
+
+def discover_summary_roots(oppday_root: Path | None = None):
+    root = oppday_root or OPPDAY_ROOT
+    if not root.exists():
+        return
+    try:
+        quarter_dirs = [path for path in root.iterdir() if path.is_dir() and QUARTER_RE.match(path.name)]
+    except OSError:
+        return
+    for quarter_dir in sorted(quarter_dirs, key=lambda path: quarter_rank(path.name), reverse=True):
+        quarter = quarter_dir.name.upper()
+        oppday_dir = quarter_dir / "Oppday"
+        summary_root = oppday_dir / SUMMARY_DIR_NAME
+        if summary_root.exists():
+            yield quarter, summary_root, oppday_dir / f"workflow_status_{quarter}.csv"
+
+
+def event_date_from_path(path: Path, summary_root: Path | None = None) -> str:
+    if summary_root is not None:
+        try:
+            parts = path.relative_to(summary_root).parts[:-1]
+        except ValueError:
+            parts = path.parts[:-1]
+    else:
+        parts = path.parts[:-1]
+    return next((part for part in parts if ISO_DATE_RE.match(part)), path.parent.name)
+
+
+def detect_current_file(
+    path: Path,
+    quarter: str | None = None,
+    summary_root: Path | None = None,
+    status_row: dict | None = None,
+) -> dict | None:
     stem = path.stem
     match = CURRENT_FILE_RE.match(stem)
     if not match:
         return None
-    parent_date = path.parent.name
     symbol = normalise_symbol(match.group("symbol"))
-    quarter = match.group("quarter").upper()
-    return {
+    file_quarter = match.group("quarter").upper()
+    if quarter and file_quarter != quarter.upper():
+        return None
+    resolved_quarter = (quarter or file_quarter).upper()
+    event_date = event_date_from_path(path, summary_root)
+    meta = {
         "symbol": symbol,
-        "quarter": quarter,
-        "period": quarter,
-        "eventDate": parent_date,
-        "source": "1Q69",
-        "sourceFolder": str(CURRENT_ROOT),
+        "quarter": resolved_quarter,
+        "period": resolved_quarter,
+        "eventDate": event_date,
+        "source": resolved_quarter,
+        "sourceFolder": str(summary_root or path.parent),
         "stem": stem,
     }
+    if status_row:
+        meta.update(
+            {
+                "workflowStatus": status_row.get("_conclusion_status", ""),
+                "runId": status_row.get("_run_id", ""),
+                "registrationId": status_row.get("_registration_id", ""),
+            }
+        )
+    return meta
 
 
-def detect_past_file(path: Path, quarter: str) -> dict | None:
+def detect_past_file(path: Path, quarter: str, past_root: Path | None = None) -> dict | None:
     stem = path.stem
     match = OPPDAY_FILE_RE.match(stem)
     if match:
@@ -137,7 +272,7 @@ def detect_past_file(path: Path, quarter: str) -> dict | None:
         "period": period,
         "eventDate": event_date,
         "source": "PAST",
-        "sourceFolder": str(PAST_ROOT / quarter),
+        "sourceFolder": str((past_root or PAST_ROOT) / quarter),
         "stem": stem,
     }
 
@@ -180,6 +315,9 @@ def add_group(groups: dict, meta: dict, path: Path) -> None:
             "hasMarkdown": False,
             "hasPdf": False,
             "latestModified": "",
+            "workflowStatus": meta.get("workflowStatus", ""),
+            "runId": meta.get("runId", ""),
+            "registrationId": meta.get("registrationId", ""),
         },
     )
 
@@ -195,6 +333,8 @@ def add_group(groups: dict, meta: dict, path: Path) -> None:
             group["period"],
             group["eventDate"],
             group["source"],
+            group.get("workflowStatus", ""),
+            group.get("runId", ""),
             path.name,
         ]
     ).lower()
@@ -208,11 +348,13 @@ def iter_files(root: Path):
             yield path
 
 
-def build_index() -> dict:
+def build_index(oppday_root: Path | None = None, past_root: Path | None = None) -> dict:
+    resolved_oppday_root = oppday_root or OPPDAY_ROOT
+    resolved_past_root = past_root or PAST_ROOT
     groups: dict[str, dict] = {}
 
-    if PAST_ROOT.exists():
-        for quarter_dir in sorted([p for p in PAST_ROOT.iterdir() if p.is_dir()], key=lambda p: p.name):
+    if resolved_past_root.exists():
+        for quarter_dir in sorted([p for p in resolved_past_root.iterdir() if p.is_dir()], key=lambda p: p.name):
             quarter = quarter_dir.name.upper()
             scan_root = quarter_dir / "OPPDAY"
             if not scan_root.exists():
@@ -220,13 +362,27 @@ def build_index() -> dict:
             for path in iter_files(scan_root):
                 if "\\Analyst\\" in str(path):
                     continue
-                meta = detect_past_file(path, quarter)
+                meta = detect_past_file(path, quarter, resolved_past_root)
                 if meta:
                     add_group(groups, meta, path)
 
-    if CURRENT_ROOT.exists():
-        for path in iter_files(CURRENT_ROOT):
-            meta = detect_current_file(path)
+    current_roots = []
+    workflow_status_files = []
+    for quarter, summary_root, status_path in discover_summary_roots(resolved_oppday_root):
+        current_roots.append(str(summary_root))
+        status_index = read_workflow_status(status_path)
+        if status_path.exists():
+            workflow_status_files.append(str(status_path))
+        for path in iter_files(summary_root):
+            meta = detect_current_file(path, quarter, summary_root)
+            if not meta:
+                continue
+            status_row = find_workflow_row(status_index, meta["symbol"], meta["eventDate"])
+            if status_index["authoritative"]:
+                if not status_row or status_row.get("_conclusion_status") not in COMPLETED_CONCLUSION_STATUSES:
+                    continue
+            if status_row:
+                meta = detect_current_file(path, quarter, summary_root, status_row)
             if meta:
                 add_group(groups, meta, path)
 
@@ -251,6 +407,7 @@ def build_index() -> dict:
 
     quarters = sorted({item["quarter"] for item in items}, key=quarter_rank, reverse=True)
     symbols = sorted({item["symbol"] for item in items})
+    sources = sorted({item["source"] for item in items}, key=quarter_rank, reverse=True)
     by_file_id = {
         file_entry["id"]: file_entry
         for item in items
@@ -266,12 +423,83 @@ def build_index() -> dict:
             "items": len(items),
             "symbols": len(symbols),
             "quarters": quarters,
+            "sources": sources,
+            "tickerSet": symbols,
             "markdownItems": sum(1 for item in items if item["hasMarkdown"]),
             "pdfItems": sum(1 for item in items if item["hasPdf"]),
-            "pastRootExists": PAST_ROOT.exists(),
-            "currentRootExists": CURRENT_ROOT.exists(),
+            "pastRootExists": resolved_past_root.exists(),
+            "currentRootExists": bool(current_roots),
+            "currentRoots": current_roots,
+            "workflowStatusFiles": workflow_status_files,
         },
     }
+
+
+def filtered_items(items: list[dict], params: dict[str, list[str]] | None = None) -> list[dict]:
+    params = params or {}
+
+    def parameter(*names: str) -> str:
+        for name in names:
+            values = params.get(name)
+            if values and values[0].strip():
+                return values[0].strip()
+        return ""
+
+    quarter = parameter("quarter").upper()
+    event_date = parameter("event_date", "eventDate")
+    run_id = parameter("run_id", "runId")
+    conclusion_status = parameter("conclusion_status", "workflowStatus").lower()
+    return [
+        item
+        for item in items
+        if (not quarter or item["quarter"] == quarter)
+        and (not event_date or item["eventDate"] == event_date)
+        and (not run_id or item.get("runId") == run_id)
+        and (not conclusion_status or item.get("workflowStatus") == conclusion_status)
+    ]
+
+
+def index_payload(params: dict[str, list[str]] | None = None) -> dict:
+    params = params or {}
+    selected = filtered_items(cache["items"], params)
+    ticker_set = sorted({item["symbol"] for item in selected})
+    quarters = sorted({item["quarter"] for item in selected}, key=quarter_rank, reverse=True)
+    sources = sorted({item["source"] for item in selected}, key=quarter_rank, reverse=True)
+    stats = {
+        **cache["stats"],
+        "items": len(selected),
+        "symbols": len(ticker_set),
+        "quarters": quarters,
+        "sources": sources,
+        "tickerSet": ticker_set,
+        "markdownItems": sum(1 for item in selected if item["hasMarkdown"]),
+        "pdfItems": sum(1 for item in selected if item["hasPdf"]),
+    }
+    payload = {
+        "updatedAt": cache["updated_at"],
+        "stats": stats,
+        "items": selected,
+    }
+    raw_expected = params.get("manifest_tickers") or params.get("manifestTickers")
+    if raw_expected:
+        expected = sorted(
+            {
+                normalise_symbol(ticker)
+                for value in raw_expected
+                for ticker in value.split(",")
+                if ticker.strip()
+            }
+        )
+        expected_set = set(expected)
+        actual_set = set(ticker_set)
+        payload["manifestCheck"] = {
+            "matches": expected_set == actual_set,
+            "expected": expected,
+            "actual": ticker_set,
+            "missing": sorted(expected_set - actual_set),
+            "unexpected": sorted(actual_set - expected_set),
+        }
+    return payload
 
 
 def refresh_cache() -> dict:
@@ -437,13 +665,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             else:
                 ensure_cache()
             with cache_lock:
-                self.send_json(
-                    {
-                        "updatedAt": cache["updated_at"],
-                        "stats": cache["stats"],
-                        "items": cache["items"],
-                    }
-                )
+                self.send_json(index_payload(params))
             return
 
         if route.startswith("/api/item/"):

@@ -12,7 +12,7 @@ const els = {
   refreshBtn: document.querySelector("#refreshBtn"),
   searchInput: document.querySelector("#searchInput"),
   quarterSelect: document.querySelector("#quarterSelect"),
-  sourceButtons: document.querySelectorAll(".segmented button"),
+  sourceFilters: document.querySelector("#sourceFilters"),
   results: document.querySelector("#results"),
   itemCount: document.querySelector("#itemCount"),
   symbolCount: document.querySelector("#symbolCount"),
@@ -206,6 +206,7 @@ async function loadIndex(refresh = false) {
   els.lastUpdated.textContent = `อัปเดตล่าสุด ${formatDateTime(payload.updatedAt)} | ${state.staticMode ? "sync จาก OneDrive 18:00" : "auto refresh 18:00"}`;
 
   renderQuarterOptions(payload.stats?.quarters || []);
+  renderSourceOptions(payload.stats?.sources || []);
   applyFilters();
 }
 
@@ -220,6 +221,29 @@ function renderQuarterOptions(quarters) {
   });
   if (quarters.includes(current)) els.quarterSelect.value = current;
 }
+
+function renderSourceOptions(sources) {
+  const uniqueSources = [...new Set(sources.filter(Boolean))];
+  if (state.selectedSource && !uniqueSources.includes(state.selectedSource)) {
+    state.selectedSource = "";
+  }
+
+  els.sourceFilters.replaceChildren();
+  const options = [{ value: "", label: "ทั้งหมด" }, ...uniqueSources.map((source) => ({ value: source, label: source }))];
+  options.forEach((option) => {
+    const button = document.createElement("button");
+    button.dataset.source = option.value;
+    button.textContent = option.label;
+    button.classList.toggle("active", option.value === state.selectedSource);
+    button.addEventListener("click", () => {
+      state.selectedSource = option.value;
+      renderSourceOptions(uniqueSources);
+      applyFilters();
+    });
+    els.sourceFilters.append(button);
+  });
+}
+
 
 function applyFilters() {
   const query = els.searchInput.value.trim().toLowerCase();
@@ -366,15 +390,6 @@ els.quarterSelect.addEventListener("change", applyFilters);
 els.summaryTab.addEventListener("click", () => setActiveView("summary"));
 els.pdfTab.addEventListener("click", () => {
   if (!els.pdfTab.disabled) setActiveView("pdf");
-});
-
-els.sourceButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    els.sourceButtons.forEach((candidate) => candidate.classList.remove("active"));
-    button.classList.add("active");
-    state.selectedSource = button.dataset.source;
-    applyFilters();
-  });
 });
 
 loadIndex().catch((error) => {

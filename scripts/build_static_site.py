@@ -3,8 +3,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -35,6 +37,21 @@ def public_file_entry(entry: dict) -> dict:
     }
 
 
+PUBLIC_STAT_KEYS = (
+    "items",
+    "symbols",
+    "quarters",
+    "sources",
+    "tickerSet",
+    "markdownItems",
+    "pdfItems",
+)
+
+
+def public_stats(stats: dict) -> dict:
+    return {key: stats[key] for key in PUBLIC_STAT_KEYS if key in stats}
+
+
 def public_item(item: dict, include_markdown: bool = False) -> dict:
     safe = {
         "id": item["id"],
@@ -53,6 +70,9 @@ def public_item(item: dict, include_markdown: bool = False) -> dict:
         "primaryMarkdownId": item["primaryMarkdownId"],
         "primaryPdfId": None,
         "onlinePdfAvailable": False,
+        "workflowStatus": item.get("workflowStatus", ""),
+        "runId": item.get("runId", ""),
+        "registrationId": item.get("registrationId", ""),
     }
     if include_markdown:
         markdown = ""
@@ -94,34 +114,67 @@ def cached_text(path: Path) -> str:
     return text
 
 
+OPPDAY_OWNED_FILES = (
+    Path(".nojekyll"),
+    Path("index.html"),
+    Path("static/app.js"),
+    Path("static/styles.css"),
+    Path("data/index.json"),
+)
+OPPDAY_ITEMS_DIR = Path("data/items")
+OPPDAY_ITEM_FILE_RE = re.compile(r"^[0-9a-f]{40}\.json$", re.IGNORECASE)
+
+
+def merge_oppday_stage(stage: Path, docs: Path) -> None:
+    docs.mkdir(parents=True, exist_ok=True)
+    for relative in OPPDAY_OWNED_FILES:
+        source = stage / relative
+        target = docs / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
+
+    target_items = docs / OPPDAY_ITEMS_DIR
+    target_items.mkdir(parents=True, exist_ok=True)
+    # Item JSON is an OPPDAY-owned subtree. Remove only stale JSON files; never
+    # delete docs/ or another co-hosted dashboard.
+    for stale in target_items.glob("*.json"):
+        if stale.is_file() and OPPDAY_ITEM_FILE_RE.fullmatch(stale.name):
+            stale.unlink()
+    for source in (stage / OPPDAY_ITEMS_DIR).glob("*.json"):
+        shutil.copy2(source, target_items / source.name)
+
+
 def build() -> dict:
     built = server.build_index()
 
-    if DOCS.exists():
-        shutil.rmtree(DOCS)
-    (DOCS / "static").mkdir(parents=True)
-    (DOCS / "data" / "items").mkdir(parents=True)
+    with tempfile.TemporaryDirectory(prefix=".oppday-static-", dir=ROOT) as temporary:
+        stage = Path(temporary)
+        (stage / "static").mkdir(parents=True)
+        (stage / OPPDAY_ITEMS_DIR).mkdir(parents=True)
 
-    shutil.copy2(WEB / "index.html", DOCS / "index.html")
-    shutil.copy2(WEB / "styles.css", DOCS / "static" / "styles.css")
-    shutil.copy2(WEB / "app.js", DOCS / "static" / "app.js")
+        shutil.copy2(WEB / "index.html", stage / "index.html")
+        shutil.copy2(WEB / "styles.css", stage / "static" / "styles.css")
+        shutil.copy2(WEB / "app.js", stage / "static" / "app.js")
 
-    public_items = []
-    for item in built["items"]:
-        public_items.append(public_item(item, include_markdown=False))
-        write_json(DOCS / "data" / "items" / f"{item['id']}.json", {"item": public_item(item, include_markdown=True)})
+        public_items = []
+        for item in built["items"]:
+            public_items.append(public_item(item, include_markdown=False))
+            write_json(
+                stage / OPPDAY_ITEMS_DIR / f"{item['id']}.json",
+                {"item": public_item(item, include_markdown=True)},
+            )
 
-    write_json(
-        DOCS / "data" / "index.json",
-        {
-            "mode": "static",
-            "updatedAt": built["updated_at"],
-            "stats": built["stats"],
-            "items": public_items,
-        },
-    )
-
-    (DOCS / ".nojekyll").write_text("", encoding="utf-8")
+        write_json(
+            stage / "data" / "index.json",
+            {
+                "mode": "static",
+                "updatedAt": built["updated_at"],
+                "stats": public_stats(built["stats"]),
+                "items": public_items,
+            },
+        )
+        (stage / ".nojekyll").write_text("", encoding="utf-8")
+        merge_oppday_stage(stage, DOCS)
     return {
         "updatedAt": built["updated_at"],
         "items": built["stats"]["items"],
