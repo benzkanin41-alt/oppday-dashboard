@@ -22,28 +22,31 @@ STEPS = [
     "work/enhance_dashboard_interactive_v03.py",
     "work/enhance_dashboard_v04.py",
     "work/update_froth_components_fred.py",
-    "work/clean_payload_user_text.py",
     "work/update_current_market_indicators.py",
     "work/rebuild_clean_macro.py",
     "work/patch_dashboard_full_price_universe.py",
     "work/rebuild_clean_interactive.py",
     "work/patch_thailand_heat_mai_treasury.py",
+    "work/recalculate_eyg_latest_yields.py",
     "work/patch_mai_tradingview_history.py",
-    "work/add_ai_semiconductor_direct_data.py",
+    "work/finalize_requested_dashboard_metrics.py",
+    "work/refresh_ai_semiconductor_direct_data.py",
+    "work/patch_meta_latest_release_capex.py",
     "work/fix_amzn_ai_direct.py",
     "work/rebuild_ai_direct_layout_v08.py",
     "work/fix_ai_spacing_and_manifest_order.py",
     "work/fix_ai_to_score_spacing.py",
+    "work/clean_payload_user_text.py",
     "work/validate_macro_v04_nonzero.py",
     "work/validate_froth_components_populated.py",
     "work/validate_current_market_indicators.py",
     "work/validate_thailand_heat_mai_treasury.py",
     "work/validate_mai_chart_history.py",
     "work/validate_ai_direct_v08.py",
+    "work/validate_requested_regressions.py",
     "work/validate_layout_manifest_order.py",
     "work/validate_final_dashboard.py",
 ]
-
 
 
 STEP_TIMEOUTS = {
@@ -120,6 +123,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
-

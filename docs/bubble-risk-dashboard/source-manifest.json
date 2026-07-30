@@ -184,5 +184,11 @@
     "url": "https://www.tomshardware.com/tech-industry/semiconductors/tsmc-csays-advanced-node-capacity-falls-short-of-ai-demand",
     "publication_date": "Published 2025-11-25; accessed 2026-07-03",
     "used_for": "Demand/capacity gap observation for advanced-node bottleneck context."
+  },
+  {
+    "name": "Meta Q2 2026 earnings release",
+    "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx",
+    "publication_date": "Published 2026-07-29; accessed by daily dashboard refresh",
+    "used_for": "META Q2 2026 purchases of property and equipment ($30.116B) until SEC Company Facts includes the new quarter."
   }
 ]

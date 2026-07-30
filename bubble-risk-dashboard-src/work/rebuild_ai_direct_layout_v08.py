@@ -97,6 +97,21 @@ def latest_value(series_map: dict[str, list[dict[str, Any]]]) -> str:
     return f"{latest[1]} {latest[2]:,.2f} ({latest[0]})"
 
 
+def latest_values(series_map: dict[str, list[dict[str, Any]]]) -> str:
+    rows = []
+    for name, points in series_map.items():
+        valid = [
+            point
+            for point in points
+            if point.get("date") and point.get("value") is not None
+        ]
+        if not valid:
+            continue
+        point = max(valid, key=lambda item: str(item["date"]))
+        rows.append(f"{name} {float(point['value']):,.2f} ({point['date']})")
+    return " | ".join(rows) or "n/a"
+
+
 def normalize_series(series_map: dict[str, list[dict[str, Any]]], source_kind: str) -> list[dict[str, Any]]:
     series_list: list[dict[str, Any]] = []
     for index, (name, points) in enumerate(series_map.items()):
@@ -208,6 +223,16 @@ def cowos_observations(ai: dict[str, Any]) -> list[dict[str, Any]]:
 def build_model(ai: dict[str, Any]) -> dict[str, Any]:
     window_start = ai.get("lookback_start") or "2024-07-03"
     window_end = datetime.now().date().isoformat()
+    capex_has_release_fallback = any(
+        "earnings release" in str(point.get("source") or "").lower()
+        for points in ai.get("capex", {}).values()
+        for point in points
+    )
+    capex_source = (
+        "SEC Company Facts plus official issuer earnings release fallback"
+        if capex_has_release_fallback
+        else "SEC Company Facts"
+    )
     groups = [
         {
             "id": "gpu-rental",
@@ -251,13 +276,13 @@ def build_model(ai: dict[str, Any]) -> dict[str, Any]:
         {
             "id": "hyperscaler-capex",
             "title": "Hyperscaler AI Capex",
-            "subtitle": "MSFT, GOOGL, META, AMZN, and ORCL capex from SEC Company Facts.",
+            "subtitle": f"MSFT, GOOGL, META, AMZN, and ORCL capex from {capex_source}.",
             "unit": "$B",
-            "badge": "Full SEC quarterly",
+            "badge": "SEC + official release" if capex_has_release_fallback else "Full SEC quarterly",
             "badge_class": "ai-badge-ok",
-            "coverage": "Quarterly SEC XBRL facts are stored and clickable inside the 2-year lookback.",
-            "latest": latest_value(ai["capex"]),
-            "series": normalize_series(ai["capex"], "SEC Company Facts"),
+            "coverage": "Quarterly SEC XBRL facts are stored and clickable; newly reported issuer capex is added from the official earnings release until Company Facts catches up.",
+            "latest": latest_values(ai["capex"]),
+            "series": normalize_series(ai["capex"], capex_source),
             "observations": [],
             "sparse": False,
         },
