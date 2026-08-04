@@ -25,7 +25,7 @@ python .\server.py
 เปิดเบราว์เซอร์ที่:
 
 ```text
-http://127.0.0.1:8766
+http://127.0.0.1:8767
 ```
 
 ## Data Sources

@@ -17,7 +17,7 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 
 HOST = "127.0.0.1"
-PORT = int(os.environ.get("OPPDAY_DASHBOARD_PORT", "8766"))
+PORT = int(os.environ.get("OPPDAY_DASHBOARD_PORT", "8767"))
 OPPDAY_ROOT = Path(os.environ.get("OPPDAY_ROOT", r"D:\OneDrive\stock\OPPDAY"))
 PAST_ROOT = Path(os.environ.get("OPPDAY_PAST_ROOT", str(OPPDAY_ROOT / "PAST")))
 SUMMARY_DIR_NAME = "\u0e2a\u0e23\u0e38\u0e1b oppday"
