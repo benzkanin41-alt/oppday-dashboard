@@ -17,7 +17,8 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 
 HOST = "127.0.0.1"
-PORT = int(os.environ.get("OPPDAY_DASHBOARD_PORT", "8767"))
+PORT_ENV = os.environ.get("OPPDAY_DASHBOARD_PORT")
+PORT = int(PORT_ENV) if PORT_ENV else None
 OPPDAY_ROOT = Path(os.environ.get("OPPDAY_ROOT", r"D:\OneDrive\stock\OPPDAY"))
 PAST_ROOT = Path(os.environ.get("OPPDAY_PAST_ROOT", str(OPPDAY_ROOT / "PAST")))
 SUMMARY_DIR_NAME = "\u0e2a\u0e23\u0e38\u0e1b oppday"
@@ -725,6 +726,11 @@ class DashboardHandler(BaseHTTPRequestHandler):
 
 
 def main() -> None:
+    if PORT is None:
+        raise RuntimeError(
+            "OPPDAY_DASHBOARD_PORT is required. Start this service through the "
+            "registered 'Start Oppday Dashboard.ps1' launcher; no fallback port is allowed."
+        )
     refresh_cache()
     thread = threading.Thread(target=daily_refresh_loop, daemon=True)
     thread.start()

@@ -16,17 +16,16 @@ Repository:
 https://github.com/benzkanin41-alt/oppday-dashboard
 ```
 
-## Run
+## Run (registry-bound)
+
+Do not run `server.py` directly and do not select a numeric port manually. Resolve stable ID `oppday-dashboard`, then use the registered launcher:
 
 ```powershell
-python .\server.py
+python -X utf8 "C:\Users\USER\Documents\Codex\LocalDashboardPorts\dashboard_ports.py" resolve --id oppday-dashboard --json
+& "C:\Users\USER\Documents\Codex\LocalDashboardPorts\Start Oppday Dashboard.ps1"
 ```
 
-เปิดเบราว์เซอร์ที่:
-
-```text
-http://127.0.0.1:8767
-```
+The launcher injects `OPPDAY_DASHBOARD_PORT`, refuses a conflicting fingerprint, and never falls back to another port. Use the URL returned by the registry.
 
 ## Data Sources
 
