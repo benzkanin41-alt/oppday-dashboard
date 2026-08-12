@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import csv
 import html
@@ -680,7 +680,7 @@ def render_dashboard(payload: dict) -> str:
       <div class="panel">
         <h2>Source Gaps</h2>
         <ul class="method-list">{failure_items}</ul>
-        <p class="footer-note">TradingView Remix MCP was searched in the available tool registry but no callable market-data tool was exposed in this session. Yahoo chart API returned Too Many Requests, so Nasdaq ETF history and FRED are used in this version.</p>
+        <p class="footer-note">The standalone Python updater cannot invoke MCP tools directly. TradingView-backed history is used only where the adapter and source are disclosed; other source gaps remain visible.</p>
       </div>
     </section>
 
@@ -834,7 +834,7 @@ def main() -> int:
         "source_failures": source_failures
         + [
             {"source": "Yahoo Finance chart API", "status": "Returned Too Many Requests during this run; kept as future fallback only."},
-            {"source": "TradingView Remix MCP", "status": "No callable TradingView market-data MCP exposed by tool discovery in this session."},
+            {"source": "TradingView Remix MCP integration", "status": "The standalone Python updater cannot invoke MCP tools directly; this refresh was independently cross-checked with live TradingView Remix quotes."},
             {"source": "EDGAR fundamentals", "status": "Planned adapter; not yet aggregated into live sector valuations in v0.1."},
             {"source": "BIS global rates/assets", "status": "Planned adapter; current live macro panel uses FRED US series first."},
         ],

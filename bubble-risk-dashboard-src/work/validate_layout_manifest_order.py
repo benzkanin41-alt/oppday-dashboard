@@ -1,10 +1,17 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from pathlib import Path
 
 
 HTML = Path("outputs/dashboard/index.html")
 h = HTML.read_text(encoding="utf-8")
+
+
+def has_mojibake(text: str) -> bool:
+    if "????" in text or "โ€" in text or "เน€" in text:
+        return True
+    return any(0x80 <= ord(ch) <= 0x9F for ch in text)
+
 
 manifest = h.find("<h2>Source Manifest</h2>")
 gaps = h.find("<h2>Source Gaps</h2>")
@@ -19,7 +26,7 @@ checks = {
     "ai_spacing_css": "layout-fix-v09:start" in h and "margin-bottom:64px" in h,
     "chart_viewbox_360": 'viewBox="0 0 720 360"' in h,
     "chart_height_360": "var height = 360;" in h,
-    "bad_mojibake_absent": not any(token in h for token in ["????", "เธ", "เน", "โ€”"]),
+    "bad_mojibake_absent": not has_mojibake(h),
     "ai_before_manifest": ai != -1 and manifest != -1 and ai < manifest,
 }
 for key, value in checks.items():

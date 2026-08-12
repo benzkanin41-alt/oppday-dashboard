@@ -1,7 +1,7 @@
 {
   "source": "TradingView chart websocket",
   "symbol": "SET:MAI",
-  "fetched_at": "2026-07-03T05:24:23.699761Z",
+  "fetched_at": "2026-08-12T03:45:00.242855Z",
   "points": [
     {
       "date": "2004-08-10",
@@ -47696,11 +47696,236 @@
     },
     {
       "date": "2026-07-03",
-      "value": 221.79,
+      "value": 221.11,
       "open": 220.5,
       "high": 222.08,
       "low": 220.4,
-      "close": 221.79,
+      "close": 221.11,
+      "volume": null
+    },
+    {
+      "date": "2026-07-06",
+      "value": 222.57,
+      "open": 221.45,
+      "high": 222.89,
+      "low": 221.35,
+      "close": 222.57,
+      "volume": null
+    },
+    {
+      "date": "2026-07-07",
+      "value": 223.12,
+      "open": 223.11,
+      "high": 223.53,
+      "low": 222.41,
+      "close": 223.12,
+      "volume": null
+    },
+    {
+      "date": "2026-07-08",
+      "value": 220.55,
+      "open": 223.41,
+      "high": 223.51,
+      "low": 220.55,
+      "close": 220.55,
+      "volume": null
+    },
+    {
+      "date": "2026-07-09",
+      "value": 223.37,
+      "open": 221.26,
+      "high": 223.5,
+      "low": 221.26,
+      "close": 223.37,
+      "volume": null
+    },
+    {
+      "date": "2026-07-10",
+      "value": 226.17,
+      "open": 223.82,
+      "high": 226.44,
+      "low": 223.76,
+      "close": 226.17,
+      "volume": null
+    },
+    {
+      "date": "2026-07-13",
+      "value": 226.93,
+      "open": 226.27,
+      "high": 227.26,
+      "low": 226.2,
+      "close": 226.93,
+      "volume": null
+    },
+    {
+      "date": "2026-07-14",
+      "value": 227.36,
+      "open": 226.59,
+      "high": 227.7,
+      "low": 225.96,
+      "close": 227.36,
+      "volume": null
+    },
+    {
+      "date": "2026-07-15",
+      "value": 228.06,
+      "open": 227.88,
+      "high": 229.14,
+      "low": 227.67,
+      "close": 228.06,
+      "volume": null
+    },
+    {
+      "date": "2026-07-16",
+      "value": 228.86,
+      "open": 228.21,
+      "high": 229.57,
+      "low": 228.17,
+      "close": 228.86,
+      "volume": null
+    },
+    {
+      "date": "2026-07-17",
+      "value": 229.34,
+      "open": 228.89,
+      "high": 229.41,
+      "low": 228.2,
+      "close": 229.34,
+      "volume": null
+    },
+    {
+      "date": "2026-07-20",
+      "value": 229.19,
+      "open": 229.32,
+      "high": 229.89,
+      "low": 228.62,
+      "close": 229.19,
+      "volume": null
+    },
+    {
+      "date": "2026-07-21",
+      "value": 230.18,
+      "open": 229.56,
+      "high": 230.53,
+      "low": 229.34,
+      "close": 230.18,
+      "volume": null
+    },
+    {
+      "date": "2026-07-22",
+      "value": 227.73,
+      "open": 230.28,
+      "high": 230.38,
+      "low": 226.61,
+      "close": 227.73,
+      "volume": null
+    },
+    {
+      "date": "2026-07-23",
+      "value": 227.02,
+      "open": 228.08,
+      "high": 228.92,
+      "low": 226.78,
+      "close": 227.02,
+      "volume": null
+    },
+    {
+      "date": "2026-07-24",
+      "value": 227.13,
+      "open": 226.41,
+      "high": 227.85,
+      "low": 225.95,
+      "close": 227.13,
+      "volume": null
+    },
+    {
+      "date": "2026-07-27",
+      "value": 226.03,
+      "open": 227.21,
+      "high": 227.71,
+      "low": 225.87,
+      "close": 226.03,
+      "volume": null
+    },
+    {
+      "date": "2026-07-30",
+      "value": 224.67,
+      "open": 225.87,
+      "high": 225.91,
+      "low": 223.44,
+      "close": 224.67,
+      "volume": null
+    },
+    {
+      "date": "2026-07-31",
+      "value": 227.1,
+      "open": 224.69,
+      "high": 227.29,
+      "low": 224.69,
+      "close": 227.1,
+      "volume": null
+    },
+    {
+      "date": "2026-08-03",
+      "value": 228.92,
+      "open": 227.4,
+      "high": 229.72,
+      "low": 227.4,
+      "close": 228.92,
+      "volume": null
+    },
+    {
+      "date": "2026-08-04",
+      "value": 227.2,
+      "open": 229.18,
+      "high": 229.64,
+      "low": 227.06,
+      "close": 227.2,
+      "volume": null
+    },
+    {
+      "date": "2026-08-05",
+      "value": 227.28,
+      "open": 227.66,
+      "high": 228.43,
+      "low": 226.84,
+      "close": 227.28,
+      "volume": null
+    },
+    {
+      "date": "2026-08-06",
+      "value": 227.44,
+      "open": 227.48,
+      "high": 228.04,
+      "low": 227.29,
+      "close": 227.44,
+      "volume": null
+    },
+    {
+      "date": "2026-08-07",
+      "value": 227.33,
+      "open": 227.65,
+      "high": 227.88,
+      "low": 226.79,
+      "close": 227.33,
+      "volume": null
+    },
+    {
+      "date": "2026-08-10",
+      "value": 226.4,
+      "open": 227.46,
+      "high": 228.28,
+      "low": 226.18,
+      "close": 226.4,
+      "volume": null
+    },
+    {
+      "date": "2026-08-11",
+      "value": 225.77,
+      "open": 226.75,
+      "high": 227.12,
+      "low": 225.72,
+      "close": 225.77,
       "volume": null
     }
   ]

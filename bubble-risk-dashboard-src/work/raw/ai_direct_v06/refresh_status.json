@@ -1,0 +1,14 @@
+{
+  "refreshed_at": "2026-08-12 10:45:08 local",
+  "fetched": [
+    "MSFT",
+    "GOOGL",
+    "META",
+    "AMZN",
+    "ORCL",
+    "CRWV",
+    "MU"
+  ],
+  "cache_fallback": [],
+  "errors": {}
+}
