@@ -4,17 +4,30 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>OPPDAY Dashboard</title>
-    <link rel="stylesheet" href="static/styles.css?v=20260606-sort-search" />
+    <script>
+      try {
+        if (window.localStorage.getItem("oppday-dashboard-theme") === "dark") {
+          document.documentElement.dataset.theme = "dark";
+        }
+      } catch {}
+    </script>
+    <link rel="stylesheet" href="static/styles.css?v=20260817-theme-toggle" />
   </head>
   <body>
     <div class="app-shell">
       <aside class="sidebar">
         <div class="brand">
-          <div>
+          <div class="brand-copy">
             <p class="eyebrow">Investor Workspace</p>
             <h1>OPPDAY Dashboard</h1>
           </div>
-          <button id="refreshBtn" class="icon-button" title="Refresh index">↻</button>
+          <div class="brand-actions">
+            <div class="theme-switch" role="group" aria-label="Display theme">
+              <button id="lightThemeBtn" class="active" type="button" aria-pressed="true" title="Light mode">Light</button>
+              <button id="darkThemeBtn" type="button" aria-pressed="false" title="Dark mode">Dark</button>
+            </div>
+          </div>
+          <button id="refreshBtn" class="icon-button" title="Refresh index">&#8635;</button>
         </div>
 
         <div class="controls">
@@ -92,6 +105,6 @@
       </main>
     </div>
 
-    <script src="static/app.js?v=20260606-sort-search"></script>
+    <script src="static/app.js?v=20260817-theme-toggle"></script>
   </body>
 </html>

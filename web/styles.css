@@ -3,12 +3,35 @@
   --ink: #172026;
   --muted: #61707d;
   --line: #dfe5ea;
-  --panel: #ffffff;
+  --page: #eef2f5;
+  --sidebar: #ffffff;
+  --surface: #ffffff;
+  --control: #ffffff;
   --soft: #f3f6f8;
   --accent: #0f766e;
   --accent-dark: #0b5f59;
   --warn: #a16207;
+  --focus-ring: rgba(15, 118, 110, 0.12);
+  --active-ring: rgba(15, 118, 110, 0.08);
   --shadow: 0 10px 32px rgba(15, 23, 42, 0.08);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #e8edf2;
+  --muted: #a9b7c5;
+  --line: #2b3947;
+  --page: #0b1117;
+  --sidebar: #101820;
+  --surface: #151f29;
+  --control: #18242e;
+  --soft: #1e2a35;
+  --accent: #16827b;
+  --accent-dark: #8ee2db;
+  --warn: #f2c36e;
+  --focus-ring: rgba(22, 130, 123, 0.32);
+  --active-ring: rgba(22, 130, 123, 0.22);
+  --shadow: 0 10px 32px rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -23,7 +46,7 @@ body {
 body {
   margin: 0;
   color: var(--ink);
-  background: #eef2f5;
+  background: var(--page);
   font-family: "Segoe UI", Tahoma, Arial, sans-serif;
 }
 
@@ -45,15 +68,30 @@ select {
   gap: 16px;
   min-height: 100vh;
   padding: 20px;
-  background: var(--panel);
+  background: var(--sidebar);
   border-right: 1px solid var(--line);
 }
 
 .brand {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-areas:
+    "copy refresh"
+    "actions refresh";
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 12px;
+}
+
+.brand-copy {
+  grid-area: copy;
+}
+
+.brand-actions {
+  grid-area: actions;
+}
+
+.brand .icon-button {
+  grid-area: refresh;
+  align-self: center;
 }
 
 .brand h1,
@@ -81,7 +119,7 @@ select {
 .open-link,
 .segmented button {
   border: 1px solid var(--line);
-  background: #fff;
+  background: var(--control);
   color: var(--ink);
   cursor: pointer;
 }
@@ -99,6 +137,39 @@ select {
 .open-link:hover,
 .segmented button:hover {
   border-color: var(--accent);
+}
+
+.theme-switch {
+  display: inline-grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--control);
+}
+
+.theme-switch button {
+  min-width: 56px;
+  min-height: 34px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.theme-switch button + button {
+  border-left: 1px solid var(--line);
+}
+
+.theme-switch button:hover {
+  color: var(--ink);
+}
+
+.theme-switch button.active {
+  background: var(--accent);
+  color: #fff;
 }
 
 .controls {
@@ -122,14 +193,14 @@ select {
   border-radius: 8px;
   padding: 0 12px;
   color: var(--ink);
-  background: #fff;
+  background: var(--control);
   outline: none;
 }
 
 .field input:focus,
 .field select:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+  box-shadow: 0 0 0 3px var(--focus-ring);
 }
 
 .segmented {
@@ -196,7 +267,7 @@ select {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 12px;
-  background: #fff;
+  background: var(--control);
   text-align: left;
   cursor: pointer;
 }
@@ -204,7 +275,7 @@ select {
 .result-card:hover,
 .result-card.active {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.08);
+  box-shadow: 0 0 0 3px var(--active-ring);
 }
 
 .result-top {
@@ -257,7 +328,7 @@ select {
   padding: 54px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fff;
+  background: var(--control);
   box-shadow: var(--shadow);
 }
 
@@ -285,7 +356,7 @@ select {
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fff;
+  background: var(--control);
   box-shadow: var(--shadow);
 }
 
@@ -333,7 +404,7 @@ select {
   padding: 7px 10px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fff;
+  background: var(--control);
   color: var(--muted);
   font-size: 12px;
   overflow-wrap: anywhere;
@@ -344,7 +415,7 @@ select {
   min-height: calc(100vh - 180px);
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fff;
+  background: var(--control);
   box-shadow: var(--shadow);
 }
 
@@ -421,6 +492,14 @@ select {
   border: 0;
 }
 
+
+.empty-state,
+.detail-header,
+.file-pill,
+.markdown-view,
+.pdf-view {
+  background: var(--surface);
+}
 .hidden {
   display: none !important;
 }

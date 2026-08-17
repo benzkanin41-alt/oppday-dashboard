@@ -8,8 +8,12 @@ const state = {
   staticMode: false,
 };
 
+const THEME_STORAGE_KEY = "oppday-dashboard-theme";
+
 const els = {
   refreshBtn: document.querySelector("#refreshBtn"),
+  lightThemeBtn: document.querySelector("#lightThemeBtn"),
+  darkThemeBtn: document.querySelector("#darkThemeBtn"),
   searchInput: document.querySelector("#searchInput"),
   quarterSelect: document.querySelector("#quarterSelect"),
   sourceFilters: document.querySelector("#sourceFilters"),
@@ -32,6 +36,37 @@ const els = {
   pdfView: document.querySelector("#pdfView"),
   pdfFrame: document.querySelector("#pdfFrame"),
 };
+
+function storedTheme() {
+  try {
+    return window.localStorage.getItem(THEME_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function applyTheme(theme, persist = false) {
+  const resolvedTheme = theme === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = resolvedTheme;
+
+  for (const [button, buttonTheme] of [
+    [els.lightThemeBtn, "light"],
+    [els.darkThemeBtn, "dark"],
+  ]) {
+    const active = buttonTheme === resolvedTheme;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  }
+
+  if (!persist) return;
+  try {
+    window.localStorage.setItem(THEME_STORAGE_KEY, resolvedTheme);
+  } catch {
+    // Private browsing or strict privacy settings can block persistent storage.
+  }
+}
+
+applyTheme(storedTheme());
 
 function formatDateTime(value) {
   if (!value) return "-";
@@ -385,6 +420,8 @@ els.refreshBtn.addEventListener("click", async () => {
   }
 });
 
+els.lightThemeBtn.addEventListener("click", () => applyTheme("light", true));
+els.darkThemeBtn.addEventListener("click", () => applyTheme("dark", true));
 els.searchInput.addEventListener("input", applyFilters);
 els.quarterSelect.addEventListener("change", applyFilters);
 els.summaryTab.addEventListener("click", () => setActiveView("summary"));
