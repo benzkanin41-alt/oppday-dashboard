@@ -4,13 +4,14 @@ import json
 import os
 import subprocess
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 try:
-    from zoneinfo import ZoneInfo
+    from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 except ImportError:  # pragma: no cover
     ZoneInfo = None
+    ZoneInfoNotFoundError = Exception
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -66,8 +67,11 @@ STEP_TIMEOUTS = {
 
 def now_bangkok() -> str:
     if ZoneInfo:
-        return datetime.now(ZoneInfo("Asia/Bangkok")).strftime("%Y-%m-%d %H:%M:%S Bangkok")
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S local")
+        try:
+            return datetime.now(ZoneInfo("Asia/Bangkok")).strftime("%Y-%m-%d %H:%M:%S Bangkok")
+        except ZoneInfoNotFoundError:
+            pass
+    return (datetime.now(timezone.utc) + timedelta(hours=7)).strftime("%Y-%m-%d %H:%M:%S Bangkok")
 
 
 def run_step(script: str) -> dict[str, object]:

@@ -1,14 +1,15 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
 
 try:
-    from zoneinfo import ZoneInfo
+    from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 except ImportError:  # pragma: no cover
     ZoneInfo = None
+    ZoneInfoNotFoundError = Exception
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,8 +34,11 @@ PALETTE = [
 
 def now_bangkok() -> str:
     if ZoneInfo:
-        return datetime.now(ZoneInfo("Asia/Bangkok")).strftime("%Y-%m-%d %H:%M:%S Bangkok")
-    return datetime.now().strftime("%Y-%m-%d %H:%M:%S local")
+        try:
+            return datetime.now(ZoneInfo("Asia/Bangkok")).strftime("%Y-%m-%d %H:%M:%S Bangkok")
+        except ZoneInfoNotFoundError:
+            pass
+    return (datetime.now(timezone.utc) + timedelta(hours=7)).strftime("%Y-%m-%d %H:%M:%S Bangkok")
 
 
 def strip_marker(text: str, name: str) -> str:
