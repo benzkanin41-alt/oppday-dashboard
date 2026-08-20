@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import csv
 import gzip
@@ -163,6 +163,28 @@ def yahoo_chart(symbol: str) -> list[dict]:
     return points
 
 
+def cached_yahoo_chart(symbol: str) -> list[dict]:
+    path = RAW / "yahoo_chart_v04" / f"{re.sub(r'[^A-Za-z0-9_.-]+', '_', symbol)}.json"
+    if not path.is_file() or path.stat().st_size <= 100:
+        return []
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        result = ((payload.get("chart") or {}).get("result") or [None])[0]
+        if not result:
+            return []
+        timestamps = result.get("timestamp") or []
+        closes = (((result.get("indicators") or {}).get("quote") or [{}])[0]).get("close") or []
+        points = []
+        for ts, close in zip(timestamps, closes):
+            if close is None:
+                continue
+            day = datetime.fromtimestamp(ts, timezone.utc).date()
+            if day >= START_1990:
+                points.append({"date": day.isoformat(), "value": round(float(close), 6)})
+        return points
+    except Exception:
+        return []
+
 def build_price_series(top_rows: list[dict], existing: dict) -> dict:
     out = {}
     for row in top_rows:
@@ -175,9 +197,15 @@ def build_price_series(top_rows: list[dict], existing: dict) -> dict:
             points = yahoo_chart(chart_symbol)
         except Exception as exc:
             note = f"Yahoo chart fetch failed: {exc!r}."
-        if not points and symbol in existing:
-            points = (existing[symbol] or {}).get("points") or []
-            note += " Fallback to v0.3 stored history."
+        cached_points = cached_yahoo_chart(chart_symbol)
+        if len(cached_points) > len(points) and len(points) < 252:
+            points = cached_points
+            note += " Fallback to cached source-backed Yahoo history."
+        if len(points) < 252 and symbol in existing:
+            existing_points = (existing[symbol] or {}).get("points") or []
+            if len(existing_points) > len(points):
+                points = existing_points
+                note += " Fallback to v0.3 stored history."
         out[symbol] = {
             "label": row.get("name") or symbol,
             "symbol": symbol,
