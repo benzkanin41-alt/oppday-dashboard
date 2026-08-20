@@ -146,7 +146,7 @@ def yahoo_chart(symbol: str) -> list[dict]:
     raw = request_text(url, HEADERS_JSON)
     out_dir = RAW / "yahoo_chart_v04"
     out_dir.mkdir(parents=True, exist_ok=True)
-    (out_dir / f"{re.sub(r'[^A-Za-z0-9_.-]+', '_', symbol)}.json").write_text(raw, encoding="utf-8")
+    cache = out_dir / f"{re.sub(r'[^A-Za-z0-9_.-]+', '_', symbol)}.json"
     payload = json.loads(raw)
     result = ((payload.get("chart") or {}).get("result") or [None])[0]
     if not result:
@@ -160,6 +160,8 @@ def yahoo_chart(symbol: str) -> list[dict]:
         d = datetime.fromtimestamp(ts, timezone.utc).date()
         if d >= START_1990:
             points.append({"date": d.isoformat(), "value": round(float(close), 6)})
+    if len(points) >= 252 or len(cached_yahoo_chart(symbol)) <= len(points):
+        cache.write_text(raw, encoding="utf-8")
     return points
 
 
