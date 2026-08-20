@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 from pathlib import Path
 
@@ -8,81 +9,67 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 HTML = ROOT / "outputs" / "dashboard" / "index.html"
 DATA = ROOT / "outputs" / "dashboard" / "data.json"
-JS_OUT = ROOT / "work" / "dashboard_v04_inline.js"
+FIELDS = ("trailing_pe", "forward_pe", "earnings_yield", "ten_year_yield", "gap_pp")
 
 
-def point_list(value) -> list[dict]:
-    if isinstance(value, list):
-        return value
-    if isinstance(value, dict):
-        for key in ("history", "points", "data"):
-            if isinstance(value.get(key), list):
-                return value[key]
-    return []
+def row_map(rows: object, label: str) -> dict[str, dict]:
+    if not isinstance(rows, list):
+        raise SystemExit(f"{label} is not a list")
+    mapped = {row.get("symbol"): row for row in rows if isinstance(row, dict) and row.get("symbol")}
+    if len(mapped) != len(rows):
+        raise SystemExit(f"{label} contains a missing or duplicate symbol")
+    return mapped
 
 
-def first_last(value) -> tuple[int, str | None, str | None]:
-    series = point_list(value)
-    if not series:
-        return 0, None, None
-    return len(series), series[0].get("date"), series[-1].get("date")
+def equivalent(left: object, right: object) -> bool:
+    if left is None or right is None:
+        return left is None and right is None
+    if isinstance(left, (int, float)) and isinstance(right, (int, float)):
+        return math.isclose(float(left), float(right), rel_tol=0.0, abs_tol=1e-9)
+    return left == right
 
 
-text = HTML.read_text(encoding="utf-8")
-data = json.loads(DATA.read_text(encoding="utf-8"))
-embedded_match = re.search(
-    r'<script id="v03-data" type="application/json">(.*?)</script>',
-    text,
-    re.S,
-)
-if not embedded_match:
-    raise SystemExit("missing v03-data script")
-embedded = json.loads(embedded_match.group(1))
+def main() -> None:
+    dashboard_data = json.loads(DATA.read_text(encoding="utf-8"))
+    text = HTML.read_text(encoding="utf-8")
+    match = re.search(r'<script id="v03-data" type="application/json">(.*?)</script>', text, re.S)
+    if not match:
+        raise SystemExit("missing v03-data script")
+    embedded = json.loads(match.group(1))
 
-inline_scripts = re.findall(r"<script>(.*?)</script>", text, re.S)
-if not inline_scripts:
-    raise SystemExit("missing inline script")
-JS_OUT.write_text(inline_scripts[-1], encoding="utf-8")
+    payload_rows = row_map(dashboard_data.get("earnings_yield_gap"), "data earnings_yield_gap")
+    rendered_rows = row_map(embedded.get("eygRows"), "embedded eygRows")
+    if set(payload_rows) != set(rendered_rows):
+        raise SystemExit("EYG symbol mismatch between data.json and rendered dashboard")
 
-print("HTML size", HTML.stat().st_size)
-print("data.json size", DATA.stat().st_size)
-print("embedded top keys", sorted(embedded.keys()))
-print("data top keys", sorted(data.keys()) if isinstance(data, dict) else type(data).__name__)
-print("thai markers", text.find("แสดง"), text.find("คำนวณจาก"), text.find("ปรับน้ำหนัก"))
-print("pointer fix markers", "createSVGPoint" in text, "getScreenCTM" in text)
+    for symbol in sorted(payload_rows):
+        data_row = payload_rows[symbol]
+        rendered_row = rendered_rows[symbol]
+        for field in FIELDS:
+            if not equivalent(data_row.get(field), rendered_row.get(field)):
+                raise SystemExit(
+                    f"EYG mismatch for {symbol} {field}: "
+                    f"{data_row.get(field)!r} != {rendered_row.get(field)!r}"
+                )
+        trailing_pe = data_row.get("trailing_pe")
+        if not isinstance(trailing_pe, (int, float)) or trailing_pe <= 0:
+            raise SystemExit(f"invalid trailing P/E for {symbol}")
+        if "forward_pe" not in data_row:
+            raise SystemExit(f"missing forward P/E field for {symbol}")
+        print(
+            "eyg",
+            symbol,
+            "trailing",
+            trailing_pe,
+            "forward",
+            data_row.get("forward_pe"),
+            "gap_pp",
+            data_row.get("gap_pp"),
+        )
 
-for symbol in ["SPY", "QQQ", "IWM", "FEZ", "EWJ", "EWY", "SET", "mai", "ACWI"]:
-    count, start, end = first_last(embedded.get("priceSeries", {}).get(symbol, []))
-    print("price", symbol, count, start, end)
+    print("eyg_rows", len(payload_rows))
+    print("status", "ok")
 
-curves = embedded.get("yieldCurves", {})
-for country in ["United States", "Thailand"]:
-    if isinstance(curves, list):
-        curve = next((item for item in curves if item.get("country") == country), {})
-    else:
-        curve = curves.get(country, {})
-    count, start, end = first_last(curve)
-    print("yield", country, count, start, end)
 
-valuations = embedded.get("valuations", {})
-if not valuations and isinstance(embedded.get("earningsYieldGap"), list):
-    valuations = {
-        item.get("symbol"): {
-            "trailing_pe": item.get("trailing_pe"),
-            "forward_pe": item.get("forward_pe"),
-            "trailing_source": item.get("trailing_source"),
-            "forward_source": item.get("forward_source"),
-        }
-        for item in embedded["earningsYieldGap"]
-    }
-
-for symbol in ["SPY", "QQQ", "IWM", "FEZ", "VGK", "EWJ", "MCHI", "FXI", "INDA", "EWY", "ACWI", "SET", "mai"]:
-    valuation = valuations.get(symbol, {})
-    print(
-        "valuation",
-        symbol,
-        valuation.get("trailing_pe"),
-        valuation.get("forward_pe"),
-        valuation.get("trailing_source"),
-        valuation.get("forward_source"),
-    )
+if __name__ == "__main__":
+    main()

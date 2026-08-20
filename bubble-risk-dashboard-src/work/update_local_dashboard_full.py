@@ -43,9 +43,13 @@ STEPS = [
     "work/validate_thailand_heat_mai_treasury.py",
     "work/validate_mai_chart_history.py",
     "work/validate_ai_direct_v08.py",
+    "work/validate_ai_direct_interactive.py",
+    "work/validate_dashboard_v04.py",
+    "work/validate_dashboard_v04b.py",
     "work/validate_requested_regressions.py",
     "work/validate_layout_manifest_order.py",
     "work/validate_final_dashboard.py",
+    "work/validate_refresh_hard_guards.py",
 ]
 
 

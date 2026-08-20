@@ -51,6 +51,10 @@ jobs:
           python -X utf8 .\work\validate_final_dashboard.py
           python -X utf8 .\work\validate_ai_direct_v08.py
           python -X utf8 .\work\validate_layout_manifest_order.py
+          python -X utf8 .\work\validate_ai_direct_interactive.py
+          python -X utf8 .\work\validate_dashboard_v04.py
+          python -X utf8 .\work\validate_dashboard_v04b.py
+          python -X utf8 .\work\validate_refresh_hard_guards.py
 
       - name: Publish refreshed static files into docs
         shell: pwsh

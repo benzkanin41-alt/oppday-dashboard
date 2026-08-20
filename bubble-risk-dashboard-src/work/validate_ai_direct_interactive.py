@@ -20,8 +20,8 @@ def main() -> None:
     found_bad = [token for token in bad_tokens if token in html]
     if found_bad:
         raise SystemExit(f"Found mojibake tokens: {found_bad}")
-    if "ai_semiconductor_direct_v07" not in data:
-        raise SystemExit("Missing ai_semiconductor_direct_v07 in data.json")
+    if "ai_semiconductor_direct_v08" not in data:
+        raise SystemExit("Missing ai_semiconductor_direct_v08 in data.json")
     model_match = re.search(
         r'<script id="ai-direct-data" type="application/json">(.*?)</script>',
         html,
@@ -37,10 +37,8 @@ def main() -> None:
     )
     if not script_match:
         raise SystemExit("Missing AI direct interactive script")
-    JS_PATH.write_text(
-        script_match.group(0).replace("<script>", "").replace("</script>", ""),
-        encoding="utf-8",
-    )
+    if model.get("generated_at") != data["ai_semiconductor_direct_v08"].get("generated_at"):
+        raise SystemExit("Embedded AI model is not aligned with data.json v08")
     rows = [
         (
             group["id"],
@@ -55,7 +53,7 @@ def main() -> None:
     print("cards", len(model["groups"]))
     for row in rows:
         print("card", row[0], "points", row[1], "observations", row[2], "badge", row[3])
-    print("js_extract", JS_PATH)
+    print("interactive_script_chars", len(script_match.group(0)))
 
 
 if __name__ == "__main__":
