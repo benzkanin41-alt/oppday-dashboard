@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-23 17:46 local",
+  "generated_at": "2026-08-23 10:54 local",
   "data_anchor": "2026-08-22 03:20:05 Bangkok",
   "overall": {
     "score": 63.58160279635249,
@@ -752822,7 +752822,7 @@
     }
   },
   "ai_semiconductor_direct_v06": {
-    "generated_at": "2026-08-23 17:49:35 Bangkok",
+    "generated_at": "2026-08-23 10:58:23 Bangkok",
     "lookback_start": "2024-07-01",
     "capex": {
       "MSFT": [
@@ -753689,8 +753689,8 @@
     ]
   },
   "ai_semiconductor_direct_v08": {
-    "generated_at": "2026-08-23 17:49:38 Bangkok",
-    "data_source_generated_at": "2026-08-23 17:49:35 Bangkok",
+    "generated_at": "2026-08-23 17:58:28 Bangkok",
+    "data_source_generated_at": "2026-08-23 10:58:23 Bangkok",
     "window_start": "2024-07-01",
     "window_end": "2026-08-23",
     "groups": [
@@ -754852,5 +754852,5 @@
       "GPU rental and CoWoS are sparse because open sources do not provide dense historical APIs in this workspace."
     ]
   },
-  "dashboard_refreshed_at": "2026-08-23 17:49:38 Bangkok"
+  "dashboard_refreshed_at": "2026-08-23 17:58:28 Bangkok"
 }
