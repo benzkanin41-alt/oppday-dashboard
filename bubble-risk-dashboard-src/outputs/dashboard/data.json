@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-23 10:54 local",
-  "data_anchor": "2026-08-22 03:20:05 Bangkok",
+  "generated_at": "2026-08-24 01:15 local",
+  "data_anchor": "2026-08-24 08:15:22 Bangkok",
   "overall": {
     "score": 63.58160279635249,
     "band": "Warm",
@@ -775,7 +775,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/SPY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/SPY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "valuation": {
         "forward_pe": 20.59
       }
@@ -1525,7 +1525,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/QQQ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/QQQ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "IWM",
@@ -2272,7 +2272,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/IWM/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/IWM/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "FEZ",
@@ -3019,7 +3019,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/FEZ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/FEZ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "VGK",
@@ -3766,7 +3766,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/VGK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/VGK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "EWJ",
@@ -4513,7 +4513,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/EWJ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/EWJ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "MCHI",
@@ -5260,7 +5260,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/MCHI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/MCHI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "FXI",
@@ -6007,7 +6007,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/FXI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/FXI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "INDA",
@@ -6754,7 +6754,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/INDA/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/INDA/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "EWY",
@@ -7501,7 +7501,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/EWY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/EWY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "ACWI",
@@ -8248,20 +8248,20 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/ACWI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/ACWI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "SET",
       "name": "SET Index",
       "region": "Thailand",
       "bucket": "Index Proxy",
-      "as_of": "2026-08-22 03:20:05 Bangkok",
+      "as_of": "2026-08-24 08:15:22 Bangkok",
       "score": 50.0,
       "metrics": {
-        "as_of": "2026-08-22 03:20:05 Bangkok",
+        "as_of": "2026-08-24 08:15:22 Bangkok",
         "latest": 1613.78,
-        "day_change": 3.79,
-        "day_change_pct": 0.24,
+        "day_change": null,
+        "day_change_pct": null,
         "ret_1y": 44.64412922407086,
         "dist_200dma": 14.778289660342846,
         "drawdown_1y": -1.54114837947531,
@@ -8983,7 +8983,7 @@
             "value": 1639.040039
           },
           {
-            "date": "2026-08-22",
+            "date": "2026-08-24",
             "value": 1613.78
           }
         ]
@@ -9007,10 +9007,10 @@
       "as_of": "2026-08-21",
       "score": 50.0,
       "metrics": {
-        "as_of": "2026-08-22 03:20:05 Bangkok",
+        "as_of": "2026-08-24 08:15:22 Bangkok",
         "latest": 230.28,
-        "day_change": 1.26,
-        "day_change_pct": 0.55,
+        "day_change": null,
+        "day_change_pct": null,
         "ret_1y": -8.539200889665576,
         "dist_200dma": 5.34306831128355,
         "drawdown_1y": -10.95471946173776,
@@ -10494,7 +10494,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "XLC",
@@ -11241,7 +11241,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLC/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLC/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "XLY",
@@ -11988,7 +11988,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "XLP",
@@ -12735,7 +12735,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLP/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLP/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "XLV",
@@ -13482,7 +13482,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLV/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLV/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "XLF",
@@ -14229,7 +14229,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLF/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLF/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "XLI",
@@ -14976,7 +14976,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "XLE",
@@ -15723,7 +15723,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "XLB",
@@ -16470,7 +16470,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "XLU",
@@ -17217,7 +17217,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLU/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLU/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "XLRE",
@@ -17964,7 +17964,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLRE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/XLRE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     }
   ],
   "themes": [
@@ -18713,7 +18713,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/SMH/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/SMH/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "IGV",
@@ -19460,7 +19460,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/IGV/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/IGV/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "SKYY",
@@ -20207,7 +20207,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/SKYY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/SKYY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "CIBR",
@@ -20954,7 +20954,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/CIBR/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/CIBR/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "IBB",
@@ -21701,7 +21701,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/IBB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/IBB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     },
     {
       "symbol": "ARKK",
@@ -22448,7 +22448,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/ARKK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999"
+      "source_url": "https://api.nasdaq.com/api/quote/ARKK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999"
     }
   ],
   "watchlist": [
@@ -22702,20 +22702,20 @@
     },
     {
       "name": "New York Fed EFFR API",
-      "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-07-09&endDate=2026-08-23&type=rate",
+      "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-07-10&endDate=2026-08-24&type=rate",
       "publication_date": "latest EFFR observation 2026-08-20",
       "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS."
     },
     {
       "name": "TradingView SET:MAI daily history",
       "url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "publication_date": "Data fetched 2026-08-23; latest observation 2026-08-21",
+      "publication_date": "Data fetched 2026-08-24; latest observation 2026-08-21",
       "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
     },
     {
       "name": "SEC Company Facts API",
       "url": "https://data.sec.gov/api/xbrl/companyfacts/",
-      "publication_date": "Data fetched 2026-08-23",
+      "publication_date": "Data fetched 2026-08-24",
       "used_for": "Quarterly hyperscaler capex, Micron revenue/inventory/capex, and CoreWeave debt/PPE/capex/debt issuance."
     },
     {
@@ -87005,13 +87005,6 @@
       },
       "history": [
         {
-          "date": "2006-08-23",
-          "2Y": 5.252595,
-          "5Y": 5.343439,
-          "10Y": 5.467755,
-          "30Y": null
-        },
-        {
           "date": "2006-08-24",
           "2Y": 5.238789,
           "5Y": 5.324904,
@@ -121326,7 +121319,7 @@
       "earnings_yield": 6.199628022318661,
       "ten_year_yield": 2.137771,
       "gap_pp": 4.061857022318661,
-      "as_of": "2026-08-22 03:20:05 Bangkok",
+      "as_of": "2026-08-24 08:15:22 Bangkok",
       "source": "SET Market Overview, as of 2026-08-21",
       "source_url": "https://www.set.or.th/en/market/product/stock/overview",
       "status": "Computed from Trailing P/E minus local 10Y yield",
@@ -121343,7 +121336,7 @@
       "earnings_yield": 1.452011035283868,
       "ten_year_yield": 2.137771,
       "gap_pp": -0.6857599647161319,
-      "as_of": "2026-08-22 03:20:05 Bangkok",
+      "as_of": "2026-08-24 08:15:22 Bangkok",
       "source": "SET Market Overview, as of 2026-08-21",
       "source_url": "https://www.set.or.th/en/market/product/stock/overview",
       "status": "Computed from Trailing P/E minus local 10Y yield",
@@ -128808,12 +128801,12 @@
       "region": "Thailand",
       "bucket": "Index Proxy",
       "score": 50.0,
-      "as_of": "2026-08-22 03:20:05 Bangkok",
+      "as_of": "2026-08-24 08:15:22 Bangkok",
       "metrics": {
-        "as_of": "2026-08-22 03:20:05 Bangkok",
+        "as_of": "2026-08-24 08:15:22 Bangkok",
         "latest": 1613.78,
-        "day_change": 3.79,
-        "day_change_pct": 0.24,
+        "day_change": null,
+        "day_change_pct": null,
         "ret_1y": 44.64412922407086,
         "dist_200dma": 14.778289660342846,
         "drawdown_1y": -1.54114837947531,
@@ -129535,7 +129528,7 @@
             "value": 1639.040039
           },
           {
-            "date": "2026-08-22",
+            "date": "2026-08-24",
             "value": 1613.78
           }
         ]
@@ -129549,10 +129542,10 @@
       "score": 50.0,
       "as_of": "2026-08-21",
       "metrics": {
-        "as_of": "2026-08-22 03:20:05 Bangkok",
+        "as_of": "2026-08-24 08:15:22 Bangkok",
         "latest": 230.28,
-        "day_change": 1.26,
-        "day_change_pct": 0.55,
+        "day_change": null,
+        "day_change_pct": null,
         "ret_1y": -8.539200889665576,
         "dist_200dma": 5.34306831128355,
         "drawdown_1y": -10.95471946173776,
@@ -130286,7 +130279,7 @@
       "label": "Nasdaq theme: Biotechnology",
       "symbol": "IBB",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/IBB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/IBB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "points": [
         {
           "date": "2016-08-22",
@@ -140351,7 +140344,7 @@
       "label": "Nasdaq theme: Cybersecurity",
       "symbol": "CIBR",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/CIBR/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/CIBR/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "points": [
         {
           "date": "2016-08-22",
@@ -150416,7 +150409,7 @@
       "label": "S&P 500 Energy",
       "symbol": "XLE",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/XLE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "points": [
         {
           "date": "2016-08-22",
@@ -160481,7 +160474,7 @@
       "label": "Nasdaq theme: Semiconductors",
       "symbol": "SMH",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/SMH/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/SMH/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "points": [
         {
           "date": "2016-08-22",
@@ -170546,7 +170539,7 @@
       "label": "Nasdaq theme: Cloud",
       "symbol": "SKYY",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/SKYY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/SKYY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "points": [
         {
           "date": "2016-08-22",
@@ -180611,7 +180604,7 @@
       "label": "South Korea proxy",
       "symbol": "EWY",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/EWY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/EWY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "points": [
         {
           "date": "2016-08-22",
@@ -190676,7 +190669,7 @@
       "label": "S&P 500 Information Technology",
       "symbol": "XLK",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/XLK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "points": [
         {
           "date": "2016-08-22",
@@ -200741,7 +200734,7 @@
       "label": "Russell 2000 proxy",
       "symbol": "IWM",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/IWM/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/IWM/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "points": [
         {
           "date": "2016-08-22",
@@ -210806,7 +210799,7 @@
       "label": "Speculative growth proxy",
       "symbol": "ARKK",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/ARKK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/ARKK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "points": [
         {
           "date": "2016-08-22",
@@ -220871,7 +220864,7 @@
       "label": "Nasdaq-100 proxy",
       "symbol": "QQQ",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/QQQ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-23&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/QQQ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-08-24&limit=9999",
       "points": [
         {
           "date": "2016-08-22",
@@ -230939,7 +230932,7 @@
       "source_url": "https://www.set.or.th/en/market/index/set/overview",
       "points": [
         {
-          "date": "2026-08-22",
+          "date": "2026-08-24",
           "value": 1613.78
         }
       ],
@@ -230952,7 +230945,7 @@
       "source_url": "https://www.set.or.th/en/market/index/mai/overview",
       "points": [
         {
-          "date": "2026-08-22",
+          "date": "2026-08-24",
           "value": 230.28
         }
       ],
@@ -366549,6 +366542,10 @@
         {
           "date": "2026-08-21",
           "value": 6912.950195
+        },
+        {
+          "date": "2026-08-24",
+          "value": 6840.72998
         }
       ]
     },
@@ -508993,7 +508990,7 @@
           "value": 1639.040039
         },
         {
-          "date": "2026-08-22",
+          "date": "2026-08-24",
           "value": 1613.78
         }
       ]
@@ -644273,6 +644270,10 @@
         {
           "date": "2026-08-21",
           "value": 66016.359375
+        },
+        {
+          "date": "2026-08-24",
+          "value": 66028.640625
         }
       ]
     },
@@ -752822,7 +752823,7 @@
     }
   },
   "ai_semiconductor_direct_v06": {
-    "generated_at": "2026-08-23 10:58:23 Bangkok",
+    "generated_at": "2026-08-24 01:19:17 Bangkok",
     "lookback_start": "2024-07-01",
     "capex": {
       "MSFT": [
@@ -753689,10 +753690,10 @@
     ]
   },
   "ai_semiconductor_direct_v08": {
-    "generated_at": "2026-08-23 17:58:28 Bangkok",
-    "data_source_generated_at": "2026-08-23 10:58:23 Bangkok",
+    "generated_at": "2026-08-24 08:19:22 Bangkok",
+    "data_source_generated_at": "2026-08-24 01:19:17 Bangkok",
     "window_start": "2024-07-01",
-    "window_end": "2026-08-23",
+    "window_end": "2026-08-24",
     "groups": [
       {
         "id": "gpu-rental",
@@ -754852,5 +754853,5 @@
       "GPU rental and CoWoS are sparse because open sources do not provide dense historical APIs in this workspace."
     ]
   },
-  "dashboard_refreshed_at": "2026-08-23 17:58:28 Bangkok"
+  "dashboard_refreshed_at": "2026-08-24 08:19:22 Bangkok"
 }
