@@ -14,6 +14,8 @@ DOCS = ROOT / "docs"
 WEB = ROOT / "web"
 CACHE = ROOT / ".build_cache" / "text"
 PDF_TEXT_FALLBACK_QUARTERS = {"1Q69"}
+WINDOWS_ABSOLUTE_PATH_RE = re.compile(r"(?<![A-Za-z0-9])[A-Za-z]:\\[^\r\n`\"']+")
+PUBLIC_LOCAL_PATH_PLACEHOLDER = "[local path removed]"
 
 sys.path.insert(0, str(ROOT))
 import server  # noqa: E402
@@ -50,6 +52,10 @@ PUBLIC_STAT_KEYS = (
 
 def public_stats(stats: dict) -> dict:
     return {key: stats[key] for key in PUBLIC_STAT_KEYS if key in stats}
+
+
+def redact_local_paths(text: str) -> str:
+    return WINDOWS_ABSOLUTE_PATH_RE.sub(PUBLIC_LOCAL_PATH_PLACEHOLDER, text)
 
 
 def public_item(item: dict, include_markdown: bool = False) -> dict:
@@ -94,7 +100,7 @@ def public_item(item: dict, include_markdown: bool = False) -> dict:
                     "เพื่อให้ GitHub Pages เปิดเร็วและ repo ไม่ใหญ่เกินไป dashboard online ยังไม่ publish PDF ต้นฉบับขึ้น GitHub "
                     "ให้อ่านไฟล์ PDF จาก local dashboard หรือ OneDrive ต้นทางแทน"
                 )
-        safe["markdown"] = markdown
+        safe["markdown"] = redact_local_paths(markdown)
     return safe
 
 
