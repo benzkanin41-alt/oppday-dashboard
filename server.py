@@ -389,7 +389,15 @@ def build_index(oppday_root: Path | None = None, past_root: Path | None = None) 
 
     items = list(groups.values())
     for item in items:
-        item["files"].sort(key=lambda f: (f["extension"] != ".md", f["name"].lower()))
+        item["files"].sort(
+            key=lambda f: (
+                f["extension"] != ".md",
+                f["name"].lower(),
+                f["modified"],
+                f["size"],
+                f["id"],
+            )
+        )
         item["primaryMarkdownId"] = next(
             (f["id"] for f in item["files"] if f["extension"] in {".docx", ".md", ".txt"}),
             None,
