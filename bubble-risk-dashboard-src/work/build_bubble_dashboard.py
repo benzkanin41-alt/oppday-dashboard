@@ -601,7 +601,9 @@ def render_dashboard(payload: dict) -> str:
     @media (max-width: 980px) {{
       .hero-grid {{ grid-template-columns:1fr 1fr; }}
       .score-hero {{ grid-column:1 / -1; }}
-      .two-col {{ grid-template-columns:1fr; }}
+      .two-col {{ grid-template-columns:minmax(0, 1fr); }}
+      .two-col > .panel {{ min-width:0; max-width:100%; overflow-x:auto; }}
+      .section.panel {{ min-width:0; max-width:100%; overflow-x:auto; }}
       .freshness {{ text-align:left; }}
     }}
     @media (max-width: 620px) {{
