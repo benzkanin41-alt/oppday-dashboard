@@ -12,6 +12,7 @@ REQUIRED_SYMBOLS = [
     "SPY", "QQQ", "IWM", "FEZ", "VGK", "EWJ", "MCHI",
     "FXI", "INDA", "EWY", "ACWI", "SET", "mai",
 ]
+PRESERVED_PRICE_SYMBOLS = ["ARKK"]
 
 
 def point_list(value: object) -> list[dict]:
@@ -91,6 +92,13 @@ def main() -> None:
             raise SystemExit(f"missing forward P/E field for {symbol}")
         print("price", symbol, count, start, end)
         print("valuation", symbol, trailing_pe, valuation.get("forward_pe"))
+
+    for symbol in PRESERVED_PRICE_SYMBOLS:
+        count, start, end = first_last(embedded_price_series.get(symbol))
+        data_count, _, _ = first_last(data_price_series.get(symbol))
+        if count < 2 or data_count < 2:
+            raise SystemExit(f"missing preserved price history for {symbol}")
+        print("preserved_price", symbol, count, start, end)
 
     curves = embedded.get("yieldCurves", {})
     for country in ("United States", "Thailand"):

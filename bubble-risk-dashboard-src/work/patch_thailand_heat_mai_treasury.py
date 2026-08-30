@@ -7,6 +7,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 from datetime import datetime
 from pathlib import Path
+from urllib.request import Request, urlopen
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -81,9 +82,22 @@ def run_curl(url: str, timeout: int = 60) -> str:
         stderr=subprocess.PIPE,
         timeout=timeout + 10,
     )
-    if proc.returncode != 0:
-        raise RuntimeError(proc.stderr.strip() or f"curl failed for {url}")
-    return proc.stdout
+    if proc.returncode == 0 and proc.stdout:
+        return proc.stdout
+
+    curl_error = proc.stderr.strip() or f"curl failed for {url}"
+    request = Request(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0 BubbleRiskDashboard/1.0",
+            "Accept": "application/xml,text/xml,*/*",
+        },
+    )
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            return response.read().decode("utf-8")
+    except Exception as exc:
+        raise RuntimeError(f"{curl_error}; urllib fallback failed: {exc}") from exc
 
 
 def fetch_treasury_year(year: int) -> tuple[list[dict], str | None]:

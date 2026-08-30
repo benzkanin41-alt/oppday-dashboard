@@ -12,6 +12,15 @@ OUT = ROOT / "outputs" / "dashboard"
 HTML = OUT / "index.html"
 DATA = OUT / "data.json"
 
+PRESERVED_PRICE_ROWS = (
+    {
+        "symbol": "ARKK",
+        "name": "Speculative growth proxy",
+        "region": "US",
+        "bucket": "Nasdaq Theme Proxy",
+    },
+)
+
 
 def load_v04():
     spec = importlib.util.spec_from_file_location("bubble_v04", ROOT / "work" / "enhance_dashboard_v04.py")
@@ -58,6 +67,11 @@ def main() -> None:
             if symbol and symbol not in seen:
                 seen.add(symbol)
                 rows.append(row)
+    # Keep benchmark histories available even when a dynamic watchlist rank changes.
+    for row in PRESERVED_PRICE_ROWS:
+        if row["symbol"] not in seen:
+            seen.add(row["symbol"])
+            rows.append(row)
     existing = payload.get("price_histories_v04") or payload.get("price_histories_v03") or {}
     price_series = v04.build_price_series(rows, existing)
     payload["price_histories_v04"] = price_series

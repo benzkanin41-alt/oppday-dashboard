@@ -5,6 +5,7 @@ import re
 import subprocess
 from datetime import datetime
 from pathlib import Path
+from urllib.request import Request, urlopen
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -99,10 +100,24 @@ proc = subprocess.run(
     stderr=subprocess.PIPE,
     timeout=100,
 )
-if proc.returncode != 0:
-    fail(f"live U.S. Treasury XML fetch failed: {proc.stderr.strip()}")
+if proc.returncode == 0 and proc.stdout:
+    treasury_xml = proc.stdout
+else:
+    request = Request(
+        treasury_url,
+        headers={
+            "User-Agent": "Mozilla/5.0 BubbleRiskDashboard/1.0",
+            "Accept": "application/xml,text/xml,*/*",
+        },
+    )
+    try:
+        with urlopen(request, timeout=90) as response:
+            treasury_xml = response.read().decode("utf-8")
+    except Exception as exc:
+        curl_error = proc.stderr.strip() or "curl returned no data"
+        fail(f"live U.S. Treasury XML fetch failed: {curl_error}; urllib fallback failed: {exc}")
 
-treasury_dates = re.findall(r"<d:NEW_DATE[^>]*>(\d{4}-\d{2}-\d{2})", proc.stdout)
+treasury_dates = re.findall(r"<d:NEW_DATE[^>]*>(\d{4}-\d{2}-\d{2})", treasury_xml)
 if not treasury_dates:
     fail("live U.S. Treasury XML contained no observation dates")
 treasury_latest = max(treasury_dates)
