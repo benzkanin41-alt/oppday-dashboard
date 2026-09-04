@@ -326,8 +326,9 @@ function renderResults() {
     return;
   }
 
+  const hasActiveFilter = Boolean(els.searchInput.value.trim() || els.quarterSelect.value || state.selectedSource);
   els.results.innerHTML = state.filtered
-    .slice(0, 400)
+    .slice(0, hasActiveFilter ? state.filtered.length : 400)
     .map((item) => {
       const active = item.id === state.selectedId ? " active" : "";
       const kinds = [item.hasMarkdown ? "สรุป" : null, item.hasPdf ? "PDF" : null].filter(Boolean);
