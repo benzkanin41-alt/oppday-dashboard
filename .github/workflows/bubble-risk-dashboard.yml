@@ -47,6 +47,8 @@ jobs:
           cd bubble-risk-dashboard-src
           python -X utf8 .\work\validate_macro_v04_nonzero.py
           python -X utf8 .\work\validate_froth_components_populated.py
+          python -X utf8 .\work\validate_current_market_indicators.py
+          python -X utf8 .\work\validate_current_summary_sync.py
           python -X utf8 .\work\validate_thailand_heat_mai_treasury.py
           python -X utf8 .\work\validate_final_dashboard.py
           python -X utf8 .\work\validate_ai_direct_v08.py

@@ -1,33 +1,35 @@
 {
-  "generated_at": "2026-09-04 03:09 local",
-  "data_anchor": "2026-09-04 10:09:31 Bangkok",
+  "generated_at": "2026-09-04 15:05:28 Bangkok",
+  "data_anchor": "2026-09-04 15:02:22 Bangkok",
   "overall": {
-    "score": 64.01335173410587,
-    "band": "Warm",
-    "driver": "Top live driver in this build: sentiment (74/100).",
+    "score": 65.49416459495919,
+    "band": "Frothy",
+    "driver": "Top live driver in this build: sentiment (78/100).",
     "price_score": 59.741136954479245,
     "sector_score": 60.00237395081153,
     "theme_score": 70.66704689652222,
-    "credit_liquidity_score": 60.886666666666656
+    "credit_liquidity_score": 66.84174704699984
   },
   "confidence": {
     "score": 62.5,
     "summary": "5/8 source groups live; gaps are listed below. Thailand SET/mai and U.S./Thailand 2Y/5Y/10Y/30Y curves added in v0.2."
   },
   "macro": {
-    "vix": 15.2,
-    "vix_as_of": "2026-09-02",
+    "vix": 14.32,
+    "vix_as_of": "2026-09-03",
     "hy_oas": 2.66,
     "hy_oas_as_of": "2026-09-02",
-    "yield_curve_10y_2y": 0.40000000000000036,
-    "yield_curve_as_of": "2026-09-02",
+    "yield_curve_10y_2y": 0.4299999999999997,
+    "yield_curve_as_of": "2026-09-03",
     "fedfunds": 3.63,
     "breakeven_10y": 2.35,
-    "real_policy_proxy": 1.2799999999999998,
-    "fed_assets_1y_change": -21.430841350266373,
-    "sentiment_score": 74.0,
+    "real_policy_proxy": 1.29,
+    "fed_assets_1y_change": 2.04682742733302,
+    "sentiment_score": 78.4,
     "credit_score": 82.75999999999999,
-    "macro_liquidity_score": 39.01333333333333
+    "macro_liquidity_score": 50.92349409399969,
+    "real_policy_as_of": "2026-09-02",
+    "fed_assets_as_of": "2026-09-02"
   },
   "indices": [
     {
@@ -8255,16 +8257,16 @@
       "name": "SET Index",
       "region": "Thailand",
       "bucket": "Index Proxy",
-      "as_of": "2026-09-04 10:09:16 Bangkok",
+      "as_of": "2026-09-04 15:02:07 Bangkok",
       "score": 50.0,
       "metrics": {
-        "as_of": "2026-09-04 10:09:16 Bangkok",
-        "latest": 1583.24,
-        "day_change": 6.32,
-        "day_change_pct": 0.4,
-        "ret_1y": 41.90680957300123,
-        "dist_200dma": 12.61839751910976,
-        "drawdown_1y": -3.4044341609887896,
+        "as_of": "2026-09-04 15:02:07 Bangkok",
+        "latest": 1591.83,
+        "day_change": 14.91,
+        "day_change_pct": 0.95,
+        "ret_1y": 42.67673674401262,
+        "dist_200dma": 13.225958811241977,
+        "drawdown_1y": -2.880346902861719,
         "sparkline": [
           {
             "date": "2025-10-20",
@@ -8984,7 +8986,7 @@
           },
           {
             "date": "2026-09-04",
-            "value": 1583.24
+            "value": 1591.83
           }
         ]
       },
@@ -9007,13 +9009,13 @@
       "as_of": "2026-09-04",
       "score": 50.0,
       "metrics": {
-        "as_of": "2026-09-04 10:09:31 Bangkok",
-        "latest": 225.67,
-        "day_change": 1.21,
-        "day_change_pct": 0.54,
-        "ret_1y": -9.638023544486273,
-        "dist_200dma": 3.2349733575359974,
-        "drawdown_1y": -12.737326476161027,
+        "as_of": "2026-09-04 15:02:22 Bangkok",
+        "latest": 225.86,
+        "day_change": 0.65,
+        "day_change_pct": 0.29,
+        "ret_1y": -9.561944422199087,
+        "dist_200dma": 3.321441715174367,
+        "drawdown_1y": -12.663856772746607,
         "sparkline": [
           {
             "date": "2025-12-04",
@@ -9733,7 +9735,7 @@
           },
           {
             "date": "2026-09-04",
-            "value": 225.67
+            "value": 225.86
           }
         ]
       },
@@ -22697,7 +22699,7 @@
     {
       "name": "U.S. Treasury Daily Treasury Rates XML",
       "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-      "publication_date": "feed updated 2026-09-03T15:47:16Z; latest observation 2026-09-03",
+      "publication_date": "feed updated 2026-09-04T02:01:01Z; latest observation 2026-09-03",
       "used_for": "Latest U.S. 10Y-2Y yield-curve row and yield-curve dashboard point."
     },
     {
@@ -121211,12 +121213,12 @@
       "symbol": "SPY",
       "name": "S&P 500 proxy",
       "region": "US",
-      "trailing_pe": 26.045826,
+      "trailing_pe": 24.98088,
       "forward_pe": 21.22,
       "eps": null,
-      "earnings_yield": 3.839386779286631,
+      "earnings_yield": 4.003061541466914,
       "ten_year_yield": 4.77,
-      "gap_pp": -0.9306132207133686,
+      "gap_pp": -0.7669384585330858,
       "as_of": "2026-09-03",
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "source_url": "https://www.barrons.com/livecoverage/stock-market-news-today-070126/card/the-s-p-500-is-cheaper-now-than-at-the-start-of-2026-MRZDSfrlkHg8xxAZmWD3",
@@ -121228,12 +121230,12 @@
       "symbol": "QQQ",
       "name": "Nasdaq-100 proxy",
       "region": "US",
-      "trailing_pe": 30.687725,
+      "trailing_pe": 29.251226,
       "forward_pe": null,
       "eps": null,
-      "earnings_yield": 3.258631912271112,
+      "earnings_yield": 3.418660127271247,
       "ten_year_yield": 4.77,
-      "gap_pp": -1.5113680877288878,
+      "gap_pp": -1.3513398727287527,
       "as_of": "2026-09-03",
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "source_url": null,
@@ -121245,12 +121247,12 @@
       "symbol": "IWM",
       "name": "Russell 2000 proxy",
       "region": "US",
-      "trailing_pe": 18.301994,
+      "trailing_pe": 17.378208,
       "forward_pe": null,
       "eps": null,
-      "earnings_yield": 5.463885519796367,
+      "earnings_yield": 5.754333243105388,
       "ten_year_yield": 4.77,
-      "gap_pp": 0.6938855197963676,
+      "gap_pp": 0.9843332431053886,
       "as_of": "2026-09-03",
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "source_url": null,
@@ -121262,10 +121264,10 @@
       "symbol": "FEZ",
       "name": "Euro Stoxx 50 proxy",
       "region": "Europe",
-      "trailing_pe": 18.973547,
+      "trailing_pe": 18.625624,
       "forward_pe": 15.91,
       "eps": null,
-      "earnings_yield": 5.27049581187956,
+      "earnings_yield": 5.368947639016014,
       "ten_year_yield": null,
       "gap_pp": null,
       "as_of": "2026-09-03",
@@ -121294,10 +121296,10 @@
       "symbol": "EWJ",
       "name": "Japan proxy",
       "region": "Japan",
-      "trailing_pe": 20.253178,
+      "trailing_pe": 19.50837,
       "forward_pe": null,
       "eps": null,
-      "earnings_yield": 4.937496722736551,
+      "earnings_yield": 5.126004889183464,
       "ten_year_yield": null,
       "gap_pp": null,
       "as_of": "2026-09-03",
@@ -121310,10 +121312,10 @@
       "symbol": "MCHI",
       "name": "China broad proxy",
       "region": "China/HK",
-      "trailing_pe": 12.017425,
+      "trailing_pe": 11.777897,
       "forward_pe": null,
       "eps": null,
-      "earnings_yield": 8.32125018462774,
+      "earnings_yield": 8.490480091649639,
       "ten_year_yield": null,
       "gap_pp": null,
       "as_of": "2026-09-03",
@@ -121326,10 +121328,10 @@
       "symbol": "FXI",
       "name": "China large-cap proxy",
       "region": "China/HK",
-      "trailing_pe": 9.592578,
+      "trailing_pe": 9.362367,
       "forward_pe": null,
       "eps": null,
-      "earnings_yield": 10.424726283174346,
+      "earnings_yield": 10.681059608109786,
       "ten_year_yield": null,
       "gap_pp": null,
       "as_of": "2026-09-03",
@@ -121358,10 +121360,10 @@
       "symbol": "EWY",
       "name": "South Korea proxy",
       "region": "South Korea",
-      "trailing_pe": 17.609152,
+      "trailing_pe": 10.389648,
       "forward_pe": null,
       "eps": null,
-      "earnings_yield": 5.678865171928778,
+      "earnings_yield": 9.62496515762613,
       "ten_year_yield": null,
       "gap_pp": null,
       "as_of": "2026-09-03",
@@ -121374,10 +121376,10 @@
       "symbol": "ACWI",
       "name": "MSCI ACWI proxy",
       "region": "Global",
-      "trailing_pe": 22.870129,
+      "trailing_pe": 21.512094,
       "forward_pe": null,
       "eps": null,
-      "earnings_yield": 4.3725157824864045,
+      "earnings_yield": 4.648547928435047,
       "ten_year_yield": null,
       "gap_pp": null,
       "as_of": "2026-09-03",
@@ -121396,7 +121398,7 @@
       "earnings_yield": 6.373486297004462,
       "ten_year_yield": 2.244004,
       "gap_pp": 4.129482297004461,
-      "as_of": "2026-09-04 10:09:16 Bangkok",
+      "as_of": "2026-09-04 15:02:07 Bangkok",
       "source": "SET Market Overview, as of 2026-09-03",
       "source_url": "https://www.set.or.th/en/market/product/stock/overview",
       "status": "Computed from Trailing P/E minus local 10Y yield",
@@ -121413,7 +121415,7 @@
       "earnings_yield": 1.492982979994028,
       "ten_year_yield": 2.244004,
       "gap_pp": -0.7510210200059719,
-      "as_of": "2026-09-04 10:09:31 Bangkok",
+      "as_of": "2026-09-04 15:02:22 Bangkok",
       "source": "SET Market Overview, as of 2026-09-03",
       "source_url": "https://www.set.or.th/en/market/product/stock/overview",
       "status": "Computed from Trailing P/E minus local 10Y yield",
@@ -128878,15 +128880,15 @@
       "region": "Thailand",
       "bucket": "Index Proxy",
       "score": 50.0,
-      "as_of": "2026-09-04 10:09:16 Bangkok",
+      "as_of": "2026-09-04 15:02:07 Bangkok",
       "metrics": {
-        "as_of": "2026-09-04 10:09:16 Bangkok",
-        "latest": 1583.24,
-        "day_change": 6.32,
-        "day_change_pct": 0.4,
-        "ret_1y": 41.90680957300123,
-        "dist_200dma": 12.61839751910976,
-        "drawdown_1y": -3.4044341609887896,
+        "as_of": "2026-09-04 15:02:07 Bangkok",
+        "latest": 1591.83,
+        "day_change": 14.91,
+        "day_change_pct": 0.95,
+        "ret_1y": 42.67673674401262,
+        "dist_200dma": 13.225958811241977,
+        "drawdown_1y": -2.880346902861719,
         "sparkline": [
           {
             "date": "2025-10-20",
@@ -129606,7 +129608,7 @@
           },
           {
             "date": "2026-09-04",
-            "value": 1583.24
+            "value": 1591.83
           }
         ]
       }
@@ -129619,13 +129621,13 @@
       "score": 50.0,
       "as_of": "2026-09-04",
       "metrics": {
-        "as_of": "2026-09-04 10:09:31 Bangkok",
-        "latest": 225.67,
-        "day_change": 1.21,
-        "day_change_pct": 0.54,
-        "ret_1y": -9.638023544486273,
-        "dist_200dma": 3.2349733575359974,
-        "drawdown_1y": -12.737326476161027,
+        "as_of": "2026-09-04 15:02:22 Bangkok",
+        "latest": 225.86,
+        "day_change": 0.65,
+        "day_change_pct": 0.29,
+        "ret_1y": -9.561944422199087,
+        "dist_200dma": 3.321441715174367,
+        "drawdown_1y": -12.663856772746607,
         "sparkline": [
           {
             "date": "2025-12-04",
@@ -130345,7 +130347,7 @@
           },
           {
             "date": "2026-09-04",
-            "value": 225.67
+            "value": 225.86
           }
         ]
       }
@@ -230970,7 +230972,7 @@
       "points": [
         {
           "date": "2026-09-04",
-          "value": 1583.24
+          "value": 1591.83
         }
       ],
       "note": "Proxy SET; if the first date is after 1990, the source starts there."
@@ -230983,7 +230985,7 @@
       "points": [
         {
           "date": "2026-09-04",
-          "value": 226.06
+          "value": 225.5
         }
       ],
       "note": "Proxy mai; if the first date is after 1990, the source starts there."
@@ -246249,6 +246251,10 @@
         {
           "date": "2026-09-02",
           "value": 159.309998
+        },
+        {
+          "date": "2026-09-03",
+          "value": 163.919998
         }
       ]
     },
@@ -271967,6 +271973,10 @@
         {
           "date": "2026-09-02",
           "value": 213.800003
+        },
+        {
+          "date": "2026-09-03",
+          "value": 213.809998
         }
       ]
     },
@@ -283205,6 +283215,10 @@
         {
           "date": "2026-09-02",
           "value": 93.540001
+        },
+        {
+          "date": "2026-09-03",
+          "value": 95.32
         }
       ]
     },
@@ -311079,6 +311093,10 @@
         {
           "date": "2026-09-02",
           "value": 65.099998
+        },
+        {
+          "date": "2026-09-03",
+          "value": 64.620003
         }
       ]
     },
@@ -338953,6 +338971,10 @@
         {
           "date": "2026-09-02",
           "value": 183.600006
+        },
+        {
+          "date": "2026-09-03",
+          "value": 185.970001
         }
       ]
     },
@@ -368233,8 +368255,12 @@
           "value": 6562.720215
         },
         {
+          "date": "2026-09-03",
+          "value": 6579.47998
+        },
+        {
           "date": "2026-09-04",
-          "value": 6666.779785
+          "value": 6687.209961
         }
       ]
     },
@@ -380149,6 +380175,10 @@
         {
           "date": "2026-09-02",
           "value": 83.389999
+        },
+        {
+          "date": "2026-09-03",
+          "value": 87.139999
         }
       ]
     },
@@ -406563,6 +406593,10 @@
         {
           "date": "2026-09-02",
           "value": 550.47998
+        },
+        {
+          "date": "2026-09-03",
+          "value": 552.599976
         }
       ]
     },
@@ -442567,8 +442601,12 @@
           "value": 64325.640625
         },
         {
+          "date": "2026-09-03",
+          "value": 64214.480469
+        },
+        {
           "date": "2026-09-04",
-          "value": 64769.738281
+          "value": 65020.941406
         }
       ]
     },
@@ -508408,7 +508446,7 @@
         },
         {
           "date": "2026-09-04",
-          "value": 1583.24
+          "value": 1591.83
         }
       ]
     },
@@ -529786,7 +529824,7 @@
         },
         {
           "date": "2026-09-04",
-          "value": 225.67
+          "value": 225.86
         }
       ]
     },
@@ -623181,6 +623219,14 @@
         {
           "date": "2026-09-02",
           "value": 6362.149902
+        },
+        {
+          "date": "2026-09-03",
+          "value": 6382.589844
+        },
+        {
+          "date": "2026-09-04",
+          "value": 6387.410156
         }
       ]
     },
@@ -644811,6 +644857,10 @@
         {
           "date": "2026-09-02",
           "value": 90.959999
+        },
+        {
+          "date": "2026-09-03",
+          "value": 91.739998
         }
       ]
     },
@@ -673095,8 +673145,12 @@
           "value": 3941.385986
         },
         {
+          "date": "2026-09-03",
+          "value": 3942.087891
+        },
+        {
           "date": "2026-09-04",
-          "value": 3961.98877
+          "value": 3930.116455
         }
       ]
     },
@@ -709305,8 +709359,12 @@
           "value": 25311.210938
         },
         {
+          "date": "2026-09-03",
+          "value": 25213.310547
+        },
+        {
           "date": "2026-09-04",
-          "value": 25768.380859
+          "value": 25670.789062
         }
       ]
     },
@@ -727925,6 +727983,14 @@
         {
           "date": "2026-09-02",
           "value": 23914.449219
+        },
+        {
+          "date": "2026-09-03",
+          "value": 23873.449219
+        },
+        {
+          "date": "2026-09-04",
+          "value": 23933.650391
         }
       ]
     },
@@ -746487,31 +746553,35 @@
         {
           "date": "2026-09-02",
           "value": 160.160004
+        },
+        {
+          "date": "2026-09-03",
+          "value": 161.940002
         }
       ]
     }
   },
   "valuation_v04": {
     "SPY": {
-      "trailing_pe": 26.045826,
+      "trailing_pe": 24.98088,
       "forward_pe": 21.22,
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "forward_source": "State Street SPDR Price/Earnings Ratio FY1"
     },
     "QQQ": {
-      "trailing_pe": 30.687725,
+      "trailing_pe": 29.251226,
       "forward_pe": null,
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "forward_source": null
     },
     "IWM": {
-      "trailing_pe": 18.301994,
+      "trailing_pe": 17.378208,
       "forward_pe": null,
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "forward_source": null
     },
     "FEZ": {
-      "trailing_pe": 18.973547,
+      "trailing_pe": 18.625624,
       "forward_pe": 15.91,
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "forward_source": "State Street SPDR Price/Earnings Ratio FY1"
@@ -746523,19 +746593,19 @@
       "forward_source": null
     },
     "EWJ": {
-      "trailing_pe": 20.253178,
+      "trailing_pe": 19.50837,
       "forward_pe": null,
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "forward_source": null
     },
     "MCHI": {
-      "trailing_pe": 12.017425,
+      "trailing_pe": 11.777897,
       "forward_pe": null,
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "forward_source": null
     },
     "FXI": {
-      "trailing_pe": 9.592578,
+      "trailing_pe": 9.362367,
       "forward_pe": null,
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "forward_source": null
@@ -746547,13 +746617,13 @@
       "forward_source": null
     },
     "EWY": {
-      "trailing_pe": 17.609152,
+      "trailing_pe": 10.389648,
       "forward_pe": null,
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "forward_source": null
     },
     "ACWI": {
-      "trailing_pe": 22.870129,
+      "trailing_pe": 21.512094,
       "forward_pe": null,
       "source": "Yahoo Finance key-statistics embedded trailingPE",
       "forward_source": null
@@ -753489,14 +753559,15 @@
       "froth": 79,
       "recession": 82,
       "debt": 69,
-      "chip": 68,
+      "chip": 70,
       "chip1": 66,
-      "chip2": 67,
-      "chip3": 73
+      "chip2": 72,
+      "chip3": 75
     }
   },
+  "dashboard_refreshed_at": "2026-09-04 15:05:28 Bangkok",
   "ai_semiconductor_direct_v06": {
-    "generated_at": "2026-09-04 03:13:44 Bangkok",
+    "generated_at": "2026-09-04 15:05:24 Bangkok",
     "lookback_start": "2024-07-01",
     "capex": {
       "MSFT": [
@@ -754363,8 +754434,8 @@
     ]
   },
   "ai_semiconductor_direct_v08": {
-    "generated_at": "2026-09-04 10:13:50 Bangkok",
-    "data_source_generated_at": "2026-09-04 03:13:44 Bangkok",
+    "generated_at": "2026-09-04 15:05:26 Bangkok",
+    "data_source_generated_at": "2026-09-04 15:05:24 Bangkok",
     "window_start": "2024-07-01",
     "window_end": "2026-09-04",
     "groups": [
@@ -755525,6 +755596,5 @@
       "Hover or click a point; details appear below the chart and do not cover the graph.",
       "GPU rental and CoWoS are sparse because open sources do not provide dense historical APIs in this workspace."
     ]
-  },
-  "dashboard_refreshed_at": "2026-09-04 10:13:50 Bangkok"
+  }
 }
