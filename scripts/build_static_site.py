@@ -14,7 +14,7 @@ DOCS = ROOT / "docs"
 WEB = ROOT / "web"
 CACHE = ROOT / ".build_cache" / "text"
 PDF_TEXT_FALLBACK_QUARTERS = {"1Q69"}
-WINDOWS_ABSOLUTE_PATH_RE = re.compile(r"(?<![A-Za-z0-9])[A-Za-z]:\\[^\r\n`\"']+")
+WINDOWS_ABSOLUTE_PATH_RE = re.compile(r"(?<![A-Za-z0-9])[A-Za-z]:(?:\\|/)[^\r\n`\"']+")
 PUBLIC_LOCAL_PATH_PLACEHOLDER = "[local path removed]"
 
 sys.path.insert(0, str(ROOT))

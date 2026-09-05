@@ -91,6 +91,13 @@ class MultiQuarterIndexTests(unittest.TestCase):
 
 
 class SafeStaticBuildTests(unittest.TestCase):
+    def test_local_path_redaction_supports_backslash_and_forward_slash(self) -> None:
+        source = "A C:\\private\\report.md\nB C:/private/report.md"
+        self.assertEqual(
+            build_static_site.redact_local_paths(source),
+            "A [local path removed]\nB [local path removed]",
+        )
+
     def test_bubble_dashboard_sentinel_survives(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
