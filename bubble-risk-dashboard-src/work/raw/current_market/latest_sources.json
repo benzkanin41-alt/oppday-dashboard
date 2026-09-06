@@ -5,7 +5,7 @@
   },
   "treasury_curve_10y2y": {
     "date": "2026-09-04",
-    "feed_updated": "2026-09-04T15:48:28Z",
+    "feed_updated": "2026-09-05T02:01:14Z",
     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026"
   },
   "nyfed_effr": {
