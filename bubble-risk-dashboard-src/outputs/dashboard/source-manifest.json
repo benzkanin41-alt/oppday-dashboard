@@ -134,25 +134,25 @@
   {
     "name": "U.S. Treasury Daily Treasury Rates XML",
     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-    "publication_date": "feed updated 2026-09-05T02:01:14Z; latest observation 2026-09-04",
+    "publication_date": "feed updated 2026-09-06T02:03:10Z; latest observation 2026-09-04",
     "used_for": "Latest U.S. 10Y-2Y yield-curve row and yield-curve dashboard point."
   },
   {
     "name": "New York Fed EFFR API",
-    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-07-23&endDate=2026-09-06&type=rate",
+    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-07-24&endDate=2026-09-07&type=rate",
     "publication_date": "latest EFFR observation 2026-09-03",
     "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS."
   },
   {
     "name": "TradingView SET:MAI daily history",
     "url": "https://www.tradingview.com/symbols/SET-MAI/",
-    "publication_date": "Data fetched 2026-09-06; latest observation 2026-09-04",
+    "publication_date": "Data fetched 2026-09-07; latest observation 2026-09-07",
     "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
   },
   {
     "name": "SEC Company Facts API",
     "url": "https://data.sec.gov/api/xbrl/companyfacts/",
-    "publication_date": "Data fetched 2026-09-06",
+    "publication_date": "Data fetched 2026-09-07",
     "used_for": "Quarterly hyperscaler capex, Micron revenue/inventory/capex, and CoreWeave debt/PPE/capex/debt issuance."
   },
   {
