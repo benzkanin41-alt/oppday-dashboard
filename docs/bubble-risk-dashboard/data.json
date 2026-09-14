@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-14 10:18:20 Bangkok",
-  "data_anchor": "2026-09-14 10:15:18 Bangkok",
+  "generated_at": "2026-09-14 10:42:36 Bangkok",
+  "data_anchor": "2026-09-14 10:38:18 Bangkok",
   "overall": {
     "score": 62.3604733189995,
     "band": "Warm",
@@ -8257,16 +8257,16 @@
       "name": "SET Index",
       "region": "Thailand",
       "bucket": "Index Proxy",
-      "as_of": "2026-09-14 10:15:18 Bangkok",
+      "as_of": "2026-09-14 10:38:03 Bangkok",
       "score": 50.0,
       "metrics": {
-        "as_of": "2026-09-14 10:15:18 Bangkok",
-        "latest": 1598.8,
-        "day_change": -5.72,
-        "day_change_pct": -0.36,
-        "ret_1y": 43.301462283238415,
-        "dist_200dma": 13.718911997397232,
-        "drawdown_1y": -2.455097986779564,
+        "as_of": "2026-09-14 10:38:03 Bangkok",
+        "latest": 1598.3,
+        "day_change": -6.22,
+        "day_change_pct": -0.39,
+        "ret_1y": 43.25664696478606,
+        "dist_200dma": 13.683550315662597,
+        "drawdown_1y": -2.485603647904544,
         "sparkline": [
           {
             "date": "2025-10-20",
@@ -8986,7 +8986,7 @@
           },
           {
             "date": "2026-09-14",
-            "value": 1598.8
+            "value": 1598.3
           }
         ]
       },
@@ -9009,13 +9009,13 @@
       "as_of": "2026-09-14",
       "score": 50.0,
       "metrics": {
-        "as_of": "2026-09-14 10:15:18 Bangkok",
-        "latest": 227.88,
-        "day_change": 0.31,
-        "day_change_pct": 0.14,
-        "ret_1y": -8.430442819255813,
-        "dist_200dma": 4.19286195680304,
-        "drawdown_1y": -11.882757820656597,
+        "as_of": "2026-09-14 10:38:18 Bangkok",
+        "latest": 227.91,
+        "day_change": 0.79,
+        "day_change_pct": 0.35,
+        "ret_1y": -8.418387848589571,
+        "dist_200dma": 4.206507294249762,
+        "drawdown_1y": -11.871157341170102,
         "sparkline": [
           {
             "date": "2025-12-16",
@@ -9735,7 +9735,7 @@
           },
           {
             "date": "2026-09-14",
-            "value": 227.88
+            "value": 227.91
           }
         ]
       },
@@ -22699,7 +22699,7 @@
     {
       "name": "U.S. Treasury Daily Treasury Rates XML",
       "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-      "publication_date": "feed updated 2026-09-12T02:01:03Z; latest observation 2026-09-11",
+      "publication_date": "feed updated 2026-09-13T02:01:10Z; latest observation 2026-09-11",
       "used_for": "Latest U.S. 10Y-2Y yield-curve row and yield-curve dashboard point."
     },
     {
@@ -121419,7 +121419,7 @@
       "earnings_yield": 6.257822277847309,
       "ten_year_yield": 2.345842,
       "gap_pp": 3.9119802778473085,
-      "as_of": "2026-09-14 10:15:18 Bangkok",
+      "as_of": "2026-09-14 10:38:03 Bangkok",
       "source": "SET Market Overview, as of 2026-09-11",
       "source_url": "https://www.set.or.th/en/market/product/stock/overview",
       "status": "Computed from Trailing P/E minus local 10Y yield",
@@ -121436,7 +121436,7 @@
       "earnings_yield": 1.4764506127270043,
       "ten_year_yield": 2.345842,
       "gap_pp": -0.8693913872729959,
-      "as_of": "2026-09-14 10:15:18 Bangkok",
+      "as_of": "2026-09-14 10:38:18 Bangkok",
       "source": "SET Market Overview, as of 2026-09-11",
       "source_url": "https://www.set.or.th/en/market/product/stock/overview",
       "status": "Computed from Trailing P/E minus local 10Y yield",
@@ -128901,15 +128901,15 @@
       "region": "Thailand",
       "bucket": "Index Proxy",
       "score": 50.0,
-      "as_of": "2026-09-14 10:15:18 Bangkok",
+      "as_of": "2026-09-14 10:38:03 Bangkok",
       "metrics": {
-        "as_of": "2026-09-14 10:15:18 Bangkok",
-        "latest": 1598.8,
-        "day_change": -5.72,
-        "day_change_pct": -0.36,
-        "ret_1y": 43.301462283238415,
-        "dist_200dma": 13.718911997397232,
-        "drawdown_1y": -2.455097986779564,
+        "as_of": "2026-09-14 10:38:03 Bangkok",
+        "latest": 1598.3,
+        "day_change": -6.22,
+        "day_change_pct": -0.39,
+        "ret_1y": 43.25664696478606,
+        "dist_200dma": 13.683550315662597,
+        "drawdown_1y": -2.485603647904544,
         "sparkline": [
           {
             "date": "2025-10-20",
@@ -129629,7 +129629,7 @@
           },
           {
             "date": "2026-09-14",
-            "value": 1598.8
+            "value": 1598.3
           }
         ]
       }
@@ -129642,13 +129642,13 @@
       "score": 50.0,
       "as_of": "2026-09-14",
       "metrics": {
-        "as_of": "2026-09-14 10:15:18 Bangkok",
-        "latest": 227.88,
-        "day_change": 0.31,
-        "day_change_pct": 0.14,
-        "ret_1y": -8.430442819255813,
-        "dist_200dma": 4.19286195680304,
-        "drawdown_1y": -11.882757820656597,
+        "as_of": "2026-09-14 10:38:18 Bangkok",
+        "latest": 227.91,
+        "day_change": 0.79,
+        "day_change_pct": 0.35,
+        "ret_1y": -8.418387848589571,
+        "dist_200dma": 4.206507294249762,
+        "drawdown_1y": -11.871157341170102,
         "sparkline": [
           {
             "date": "2025-12-16",
@@ -130368,7 +130368,7 @@
           },
           {
             "date": "2026-09-14",
-            "value": 227.88
+            "value": 227.91
           }
         ]
       }
@@ -231033,7 +231033,7 @@
       "points": [
         {
           "date": "2026-09-14",
-          "value": 1598.8
+          "value": 1598.3
         }
       ],
       "note": "Proxy SET; if the first date is after 1990, the source starts there."
@@ -231046,7 +231046,7 @@
       "points": [
         {
           "date": "2026-09-14",
-          "value": 227.67
+          "value": 228.15
         }
       ],
       "note": "Proxy mai; if the first date is after 1990, the source starts there."
@@ -288257,7 +288257,7 @@
         },
         {
           "date": "2026-09-14",
-          "value": 6766.839844
+          "value": 6747.0
         }
       ]
     },
@@ -533751,7 +533751,7 @@
         },
         {
           "date": "2026-09-14",
-          "value": 1598.8
+          "value": 1598.3
         }
       ]
     },
@@ -555153,7 +555153,7 @@
         },
         {
           "date": "2026-09-14",
-          "value": 227.88
+          "value": 227.91
         }
       ]
     },
@@ -661609,7 +661609,7 @@
         },
         {
           "date": "2026-09-14",
-          "value": 3890.021484
+          "value": 3894.095215
         }
       ]
     },
@@ -697847,7 +697847,7 @@
         },
         {
           "date": "2026-09-14",
-          "value": 24853.519531
+          "value": 24894.349609
         }
       ]
     },
@@ -754030,9 +754030,9 @@
       "chip3": 68
     }
   },
-  "dashboard_refreshed_at": "2026-09-14 10:18:20 Bangkok",
+  "dashboard_refreshed_at": "2026-09-14 10:42:36 Bangkok",
   "ai_semiconductor_direct_v06": {
-    "generated_at": "2026-09-14 10:18:16 Bangkok",
+    "generated_at": "2026-09-14 03:42:27 Bangkok",
     "lookback_start": "2024-07-01",
     "capex": {
       "MSFT": [
@@ -754907,8 +754907,8 @@
     ]
   },
   "ai_semiconductor_direct_v08": {
-    "generated_at": "2026-09-14 10:18:18 Bangkok",
-    "data_source_generated_at": "2026-09-14 10:18:16 Bangkok",
+    "generated_at": "2026-09-14 10:42:33 Bangkok",
+    "data_source_generated_at": "2026-09-14 03:42:27 Bangkok",
     "window_start": "2024-07-01",
     "window_end": "2026-09-14",
     "groups": [

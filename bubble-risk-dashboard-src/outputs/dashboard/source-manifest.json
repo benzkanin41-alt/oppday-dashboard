@@ -134,7 +134,7 @@
   {
     "name": "U.S. Treasury Daily Treasury Rates XML",
     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-    "publication_date": "feed updated 2026-09-12T02:01:03Z; latest observation 2026-09-11",
+    "publication_date": "feed updated 2026-09-13T02:01:10Z; latest observation 2026-09-11",
     "used_for": "Latest U.S. 10Y-2Y yield-curve row and yield-curve dashboard point."
   },
   {
