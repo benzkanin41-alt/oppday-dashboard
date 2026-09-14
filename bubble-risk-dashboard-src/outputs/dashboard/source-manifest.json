@@ -139,20 +139,20 @@
   },
   {
     "name": "New York Fed EFFR API",
-    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-07-30&endDate=2026-09-13&type=rate",
+    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-07-31&endDate=2026-09-14&type=rate",
     "publication_date": "latest EFFR observation 2026-09-10",
     "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS."
   },
   {
     "name": "TradingView SET:MAI daily history",
     "url": "https://www.tradingview.com/symbols/SET-MAI/",
-    "publication_date": "Data fetched 2026-09-13; latest observation 2026-09-11",
+    "publication_date": "Data fetched 2026-09-14; latest observation 2026-09-14",
     "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
   },
   {
     "name": "SEC Company Facts API",
     "url": "https://data.sec.gov/api/xbrl/companyfacts/",
-    "publication_date": "Data fetched 2026-09-13",
+    "publication_date": "Data fetched 2026-09-14",
     "used_for": "Quarterly hyperscaler capex, Micron revenue/inventory/capex, and CoreWeave debt/PPE/capex/debt issuance."
   },
   {
