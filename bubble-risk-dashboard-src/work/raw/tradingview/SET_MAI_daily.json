@@ -1,7 +1,7 @@
 {
   "source": "TradingView chart websocket",
   "symbol": "SET:MAI",
-  "fetched_at": "2026-09-17T03:44:56.923701Z",
+  "fetched_at": "2026-09-18T03:30:56.474837Z",
   "points": [
     {
       "date": "2004-08-10",
@@ -48155,11 +48155,20 @@
     },
     {
       "date": "2026-09-17",
-      "value": 223.55,
+      "value": 224.38,
       "open": 222.32,
-      "high": 224.03,
+      "high": 224.67,
       "low": 222.32,
-      "close": 223.55,
+      "close": 224.38,
+      "volume": null
+    },
+    {
+      "date": "2026-09-18",
+      "value": 224.79,
+      "open": 224.78,
+      "high": 225.11,
+      "low": 224.65,
+      "close": 224.79,
       "volume": null
     }
   ]
