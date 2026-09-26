@@ -494,7 +494,11 @@ def rebuild_eyg(payload, valuations, curves):
         ey = 100 / trailing if trailing else None
         gap = ey - ten if ey is not None and ten is not None else None
         status = "เธเธณเธเธงเธ“เธเธฒเธ Trailing P/E minus local 10Y yield" if gap is not None else "เธกเธต valuation เนเธฅเนเธง เนเธ•เนเธขเธฑเธเธเธฒเธ” local 10Y yield เธซเธฃเธทเธญ forward source เธเธฒเธเธชเนเธงเธ"
-        out.append({**row, "trailing_pe": trailing, "forward_pe": val.get("forward_pe"), "earnings_yield": ey, "ten_year_yield": ten, "gap_pp": gap, "source": val.get("source") or row.get("source"), "forward_source": val.get("forward_source"), "status": status})
+        trailing_source = val.get("source") or row.get("source")
+        source_url = row.get("source_url")
+        if trailing_source == "Yahoo Finance key-statistics embedded trailingPE":
+            source_url = f"https://finance.yahoo.com/quote/{row.get('symbol')}/key-statistics/"
+        out.append({**row, "trailing_pe": trailing, "forward_pe": val.get("forward_pe"), "earnings_yield": ey, "ten_year_yield": ten, "gap_pp": gap, "source": trailing_source, "source_url": source_url, "forward_source": val.get("forward_source"), "status": status})
     return out
 
 
@@ -526,11 +530,11 @@ def main():
     payload["valuation_v04"] = valuations
     payload["earnings_yield_gap"] = eyg
     payload["macro_v04"] = macro
-    add_source_once(payload, {"name": "Yahoo Finance chart API since 1990", "url": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}", "publication_date": "Data fetched 2026-07-03", "used_for": "Top Watchlist/index price-history charts from 1990 where available."})
-    add_source_once(payload, {"name": "Yahoo Finance key-statistics embedded trailingPE", "url": "https://finance.yahoo.com/quote/{symbol}/key-statistics/", "publication_date": "Data fetched 2026-07-03", "used_for": "Trailing P/E fallback for ETF/index proxy valuation rows."})
-    add_source_once(payload, {"name": "State Street SPDR product pages Price/Earnings Ratio FY1", "url": "https://www.ssga.com/us/en/intermediary/etfs", "publication_date": "Data fetched 2026-07-03", "used_for": "Forward P/E / FY1 P/E where available."})
-    add_source_once(payload, {"name": "iShares official product pages P/E Ratio", "url": "https://www.ishares.com/us/products", "publication_date": "Data fetched 2026-07-03", "used_for": "Portfolio P/E Ratio for iShares ETF proxies where available."})
-    add_source_once(payload, {"name": "FRED macro froth indicators", "url": "https://fred.stlouisfed.org/", "publication_date": "Data fetched 2026-07-03", "used_for": "Buffett indicator proxy, credit premium, HY OAS, VIX, yield curve, Fed assets, real policy proxy."})
+    add_source_once(payload, {"name": "Yahoo Finance chart API since 1990", "url": "https://query1.finance.yahoo.com/v8/finance/chart/{symbol}", "publication_date": "Historical observations; latest dates are shown per chart", "used_for": "Top Watchlist/index price-history charts from 1990 where available."})
+    add_source_once(payload, {"name": "Yahoo Finance key-statistics embedded trailingPE", "url": "https://finance.yahoo.com/quote/{symbol}/key-statistics/", "publication_date": "Valuation snapshot; fetch date is not independently verified", "used_for": "Trailing P/E fallback for ETF/index proxy valuation rows."})
+    add_source_once(payload, {"name": "State Street SPDR product pages Price/Earnings Ratio FY1", "url": "https://www.ssga.com/us/en/intermediary/etfs", "publication_date": "Product-page valuation snapshot; fetch date is not independently verified", "used_for": "Forward P/E / FY1 P/E where available."})
+    add_source_once(payload, {"name": "iShares official product pages P/E Ratio", "url": "https://www.ishares.com/us/products", "publication_date": "Product-page valuation snapshot; fetch date is not independently verified", "used_for": "Portfolio P/E Ratio for iShares ETF proxies where available."})
+    add_source_once(payload, {"name": "FRED macro froth indicators", "url": "https://fred.stlouisfed.org/", "publication_date": "Series observations; latest dates are shown per indicator", "used_for": "Buffett indicator proxy, credit premium, HY OAS, VIX, yield curve, Fed assets, real policy proxy."})
     add_failure_once(payload, "Forward P/E full global coverage", "Forward P/E is populated only where a source-backed FY1/forward value was found; missing values are left n/a rather than estimated.")
     add_failure_once(payload, "mai long-run price history", "Yahoo chart returned only latest mai observation; needs SETSMART/session-based adapter for long history.")
     chart_data = {"generatedAt": datetime.now().strftime("%Y-%m-%d %H:%M local"), "ranges": {k: v for k, v in RANGES}, "yieldCurves": curves, "priceSeries": price_series, "eygRows": eyg}

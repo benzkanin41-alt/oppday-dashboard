@@ -17,7 +17,8 @@ SERIES_LABEL = {
     "Yield Curve 10Y-2Y": "U.S. Treasury daily XML latest + FRED history",
     "Real Policy Proxy": "NY Fed EFFR + FRED T10YIE",
     "Fed Assets YoY": "FRED WALCL YoY (weekly Wednesday series)",
-    "Buffett Indicator (US equities / GDP)": "FRED NCBEILQ027S / GDP source gap",
+    "Buffett Indicator (US equities / GDP)": "FRED NCBEILQ027S / GDP (quarterly)",
+    "Credit Risk Premium (Baa - 10Y)": "FRED BAA - DGS10",
 }
 
 
@@ -131,7 +132,7 @@ def render_macro(payload):
   </div>
   <div class="v04-card"><h3>Bubble Psychology - Howard Marks' Checklist</h3><p class="v04-muted">Qualitative overlay only. These bullets are a human-read checklist, not direct numeric data.</p><div class="v04-check-grid">{checks}</div></div>
   <div class="v04-card"><h3>Froth Gauge - Components</h3><p class="v04-muted">The rows below are data-driven when a value is shown. Percentile is computed from the available history in the dashboard payload.</p><table class="v04-table"><thead><tr><th>Indicator</th><th>Latest</th><th>1Y change</th><th>Percentile</th><th>Signal</th><th>5Y trend</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
-  <div class="v04-card v04-ai"><div>{gauge("AI Chip Bubble Risk", "Semis - themes - credit - sentiment", scores.get("chip", 0), "Derived from theme/sector heat plus macro credit/liquidity scores.")}</div><div><h3>AI / Semiconductor Cycle Monitor</h3><p>This panel is derived, not a direct physical-supply API. It uses semiconductor/theme price heat plus dashboard macro stress. Next step should add direct data for capex, GPU rental prices, HBM/CoWoS lead times, and vendor-financing exposure.</p><div class="v04-tier"><b>{scores.get('chip1',0)}</b><span>Tier 1 - Bell-ringers</span><em>Theme/semiconductor heat proxy</em></div><div class="v04-tier"><b>{scores.get('chip2',0)}</b><span>Tier 2 - Financing & cycle stress</span><em>Credit/liquidity pressure</em></div><div class="v04-tier"><b>{scores.get('chip3',0)}</b><span>Tier 3 - Valuation & sentiment</span><em>Theme heat plus sentiment proxy</em></div></div></div>
+  <div class="v04-card v04-ai"><div>{gauge("AI Chip Bubble Risk", "Semis - themes - credit - sentiment", scores.get("chip", 0), "Derived from theme/sector heat plus macro credit/liquidity scores.")}</div><div><h3>AI / Semiconductor Cycle Monitor</h3><p>This score remains a derived market/macro signal, not a physical-supply API. Source-backed capex, GPU rental, HBM, CoWoS and vendor-financing observations appear in the direct-data panel below and are not silently mixed into this score.</p><div class="v04-tier"><b>{scores.get('chip1',0)}</b><span>Tier 1 - Bell-ringers</span><em>Theme/semiconductor heat proxy</em></div><div class="v04-tier"><b>{scores.get('chip2',0)}</b><span>Tier 2 - Financing & cycle stress</span><em>Credit/liquidity pressure</em></div><div class="v04-tier"><b>{scores.get('chip3',0)}</b><span>Tier 3 - Valuation & sentiment</span><em>Theme heat plus sentiment proxy</em></div></div></div>
 </section>
 <!-- v04-macro-section:end -->
 '''

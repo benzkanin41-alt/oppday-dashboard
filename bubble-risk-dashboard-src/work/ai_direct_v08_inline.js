@@ -70,18 +70,12 @@
     setDetail(card.id, detailHtml(point, card.unit));
   }
   function drawCoverageRail(svg, card, allPoints) {
-    var railY = height - 48;
+    var railY = height - 34;
     svg.appendChild(svgEl('line', {x1: margin.left, y1: railY, x2: width - margin.right, y2: railY, class: 'ai-window-rail'}));
     [model.window_start, model.window_end].forEach(function(d, idx){
       var x = idx ? width - margin.right : margin.left;
       svg.appendChild(svgEl('line', {x1: x, y1: railY - 8, x2: x, y2: railY + 8, class: 'ai-window-tick'}));
-      var t = svgEl('text', {x: idx ? x - 66 : x, y: height - 14, class: 'ai-window-label'});
-      t.textContent = d;
-      svg.appendChild(t);
     });
-    var label = svgEl('text', {x: margin.left, y: railY - 12, class: card.sparse ? 'ai-no-data-label' : 'ai-window-label'});
-    label.textContent = card.sparse ? '2-year window: public data is sparse; dots are the sourced observations found' : '2-year data window';
-    svg.appendChild(label);
     allPoints.forEach(function(point){
       svg.appendChild(svgEl('circle', {cx: point.x, cy: railY, r: 3.5, fill: point.color, class: 'ai-window-dot'}));
     });
@@ -117,9 +111,10 @@
       svg.appendChild(text);
     }
     var midDate = new Date((domainStart + domainEnd) / 2).toISOString().slice(0, 10);
-    [model.window_start, midDate, model.window_end].forEach(function(d){
+    [model.window_start, midDate, model.window_end].forEach(function(d, idx){
       var x = xScale(new Date(d + 'T00:00:00Z').getTime());
-      var text = svgEl('text', {x: x - 28, y: height - 55, class: 'ai-axis-label'});
+      var anchor = idx === 0 ? 'start' : idx === 2 ? 'end' : 'middle';
+      var text = svgEl('text', {x: x, y: height - 70, class: 'ai-axis-label', 'text-anchor': anchor});
       text.textContent = d;
       svg.appendChild(text);
     });

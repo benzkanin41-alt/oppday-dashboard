@@ -116,31 +116,31 @@ SOURCE_NOTES = [
     {
         "name": "FRED series observations endpoint",
         "url": "https://fred.stlouisfed.org/docs/api/fred/series_observations.html",
-        "publication_date": "No publication date shown; accessed 2026-07-02",
+        "publication_date": "Reference page; publication date not shown",
         "used_for": "API design reference and FRED graph CSV source path.",
     },
     {
         "name": "SEC EDGAR APIs",
         "url": "https://www.sec.gov/search-filings/edgar-application-programming-interfaces",
         "publication_date": "Last reviewed 2025-04-08 on SEC page",
-        "used_for": "Planned company facts/submissions adapter for valuation and fundamentals.",
+        "used_for": "SEC Company Facts reference for AI semiconductor fundamentals; not a global index valuation feed.",
     },
     {
         "name": "BIS central bank policy rates",
         "url": "https://data.bis.org/topics/CBPOL",
-        "publication_date": "Latest release shown on BIS topic page; accessed 2026-07-02",
+        "publication_date": "Reference page; release date varies by series",
         "used_for": "Planned cross-country policy-rate adapter.",
     },
     {
         "name": "BIS central bank total assets",
         "url": "https://data.bis.org/topics/CBTA",
-        "publication_date": "Latest release shown on BIS topic page; accessed 2026-07-02",
+        "publication_date": "Reference page; release date varies by series",
         "used_for": "Planned cross-country central-bank balance-sheet adapter.",
     },
     {
         "name": "GICS structure",
         "url": "https://www.spglobal.com/spdji/en/landing/topic/gics/",
-        "publication_date": "Accessed 2026-07-02",
+        "publication_date": "Reference taxonomy; publication date not shown",
         "used_for": "S&P 500 sector taxonomy design.",
     },
     {
@@ -152,20 +152,20 @@ SOURCE_NOTES = [
     {
         "name": "Nasdaq historical quote API",
         "url": "https://api.nasdaq.com/api/quote/{symbol}/historical",
-        "publication_date": "Data fetched 2026-07-02",
+        "publication_date": "Historical observations; latest dates are shown in the dashboard",
         "used_for": "ETF proxy historical prices and volumes.",
     },
     {
         "name": "Cboe VIX overview",
         "url": "https://www.cboe.com/tradable-products/vix",
-        "publication_date": "Market data as of 2026-07-02 on page",
+        "publication_date": "Reference page; current VIX observations are sourced separately",
         "used_for": "VIX interpretation and sentiment source context.",
     },
     {
         "name": "yfinance project notes",
         "url": "https://github.com/ranaroussi/yfinance",
-        "publication_date": "Latest release shown 2026-06-28; accessed 2026-07-02",
-        "used_for": "Yahoo Finance adapter caveat; Yahoo chart API was rate-limited in this run.",
+        "publication_date": "Reference project; release date varies",
+        "used_for": "Yahoo Finance adapter context; current fetch status is reported separately.",
     },
 ]
 
@@ -835,9 +835,8 @@ def main() -> int:
         "sources": SOURCE_NOTES,
         "source_failures": source_failures
         + [
-            {"source": "Yahoo Finance chart API", "status": "Returned Too Many Requests during this run; kept as future fallback only."},
-            {"source": "TradingView Remix MCP integration", "status": "The standalone Python updater cannot invoke MCP tools directly; this refresh was independently cross-checked with live TradingView Remix quotes."},
-            {"source": "EDGAR fundamentals", "status": "Planned adapter; not yet aggregated into live sector valuations in v0.1."},
+            {"source": "TradingView Remix MCP integration", "status": "The standalone Python updater cannot invoke the user's MCP tools directly; TradingView SET:MAI chart history is a separate web adapter."},
+            {"source": "EDGAR global valuation coverage", "status": "SEC Company Facts powers selected AI company data, but is not aggregated into global index valuations."},
             {"source": "BIS global rates/assets", "status": "Planned adapter; current live macro panel uses FRED US series first."},
         ],
     }

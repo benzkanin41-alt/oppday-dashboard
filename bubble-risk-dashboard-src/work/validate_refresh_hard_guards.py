@@ -72,6 +72,29 @@ if data_sources != manifest:
         "source-manifest.json does not exactly match data.json sources "
         f"(data={len(data_sources)}, manifest={len(manifest)})"
     )
+for source in data_sources:
+    note = str(source.get("publication_date") or "")
+    if re.search(r"^data fetched 2026-07-0[23]$", note, re.I):
+        fail(f"stale hard-coded source access date: {source.get('name')}: {note}")
+for gap in payload.get("source_failures") or []:
+    claim = str(gap.get("status") or "")
+    if "this refresh was independently cross-checked with live TradingView Remix quotes" in claim:
+        fail("unsupported TradingView Remix cross-check claim")
+for row in payload.get("earnings_yield_gap") or []:
+    if row.get("source") == "Yahoo Finance key-statistics embedded trailingPE":
+        expected = f"https://finance.yahoo.com/quote/{row.get('symbol')}/key-statistics/"
+        if row.get("source_url") != expected:
+            fail(f"trailing P/E source URL mismatch for {row.get('symbol')}")
+ai = payload.get("ai_semiconductor_direct_v08") or {}
+if ai:
+    end_date = datetime.fromisoformat(ai.get("window_end", ""))
+    start_date = datetime.fromisoformat(ai.get("window_start", ""))
+    try:
+        expected_start = end_date.replace(year=end_date.year - 2)
+    except ValueError:
+        expected_start = end_date.replace(year=end_date.year - 2, day=28)
+    if start_date != expected_start:
+        fail(f"AI chart window is not a rolling two years: {start_date.date()} to {end_date.date()}")
 manifest_sections = len(re.findall(r"<h2>\s*Source Manifest\s*</h2>", html, re.I))
 if manifest_sections != 1:
     fail(f"HTML must contain exactly one Source Manifest section; found {manifest_sections}")
