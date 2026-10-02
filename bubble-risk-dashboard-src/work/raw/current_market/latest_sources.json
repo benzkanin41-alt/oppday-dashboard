@@ -1,20 +1,20 @@
 {
   "cboe_vix": {
-    "date": "2026-09-25",
+    "date": "2026-10-01",
     "url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv"
   },
   "treasury_curve_10y2y": {
-    "date": "2026-09-25",
-    "feed_updated": "2026-09-27T02:03:45Z",
+    "date": "2026-10-01",
+    "feed_updated": "2026-10-01T15:48:20Z",
     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026"
   },
   "nyfed_effr": {
-    "date": "2026-09-24"
+    "date": "2026-09-30"
   },
   "fred_t10yie": {
-    "date": "2026-09-25"
+    "date": "2026-10-01"
   },
   "real_policy_proxy": {
-    "date": "2026-09-24"
+    "date": "2026-09-30"
   }
 }
