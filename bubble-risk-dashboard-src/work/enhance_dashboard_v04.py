@@ -194,20 +194,19 @@ def build_price_series(top_rows: list[dict], existing: dict) -> dict:
         if not symbol:
             continue
         chart_symbol, proxy_label = PRICE_PROXY.get(symbol, (symbol, f"{symbol} ETF"))
+        cached_points = cached_yahoo_chart(chart_symbol)
         points, note = [], ""
         try:
             points = yahoo_chart(chart_symbol)
         except Exception as exc:
             note = f"Yahoo chart fetch failed: {exc!r}."
-        cached_points = cached_yahoo_chart(chart_symbol)
-        if len(cached_points) > len(points) and len(points) < 252:
-            points = cached_points
-            note += " Fallback to cached source-backed Yahoo history."
-        if len(points) < 252 and symbol in existing:
-            existing_points = (existing[symbol] or {}).get("points") or []
-            if len(existing_points) > len(points):
-                points = existing_points
-                note += " Fallback to v0.3 stored history."
+        retained = {point["date"]: point for point in cached_points}
+        stored = existing.get(symbol) or {}
+        # ETF prices and underlying index levels must never be spliced together.
+        if stored.get("chart_symbol") == chart_symbol:
+            retained.update({point["date"]: point for point in stored.get("points", [])})
+        retained.update({point["date"]: point for point in points})
+        points = [retained[day] for day in sorted(retained)]
         out[symbol] = {
             "label": row.get("name") or symbol,
             "symbol": symbol,

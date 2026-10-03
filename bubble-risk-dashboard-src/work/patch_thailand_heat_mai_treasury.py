@@ -9,6 +9,8 @@ from datetime import datetime
 from pathlib import Path
 from urllib.request import Request, urlopen
 
+from update_current_market_indicators import make_indicator, upsert_indicator, update_scores
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "outputs" / "dashboard"
@@ -108,6 +110,9 @@ def fetch_treasury_year(year: int) -> tuple[list[dict], str | None]:
         "m": "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata",
     }
     root = ET.fromstring(xml)
+    current_raw = ROOT / "work" / "raw" / "current_market"
+    current_raw.mkdir(parents=True, exist_ok=True)
+    (current_raw / f"treasury_yield_curve_{year}.xml").write_text(xml, encoding="utf-8")
     feed_updated = root.findtext("atom:updated", namespaces=ns)
     rows: list[dict] = []
     for props in root.findall(".//m:properties", ns):
@@ -152,6 +157,15 @@ def merge_us_treasury_latest(payload: dict) -> dict:
             "history": history,
         }
     )
+    synchronize_curve_indicator(payload, history)
+    latest_path = ROOT / "work" / "raw" / "current_market" / "latest_sources.json"
+    if latest_path.exists():
+        status = json.loads(latest_path.read_text(encoding="utf-8"))
+        status["treasury_curve_10y2y"] = {
+            "date": latest["date"], "feed_updated": feed_updated,
+            "url": TREASURY_XML_URL.format(year=datetime.now().year),
+        }
+        latest_path.write_text(json.dumps(status, indent=2), encoding="utf-8")
     source = {
         "name": "U.S. Treasury Daily Treasury Rates XML",
         "url": TREASURY_XML_URL.format(year=datetime.now().year),
@@ -162,11 +176,28 @@ def merge_us_treasury_latest(payload: dict) -> dict:
     return {"treasury_rows": len(rows), "treasury_latest": latest["date"]}
 
 
+def synchronize_curve_indicator(payload: dict, history: list[dict]) -> None:
+    points = [
+        {"date": row["date"], "value": float(row["10Y"]) - float(row["2Y"])}
+        for row in history
+        if row.get("10Y") is not None and row.get("2Y") is not None
+    ]
+    upsert_indicator(payload, make_indicator(
+        "Yield Curve 10Y-2Y",
+        "Flat or inverted curve raises recession-cycle stress. Latest point uses the same U.S. Treasury observations as the bond chart.",
+        points, True, "pp",
+    ))
+    update_scores(payload)
+
+
 def add_source_once(payload: dict, source: dict) -> None:
     sources = payload.setdefault("sources", [])
     key = (source.get("name"), source.get("url"))
-    if not any((s.get("name"), s.get("url")) == key for s in sources):
-        sources.append(source)
+    for existing in sources:
+        if (existing.get("name"), existing.get("url")) == key:
+            existing.update(source)
+            return
+    sources.append(source)
 
 
 def add_failure_once(payload: dict, name: str, detail: str) -> None:
@@ -381,6 +412,8 @@ def main() -> None:
     html_text = patch_single_point_chart_js(html_text)
     DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     HTML.write_text(html_text, encoding="utf-8")
+    from rebuild_clean_macro import main as rebuild_macro
+    rebuild_macro()
     print(json.dumps({"status": "ok", **treasury_status, "heat_has_set_mai": True}, ensure_ascii=False, indent=2))
 
 

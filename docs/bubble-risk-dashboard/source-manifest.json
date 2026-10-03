@@ -62,14 +62,14 @@
   {
     "name": "SET Index overview",
     "url": "https://www.set.or.th/en/market/index/set/overview",
-    "publication_date": "SET exchange snapshot; observation date is shown beside the value",
-    "used_for": "SET Index latest value and daily change snapshot."
+    "publication_date": "SET page Last Update, accessed by daily dashboard refresh",
+    "used_for": "SET Index latest value, daily change, and Thailand index card."
   },
   {
     "name": "SET mai Index overview",
     "url": "https://www.set.or.th/en/market/index/mai/overview",
-    "publication_date": "SET exchange snapshot; observation date is shown beside the value",
-    "used_for": "mai Index latest value and daily change snapshot."
+    "publication_date": "SET page Last Update, accessed by daily dashboard refresh",
+    "used_for": "mai Index latest value, daily change, and Thailand index card."
   },
   {
     "name": "ThaiBMA Government Bond Yield Curve",
@@ -80,7 +80,7 @@
   {
     "name": "SET Market Overview statistics",
     "url": "https://www.set.or.th/en/market/product/stock/overview",
-    "publication_date": "SET market statistics as of 2026-10-01",
+    "publication_date": "SET market statistics as of 2026-10-02",
     "used_for": "SET and mai trailing P/E, P/BV, market yield, index EPS, and current market statistics."
   },
   {
@@ -134,25 +134,31 @@
   {
     "name": "U.S. Treasury Daily Treasury Rates XML",
     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-    "publication_date": "feed updated 2026-10-01T15:48:20Z; latest observation 2026-10-01",
-    "used_for": "Latest U.S. 10Y-2Y yield-curve row and yield-curve dashboard point."
+    "publication_date": "feed updated 2026-10-03T02:00:59Z; latest observation 2026-10-02",
+    "used_for": "U.S. 2Y, 5Y, 10Y, and 30Y yield curve current-year observations and latest dashboard point."
   },
   {
     "name": "New York Fed EFFR API",
-    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-08-18&endDate=2026-10-02&type=rate",
+    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-08-19&endDate=2026-10-03&type=rate",
     "publication_date": "latest EFFR observation 2026-09-30",
     "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS."
   },
   {
     "name": "TradingView SET:MAI daily history",
     "url": "https://www.tradingview.com/symbols/SET-MAI/",
-    "publication_date": "Data fetched 2026-10-02; latest observation 2026-10-02",
+    "publication_date": "Data fetched 2026-10-03; latest observation 2026-10-02",
     "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
+  },
+  {
+    "name": "TradingView SET:SET daily history",
+    "url": "https://www.tradingview.com/symbols/SET-SET/",
+    "publication_date": "Refresh 2026-10-03 (live); latest exchange session 2026-10-02",
+    "used_for": "Source-backed recent SET daily observations and trading-date verification, cross-checked against the official SET latest close."
   },
   {
     "name": "SEC Company Facts API",
     "url": "https://data.sec.gov/api/xbrl/companyfacts/",
-    "publication_date": "Data fetched 2026-10-02",
+    "publication_date": "Data fetched 2026-10-03",
     "used_for": "Quarterly hyperscaler capex, Micron revenue/inventory/capex, and CoreWeave debt/PPE/capex/debt issuance."
   },
   {
@@ -190,5 +196,47 @@
     "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx",
     "publication_date": "Published 2026-07-29; accessed by daily dashboard refresh",
     "used_for": "META Q2 2026 purchases of property and equipment ($30.116B) until SEC Company Facts includes the new quarter."
+  },
+  {
+    "name": "Silicon Data official H100 rental index",
+    "url": "https://www.silicondata.com/products/silicon-index/h100",
+    "publication_date": "Observations through 2026-10-03; refresh mode: live",
+    "used_for": "Published public 7-day GPU rental readings, accumulated without deleting prior observations; not licensed full history."
+  },
+  {
+    "name": "Silicon Data official B200 rental index",
+    "url": "https://www.silicondata.com/products/silicon-index/b200",
+    "publication_date": "Observations through 2026-10-03; refresh mode: live",
+    "used_for": "Published public 7-day GPU rental readings, accumulated without deleting prior observations; not licensed full history."
+  },
+  {
+    "name": "Micron FY2026 Q4 official earnings release",
+    "url": "https://www.sec.gov/Archives/edgar/data/723125/000072312526000018/a2026q4ex991-pressrelease.htm",
+    "publication_date": "Published 2026-09-30; period ended 2026-09-03; refresh mode: live",
+    "used_for": "Quarterly revenue, period-end inventory and gross cash capex until SEC Company Facts includes the period. Not HBM-only capacity or net capex."
+  },
+  {
+    "name": "Silicon Data H100 dated historical review",
+    "url": "https://www.silicondata.com/blog/h200-vs-h100-rental-prices-may-july-2026",
+    "publication_date": "Published 2026-08-04; historical reference verified 2026-10-03",
+    "used_for": "Explicitly dated H100 observations, not inferred daily history."
+  },
+  {
+    "name": "Silicon Data B200 dated historical review",
+    "url": "https://www.silicondata.com/blog/b200-rental-price-august-2026-update",
+    "publication_date": "Published 2026-09-24; observations 2026-09-01 and 2026-09-07",
+    "used_for": "Historical B200 spot readings; excludes term/forward rates."
+  },
+  {
+    "name": "CoreWeave DDTL 5.5 announcement",
+    "url": "https://investors.coreweave.com/news/news-details/2026/CoreWeave-Closes-2-6-Billion-Loan-Facility-Expanding-Financing-Flexibility-for-AI-Infrastructure/default.aspx",
+    "publication_date": "Published 2026-08-10",
+    "used_for": "Dated financing event, separate from balance-sheet debt."
+  },
+  {
+    "name": "CoreWeave convertible offering announcement",
+    "url": "https://investors.coreweave.com/news/news-details/2026/CoreWeave-Prices-Upsized-3-7-Billion-Convertible-Senior-Notes-Offering/default.aspx",
+    "publication_date": "Published 2026-09-18",
+    "used_for": "Dated pricing announcement, not an assumed drawn balance."
   }
 ]

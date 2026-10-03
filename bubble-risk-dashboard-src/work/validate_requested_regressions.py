@@ -59,7 +59,7 @@ def main() -> None:
     require(meta is not None, "META capex series missing")
     q2 = next((point for point in meta.get("points", []) if point.get("date") == "2026-06-30"), None)
     require(q2 is not None and abs(float(q2["value"]) - 30.116) < 0.001, f"META Q2 capex wrong: {q2}")
-    require("earnings release" in str(q2.get("source") or "").lower(), "META Q2 official release source missing")
+    require(q2.get("form") in {"10-Q", "10-K"} or "earnings release" in str(q2.get("source") or "").lower(), "META Q2 verified filing/release source missing")
     sources = json.loads(MANIFEST.read_text(encoding="utf-8"))
     require(any(source.get("name") == "Meta Q2 2026 earnings release" for source in sources), "Meta release missing from source manifest")
     print(json.dumps({"status": "ok", "thailand": result, "meta_q2_capex_b": q2["value"], "top_watchlist_drawdown": True}, ensure_ascii=False, indent=2))

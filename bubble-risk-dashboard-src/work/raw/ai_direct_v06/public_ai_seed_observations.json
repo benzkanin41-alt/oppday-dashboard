@@ -1,0 +1,23 @@
+{
+  "gpu_rental": {
+    "NeoCloud H100": [
+      {"date": "2026-05-04", "value": 2.57, "source": "Silicon Data H200/H100 daily-index review, published 2026-08-04", "source_url": "https://www.silicondata.com/blog/h200-vs-h100-rental-prices-may-july-2026"},
+      {"date": "2026-06-05", "value": 2.79, "source": "Silicon Data H200/H100 daily-index review, published 2026-08-04", "source_url": "https://www.silicondata.com/blog/h200-vs-h100-rental-prices-may-july-2026"},
+      {"date": "2026-07-27", "value": 2.75, "source": "Silicon Data H200/H100 daily-index review, published 2026-08-04", "source_url": "https://www.silicondata.com/blog/h200-vs-h100-rental-prices-may-july-2026"}
+    ],
+    "NeoCloud B200": [
+      {"date": "2026-09-01", "value": 5.62, "source": "Silicon Data B200 daily-index review, published 2026-09-24", "source_url": "https://www.silicondata.com/blog/b200-rental-price-august-2026-update"},
+      {"date": "2026-09-07", "value": 5.69, "source": "Silicon Data B200 spot benchmark; not the forward rate, published 2026-09-24", "source_url": "https://www.silicondata.com/blog/b200-rental-price-august-2026-update"}
+    ]
+  },
+  "vendor_events": [
+    {"date": "2026-08-10", "metric": "CoreWeave DDTL 5.5 facility closed", "value": "$2.6B facility; not an assertion that the entire commitment was drawn", "source": "CoreWeave official announcement, 2026-08-10", "source_url": "https://investors.coreweave.com/news/news-details/2026/CoreWeave-Closes-2-6-Billion-Loan-Facility-Expanding-Financing-Flexibility-for-AI-Infrastructure/default.aspx"},
+    {"date": "2026-09-18", "metric": "CoreWeave convertible notes priced", "value": "$3.7B offering priced; announcement event, not the June balance-sheet debt", "source": "CoreWeave official announcement, 2026-09-18", "source_url": "https://investors.coreweave.com/news/news-details/2026/CoreWeave-Prices-Upsized-3-7-Billion-Convertible-Senior-Notes-Offering/default.aspx"}
+  ],
+  "sources": [
+    {"name": "Silicon Data H100 dated historical review", "url": "https://www.silicondata.com/blog/h200-vs-h100-rental-prices-may-july-2026", "publication_date": "Published 2026-08-04; historical reference verified 2026-10-03", "used_for": "Explicitly dated H100 observations, not inferred daily history."},
+    {"name": "Silicon Data B200 dated historical review", "url": "https://www.silicondata.com/blog/b200-rental-price-august-2026-update", "publication_date": "Published 2026-09-24; observations 2026-09-01 and 2026-09-07", "used_for": "Historical B200 spot readings; excludes term/forward rates."},
+    {"name": "CoreWeave DDTL 5.5 announcement", "url": "https://investors.coreweave.com/news/news-details/2026/CoreWeave-Closes-2-6-Billion-Loan-Facility-Expanding-Financing-Flexibility-for-AI-Infrastructure/default.aspx", "publication_date": "Published 2026-08-10", "used_for": "Dated financing event, separate from balance-sheet debt."},
+    {"name": "CoreWeave convertible offering announcement", "url": "https://investors.coreweave.com/news/news-details/2026/CoreWeave-Prices-Upsized-3-7-Billion-Convertible-Senior-Notes-Offering/default.aspx", "publication_date": "Published 2026-09-18", "used_for": "Dated pricing announcement, not an assumed drawn balance."}
+  ]
+}

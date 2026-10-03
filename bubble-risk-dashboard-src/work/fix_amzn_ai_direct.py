@@ -32,32 +32,7 @@ def parse_date(value: str | None) -> date | None:
 
 def amzn_productive_assets_quarterly() -> list[dict]:
     data = json.loads(AMZN_RAW.read_text(encoding="utf-8"))
-    rows = data["facts"]["us-gaap"]["PaymentsToAcquireProductiveAssets"]["units"]["USD"]
-    points = []
-    best = {}
-    for row in rows:
-        end = parse_date(row.get("end"))
-        start = parse_date(row.get("start"))
-        if row.get("form") not in {"10-Q", "10-K"} or row.get("val") is None or not end or not start or end < START:
-            continue
-        days = (end - start).days + 1
-        # Prefer explicit quarterly frame/duration for Amazon because the tag includes many TTM/YTD rows.
-        if days <= 110:
-            old = best.get(end.isoformat())
-            if old is None or (row.get("filed") or "") >= (old.get("filed") or ""):
-                best[end.isoformat()] = row
-    for end, row in sorted(best.items()):
-        points.append(
-            {
-                "date": end,
-                "value": round(abs(float(row["val"])) / 1e9, 3),
-                "tag": "PaymentsToAcquireProductiveAssets",
-                "form": row.get("form"),
-                "filed": row.get("filed"),
-                "accn": row.get("accn"),
-            }
-        )
-    return points[-10:]
+    return load_renderer().quarterly_cashflow(data, ["PaymentsToAcquireProductiveAssets"])
 
 
 def main() -> None:

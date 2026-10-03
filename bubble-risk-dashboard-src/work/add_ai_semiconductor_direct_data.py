@@ -82,41 +82,63 @@ def quarterly_cashflow(facts: dict, tag_candidates: list[str]) -> list[dict]:
             break
     if not raw_rows:
         return []
-    rows = dedupe_duration_rows(raw_rows)
-    by_start: dict[str, list[dict]] = {}
-    for row in rows:
-        by_start.setdefault(row["start"], []).append(row)
+    vintages = [
+        row for row in raw_rows
+        if row.get("form") in {"10-Q", "10-K", "20-F"}
+        and row.get("start") and row.get("end") and row.get("val") is not None
+    ]
+    rows = dedupe_duration_rows(vintages)
     points = []
-    for start, group in by_start.items():
-        group = sorted(group, key=lambda r: r["end"])
-        previous_val = 0
-        previous_end = None
-        for row in group:
-            start_d, end_d = parse_date(row["start"]), parse_date(row["end"])
-            if not start_d or not end_d:
+    for row in rows:
+        start_d, end_d = parse_date(row["start"]), parse_date(row["end"])
+        if not start_d or not end_d or end_d < START:
+            continue
+        days = (end_d - start_d).days + 1
+        contexts = [row]
+        period_start = start_d
+        if 70 <= days <= 110:
+            quarter_val = row["val"]
+            basis = "Reported quarter"
+        elif 110 < days <= 380:
+            # Use a predecessor known to the current filing, not a later restatement.
+            predecessors = [
+                item for item in vintages
+                if item["start"] == row["start"]
+                and parse_date(item["end"])
+                and 70 <= (end_d - parse_date(item["end"])).days <= 110
+                and item.get("filed") and row.get("filed")
+                and item["filed"] <= row["filed"]
+            ]
+            if not predecessors:
                 continue
-            days = (end_d - start_d).days + 1
-            if days <= 110:
-                quarter_val = row["val"]
-            else:
-                quarter_val = row["val"] - previous_val
-            previous_val = row["val"]
-            previous_end = end_d
-            if end_d >= START and quarter_val is not None:
-                points.append(
-                    {
-                        "date": end_d.isoformat(),
-                        "value": round(abs(float(quarter_val)) / 1e9, 3),
-                        "tag": tag_used,
-                        "form": row.get("form"),
-                        "filed": row.get("filed"),
-                        "accn": row.get("accn"),
-                    }
-                )
+            previous = max(predecessors, key=lambda item: (
+                item["end"], bool(item.get("accn")) and item.get("accn") == row.get("accn"),
+                item.get("filed") or "", item.get("accn") or "",
+            ))
+            quarter_val = row["val"] - previous["val"]
+            period_start = parse_date(previous["end"]) + timedelta(days=1)
+            contexts.append(previous)
+            basis = "Adjacent YTD difference"
+        else:
+            continue
+        points.append({
+            "date": end_d.isoformat(),
+            "period_start": period_start.isoformat(),
+            "value": round(abs(float(quarter_val)) / 1e9, 3),
+            "tag": tag_used,
+            "form": row.get("form"),
+            "filed": row.get("filed"),
+            "accn": row.get("accn"),
+            "basis": basis,
+            "derived_from": [
+                {key: item.get(key) for key in ("start", "end", "val", "filed", "accn")}
+                for item in contexts
+            ],
+        })
     deduped: dict[str, dict] = {}
-    for point in sorted(points, key=lambda p: (p["date"], p.get("filed") or "")):
+    for point in sorted(points, key=lambda p: (p["date"], p.get("filed") or "", p["basis"] == "Reported quarter")):
         deduped[point["date"]] = point
-    return list(deduped.values())[-10:]
+    return list(deduped.values())
 
 
 def instant_series(facts: dict, tag_candidates: list[str]) -> list[dict]:
@@ -147,7 +169,7 @@ def instant_series(facts: dict, tag_candidates: list[str]) -> list[dict]:
             "accn": row.get("accn"),
         }
         for end, row in sorted(best.items())
-    ][-10:]
+    ]
 
 
 def add_source_once(payload: dict, source: dict) -> None:
@@ -252,6 +274,7 @@ def build_data() -> dict:
     coreweave = {
         "CRWV capex": quarterly_cashflow(sec["CRWV"], ["PaymentsToAcquirePropertyPlantAndEquipment"]),
         "CRWV long-term debt": instant_series(sec["CRWV"], ["LongTermDebt", "DebtInstrumentCarryingAmount"]),
+        "CRWV gross debt": instant_series(sec["CRWV"], ["DebtInstrumentCarryingAmount"]),
         "CRWV PP&E net": instant_series(sec["CRWV"], ["PropertyPlantAndEquipmentNet"]),
         "CRWV debt issuance": quarterly_cashflow(sec["CRWV"], ["ProceedsFromIssuanceOfLongTermDebt"]),
     }

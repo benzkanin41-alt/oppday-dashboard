@@ -7,6 +7,8 @@ from datetime import datetime
 from pathlib import Path
 from urllib.request import Request, urlopen
 
+from retain_dashboard_history import assert_history_preserved
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "outputs" / "dashboard"
@@ -25,6 +27,7 @@ for path in (DATA, HTML, MANIFEST, UPDATE_LOG):
         fail(f"missing or empty required artifact: {path}")
 
 payload = json.loads(DATA.read_text(encoding="utf-8"))
+assert_history_preserved(payload)
 html = HTML.read_text(encoding="utf-8")
 manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
 update_log = json.loads(UPDATE_LOG.read_text(encoding="utf-8"))
@@ -156,6 +159,15 @@ if us_curve.get("as_of") != treasury_latest:
         "U.S. yield curve is behind the live Treasury XML: "
         f"dashboard={us_curve.get('as_of')}, treasury={treasury_latest}"
     )
+curve_indicator = next(
+    (item for item in payload.get("macro_v04", {}).get("indicators", []) if item.get("name") == "Yield Curve 10Y-2Y"),
+    None,
+)
+latest_tenors = us_curve.get("latest", {})
+if not curve_indicator or curve_indicator.get("date") != us_curve["as_of"]:
+    fail("Macro yield-curve indicator is not synchronized with the bond chart")
+if abs(curve_indicator["latest"] - (latest_tenors["10Y"] - latest_tenors["2Y"])) > 1e-8:
+    fail("Macro yield-curve value disagrees with the bond chart")
 
 summary = {
     "status": "ok",

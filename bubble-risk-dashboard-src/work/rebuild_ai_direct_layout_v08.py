@@ -125,11 +125,11 @@ def normalize_series(series_map: dict[str, list[dict[str, Any]]], source_kind: s
                 clean = {
                     "date": str(point["date"]),
                     "value": float(point["value"]),
-                    "source_kind": source_kind,
+                    "source_kind": point.get("source_kind") or source_kind,
                 }
             except (KeyError, TypeError, ValueError):
                 continue
-            for field in ("source", "tag", "form", "filed", "accn", "metric"):
+            for field in ("source", "source_url", "basis", "period_start", "derived_from", "tag", "form", "filed", "accn", "metric"):
                 if point.get(field):
                     clean[field] = point[field]
             clean_points.append(clean)
@@ -204,6 +204,7 @@ def gpu_observations(ai: dict[str, Any]) -> list[dict[str, Any]]:
                     "metric": series_name,
                     "value": point.get("value", ""),
                     "source": point.get("source", ""),
+                    "source_url": point.get("source_url", ""),
                 }
             )
     return sorted(rows, key=lambda x: (x["date"], x["metric"]))
@@ -250,8 +251,8 @@ def build_model(ai: dict[str, Any]) -> dict[str, Any]:
             "unit": "$/GPU-hour index",
             "badge": "Sparse public observations",
             "badge_class": "ai-badge-warn",
-            "coverage": "2-year window is shown in full. Public data has only dated Silicon Data / provider observations; no complete daily or monthly history was found in open sources.",
-            "latest": latest_value(ai["gpu_rental"]),
+            "coverage": "Public 7-day readings are refreshed from Silicon Data and accumulated with dated historical observations. The full 2-year chart window is shown, but missing dates are not interpolated; full older daily history remains a licensed-data gap.",
+            "latest": latest_values(ai["gpu_rental"]),
             "series": normalize_series(ai["gpu_rental"], "GPU rental observation"),
             "observations": gpu_observations(ai),
             "sparse": True,
@@ -259,12 +260,12 @@ def build_model(ai: dict[str, Any]) -> dict[str, Any]:
         {
             "id": "hbm-memory",
             "title": "HBM / Memory Supply Proxy",
-            "subtitle": "Micron revenue, inventory, and capex from SEC, plus HBM sold-out observations.",
+            "subtitle": "Micron total-company revenue, inventory, and gross cash capex from SEC/official releases; not HBM-only capacity.",
             "unit": "$B",
-            "badge": "SEC quarterly plus observations",
+            "badge": "SEC + official release",
             "badge_class": "ai-badge-ok",
-            "coverage": "SEC quarterly points are stored inside the 2-year window. HBM status remains source-backed observation, not a full capacity API.",
-            "latest": latest_value(ai["micron"]),
+            "coverage": "Historical quarterly points are retained. Recent official earnings releases bridge Company Facts publication lag. HBM status observations are dated context, not a real-time capacity series.",
+            "latest": latest_values(ai["micron"]),
             "series": normalize_series(ai["micron"], "SEC Company Facts"),
             "observations": ai.get("hbm_observations", []),
             "sparse": False,
@@ -298,12 +299,12 @@ def build_model(ai: dict[str, Any]) -> dict[str, Any]:
         {
             "id": "vendor-financing",
             "title": "Vendor Financing / Neocloud Leverage",
-            "subtitle": "CoreWeave capex, debt, PP&E, and debt issuance from SEC, plus major financing events.",
+            "subtitle": "CoreWeave capex, debt, PP&E and issuance. Gross debt is separate from the older net LongTermDebt tag.",
             "unit": "$B",
             "badge": "SEC quarterly plus events",
             "badge_class": "ai-badge-ok",
             "coverage": "CoreWeave SEC quarterly points are stored where filings exist; financing events are preserved as clickable source-backed rows.",
-            "latest": latest_value(ai["coreweave"]),
+            "latest": latest_values(ai["coreweave"]),
             "series": normalize_series(ai["coreweave"], "SEC Company Facts"),
             "observations": ai.get("vendor_events", []),
             "sparse": False,
@@ -325,6 +326,7 @@ def build_model(ai: dict[str, Any]) -> dict[str, Any]:
 AI_CSS = """
 <!-- ai-direct-css:start -->
 .ai-direct{background:#0f1520;color:#eef3fb;border:1px solid #273247;border-radius:8px;margin-top:14px;margin-bottom:64px;padding:18px 18px 28px;clear:both}.ai-direct h2{font-size:24px;color:#f5f8ff;margin:0}.ai-direct>p{color:#b9c8dc;margin:8px 0 16px;line-height:1.55}.ai-note{color:#f2d18c;background:#211d12;border:1px solid #6b5222;border-radius:6px;padding:10px;margin:12px 0;line-height:1.45}.ai-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:14px 0}.ai-pill{background:#101722;border:1px solid #27364e;border-radius:8px;padding:10px}.ai-pill b{display:block;color:#fff;font-size:20px}.ai-pill span{color:#aabbd2;font-size:12px}.ai-grid-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px;align-items:start;margin-bottom:24px}.ai-card{background:#151d2b;border:1px solid #29364d;border-radius:8px;padding:14px;min-width:0}.ai-card-head{display:flex;justify-content:space-between;gap:12px;align-items:start}.ai-card h3{margin:0 0 5px;color:#f4f7ff;font-size:17px}.ai-card p{margin:0;color:#b7c8df;line-height:1.4}.ai-card-head span{border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;white-space:nowrap}.ai-badge-ok{border:1px solid #62c784;color:#9be0ae;background:#102519}.ai-badge-warn{border:1px solid #d49731;color:#ffd78a;background:#2a1d0d}.ai-meta-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#c6d6ea;font-size:12px;margin:9px 0}.ai-meta-row b{color:#f5f8ff}.ai-meta-row span{color:#92a9c4}.ai-coverage{color:#f0c36d;background:#1b1b16;border:1px solid #4b3d1e;border-radius:6px;padding:8px;margin:8px 0 10px;font-size:12px;line-height:1.4}.ai-interactive-chart{position:relative;background:#101722;border:1px solid #243048;border-radius:6px;overflow:hidden}.ai-chart-svg{display:block;width:100%;height:auto;min-height:310px}.ai-grid-line{stroke:#26364f;stroke-width:1}.ai-axis-label{fill:#9fb2ca;font-size:12px}.ai-series-line{fill:none;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round}.ai-point{cursor:pointer;stroke:#f5f8ff;stroke-width:1.6;filter:drop-shadow(0 0 4px rgba(112,167,255,.35))}.ai-point:focus{outline:none;stroke:#fff;stroke-width:3}.ai-hover-line{stroke:#d7e4f6;stroke-width:1;stroke-dasharray:4 4;opacity:.65;display:none}.ai-window-rail{stroke:#607089;stroke-width:3;stroke-linecap:round;opacity:.85}.ai-window-tick{stroke:#9fb2ca;stroke-width:1.4}.ai-window-dot{stroke:#101722;stroke-width:1.4}.ai-window-label{fill:#9fb2ca;font-size:11px}.ai-no-data-band{fill:#182234;opacity:.8}.ai-no-data-label{fill:#f0c36d;font-size:12px}.ai-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;color:#c3d1e4;font-size:12px}.ai-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}.ai-selected-detail{margin-top:10px;background:#101722;border:1px solid #27364e;border-radius:6px;padding:10px;color:#cfe0f5;font-size:12px;line-height:1.45;min-height:44px}.ai-selected-detail b{color:#fff}.ai-small-table{font-size:12px;margin-top:10px;width:100%;border-collapse:collapse}.ai-small-table th,.ai-small-table td{padding:7px 8px;border-bottom:1px solid #26344a;color:#d6e3f4;text-align:left;vertical-align:top}.ai-small-table th{color:#9eb3ce}.ai-observation-row{cursor:pointer}.ai-observation-row:hover,.ai-observation-row:focus{background:#1c273a;outline:none}@media(max-width:720px){.ai-grid-cards{grid-template-columns:1fr}.ai-card-head{display:block}.ai-card-head span{display:inline-block;margin-top:8px}.ai-chart-svg{min-height:240px}}
+.ai-selected-detail a{color:#9dccff;overflow-wrap:anywhere}
 <!-- ai-direct-css:end -->
 """
 
@@ -392,6 +394,9 @@ AI_JS = f"""
     if (point.form) lines.push('Filing: ' + escapeHtml(point.form) + (point.filed ? ' filed ' + escapeHtml(point.filed) : ''));
     if (point.accn) lines.push('Accession: ' + escapeHtml(point.accn));
     if (point.source) lines.push('Source: ' + escapeHtml(point.source));
+    if (point.source_url && /^https?:[/][/]/.test(point.source_url)) lines.push('<a href="' + escapeHtml(point.source_url) + '" target="_blank" rel="noopener">Primary source</a>');
+    if (point.period_start) lines.push('Period: ' + escapeHtml(point.period_start) + ' to ' + escapeHtml(point.date));
+    if (point.basis) lines.push('Basis: ' + escapeHtml(point.basis));
     if (point.source_kind) lines.push('Source type: ' + escapeHtml(point.source_kind));
     return lines.join('<br>');
   }}
@@ -504,6 +509,10 @@ AI_JS = f"""
       var card = row.closest('[data-ai-card]');
       var id = card ? card.getAttribute('data-ai-card') : '';
       setDetail(id, '<b>' + escapeHtml(obs.metric || 'Observation') + '</b><br>Date: ' + escapeHtml(obs.date || '') + '<br>Value: ' + escapeHtml(obs.value || '') + '<br>Source: ' + escapeHtml(obs.source || ''));
+      if (obs.source_url && /^https?:[/][/]/.test(obs.source_url)) {{
+        var panel = document.querySelector('[data-ai-detail="' + id + '"]');
+        panel.innerHTML += '<br><a href="' + escapeHtml(obs.source_url) + '" target="_blank" rel="noopener">Primary source</a>';
+      }}
     }});
   }});
 }})();

@@ -75,7 +75,7 @@ def main() -> None:
         if source.get("name") == "SEC Company Facts API":
             source["publication_date"] = f"Data fetched {access_date}"
             if cache_fallback:
-                source["publication_date"] += f"; cache fallback: {', '.join(cache_fallback)}"
+                source["publication_date"] = f"Refresh attempted {access_date}; retained cached facts for {', '.join(cache_fallback)}; period/filing dates shown per point"
 
     if cache_fallback:
         payload.setdefault("source_failures", []).append(

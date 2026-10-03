@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 import json
 import math
+import re
 import statistics
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -79,6 +80,16 @@ def indicator_map(payload: dict) -> dict[str, dict]:
         for item in payload.get("macro_v04", {}).get("indicators", [])
         if item.get("name")
     }
+
+
+def latest_market_anchor(payload: dict) -> str:
+    dates = [
+        str(item.get("market_session_date") or item.get("as_of") or "")[:10]
+        for bucket in ("indices", "sectors", "themes")
+        for item in payload.get(bucket, [])
+    ]
+    valid = [day for day in dates if re.fullmatch(r"\d{4}-\d{2}-\d{2}", day)]
+    return max(valid) if valid else str(payload.get("data_anchor") or "")
 
 
 def synchronize_payload(payload: dict) -> dict:
@@ -176,6 +187,7 @@ def synchronize_payload(payload: dict) -> dict:
     refreshed_at = now_bangkok()
     payload["generated_at"] = refreshed_at
     payload["dashboard_refreshed_at"] = refreshed_at
+    payload["data_anchor"] = latest_market_anchor(payload)
     return {
         "generated_at": refreshed_at,
         "vix": vix["latest"],
@@ -237,6 +249,11 @@ def synchronize_html(payload: dict) -> None:
         f'Data anchor: market data through {html.escape(payload["data_anchor"])}</div>'
     )
     page = page[:freshness_start] + freshness + page[freshness_end:]
+    page = re.sub(
+        r'(<div class="v04-asof">data as of<br><strong>).*?(</strong></div>)',
+        lambda match: match.group(1) + html.escape(payload["data_anchor"]) + match.group(2),
+        page, count=1,
+    )
 
     hero_start = page.index('<section class="hero-grid">')
     hero_end = page.index('<section class="section two-col">', hero_start)

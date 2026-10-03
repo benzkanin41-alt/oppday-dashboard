@@ -83,10 +83,16 @@ def main() -> None:
     if "META" not in capex:
         raise RuntimeError("META capex series missing")
     point, mode = read_or_fetch()
-    capex["META"] = sorted(
-        [item for item in capex["META"] if item.get("date") != PERIOD_END] + [point],
-        key=lambda item: item["date"],
-    )[-10:]
+    existing = next((item for item in capex["META"] if item.get("date") == PERIOD_END), None)
+    if not existing or existing.get("form") not in {"10-Q", "10-K"}:
+        capex["META"] = sorted(
+            [item for item in capex["META"] if item.get("date") != PERIOD_END] + [point],
+            key=lambda item: item["date"],
+        )
+    else:
+        if abs(existing["value"] - point["value"]) > 0.001:
+            raise RuntimeError("Meta SEC and earnings-release capex disagree")
+        mode += "; retained authoritative SEC fact"
     sources = payload.setdefault("sources", [])
     upsert_source(sources)
     DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")

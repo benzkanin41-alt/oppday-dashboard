@@ -7,6 +7,8 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from retain_dashboard_history import capture_history
+
 try:
     from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 except ImportError:  # pragma: no cover
@@ -31,16 +33,20 @@ STEPS = [
     "work/patch_thailand_heat_mai_treasury.py",
     "work/recalculate_eyg_latest_yields.py",
     "work/patch_mai_tradingview_history.py",
+    "work/patch_set_session_history.py",
     "work/finalize_requested_dashboard_metrics.py",
     "work/refresh_ai_semiconductor_direct_data.py",
     "work/patch_meta_latest_release_capex.py",
     "work/fix_amzn_ai_direct.py",
+    "work/refresh_ai_public_sources.py",
+    "work/retain_dashboard_history.py",
     "work/rebuild_ai_direct_layout_v08.py",
     "work/fix_ai_spacing_and_manifest_order.py",
     "work/fix_ai_to_score_spacing.py",
     "work/clean_payload_user_text.py",
     "work/sync_latest_dashboard_summary.py",
     "work/validate_macro_v04_nonzero.py",
+    "work/test_refresh_adapters.py",
     "work/validate_froth_components_populated.py",
     "work/validate_current_market_indicators.py",
     "work/validate_current_summary_sync.py",
@@ -106,6 +112,7 @@ def run_step(script: str) -> dict[str, object]:
 
 
 def main() -> None:
+    capture_history()
     results = []
     status = {
         "status": "running",
@@ -121,6 +128,7 @@ def main() -> None:
             status["updated_at"] = now_bangkok()
             LOG.write_text(json.dumps(status, ensure_ascii=False, indent=2), encoding="utf-8")
         status["status"] = "ok"
+        capture_history()
         status["completed_at"] = now_bangkok()
     except Exception as exc:
         status["status"] = "failed"

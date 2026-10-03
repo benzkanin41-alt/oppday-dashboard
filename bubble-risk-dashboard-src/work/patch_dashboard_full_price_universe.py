@@ -6,6 +6,8 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+from retain_dashboard_history import load_archive
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "outputs" / "dashboard"
@@ -73,6 +75,13 @@ def main() -> None:
             seen.add(row["symbol"])
             rows.append(row)
     existing = payload.get("price_histories_v04") or payload.get("price_histories_v03") or {}
+    archived = load_archive().get("prices", {})
+    for symbol, item in archived.items():
+        if symbol not in seen:
+            seen.add(symbol)
+            rows.append({"symbol": symbol, "name": item.get("label") or symbol})
+        if symbol not in existing or existing[symbol].get("chart_symbol") == item.get("chart_symbol"):
+            existing[symbol] = item
     price_series = v04.build_price_series(rows, existing)
     payload["price_histories_v04"] = price_series
 

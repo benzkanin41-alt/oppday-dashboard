@@ -15,7 +15,10 @@ def clean_price_series(series: dict) -> None:
         if not isinstance(item, dict):
             continue
         chart_symbol = item.get("chart_symbol") or item.get("symbol") or symbol
-        item["note"] = f"Proxy {chart_symbol}; if the first date is after 1990, the source starts there."
+        if symbol == "SET" and item.get("market_session_date"):
+            item["note"] = "SET Index: Yahoo Finance + TradingView daily history; official SET latest close verified by exchange-session date."
+        else:
+            item["note"] = f"Proxy {chart_symbol}; if the first date is after 1990, the source starts there."
 
 
 def clean_eyg_rows(rows: list) -> None:

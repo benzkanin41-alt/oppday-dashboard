@@ -60,6 +60,9 @@
     if (point.form) lines.push('Filing: ' + escapeHtml(point.form) + (point.filed ? ' filed ' + escapeHtml(point.filed) : ''));
     if (point.accn) lines.push('Accession: ' + escapeHtml(point.accn));
     if (point.source) lines.push('Source: ' + escapeHtml(point.source));
+    if (point.source_url && /^https?:[/][/]/.test(point.source_url)) lines.push('<a href="' + escapeHtml(point.source_url) + '" target="_blank" rel="noopener">Primary source</a>');
+    if (point.period_start) lines.push('Period: ' + escapeHtml(point.period_start) + ' to ' + escapeHtml(point.date));
+    if (point.basis) lines.push('Basis: ' + escapeHtml(point.basis));
     if (point.source_kind) lines.push('Source type: ' + escapeHtml(point.source_kind));
     return lines.join('<br>');
   }
@@ -172,6 +175,10 @@
       var card = row.closest('[data-ai-card]');
       var id = card ? card.getAttribute('data-ai-card') : '';
       setDetail(id, '<b>' + escapeHtml(obs.metric || 'Observation') + '</b><br>Date: ' + escapeHtml(obs.date || '') + '<br>Value: ' + escapeHtml(obs.value || '') + '<br>Source: ' + escapeHtml(obs.source || ''));
+      if (obs.source_url && /^https?:[/][/]/.test(obs.source_url)) {
+        var panel = document.querySelector('[data-ai-detail="' + id + '"]');
+        panel.innerHTML += '<br><a href="' + escapeHtml(obs.source_url) + '" target="_blank" rel="noopener">Primary source</a>';
+      }
     });
   });
 })();

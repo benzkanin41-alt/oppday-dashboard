@@ -26,16 +26,16 @@ def load_thailand_patch():
 
 def merge_latest_snapshot(item: dict, history: dict) -> list[dict]:
     points = [
-        {"date": str(point.get("date")), "value": float(point["value"])}
+        {**point, "date": str(point.get("date")), "value": float(point["value"])}
         for point in (history.get("points") or [])
         if point.get("date") and point.get("value") is not None
     ]
     points.sort(key=lambda point: point["date"])
     metrics = item.get("metrics") or {}
     latest = metrics.get("latest")
-    as_of = str(item.get("as_of") or metrics.get("as_of") or "")[:10]
+    as_of = str(item.get("market_session_date") or item.get("as_of") or metrics.get("as_of") or "")[:10]
     if latest is not None and re.fullmatch(r"\d{4}-\d{2}-\d{2}", as_of):
-        current = {"date": as_of, "value": float(latest)}
+        current = {"date": as_of, "value": float(latest), "source_url": item.get("source_url"), "source_kind": "Official SET latest close"}
         if points and points[-1]["date"] == as_of:
             points[-1] = current
         elif not points or points[-1]["date"] < as_of:
@@ -72,8 +72,8 @@ def enrich_thailand(payload: dict, thailand) -> dict:
         history.pop("render_mode", None)
         if symbol == "SET":
             history["note"] = (
-                "Yahoo Finance ^SET.BK daily history; the latest same-day point is cross-checked "
-                "and replaced by the official SET overview snapshot when available."
+                "Yahoo Finance ^SET.BK plus TradingView SET:SET daily history for the same SET Index; "
+                "the latest exchange-session close is cross-checked against the official SET overview."
             )
         else:
             history["note"] = (
