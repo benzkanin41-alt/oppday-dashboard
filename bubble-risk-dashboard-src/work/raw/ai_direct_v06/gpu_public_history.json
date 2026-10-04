@@ -99,6 +99,13 @@
       "source": "Silicon Data official public index reading",
       "source_url": "https://www.silicondata.com/products/silicon-index/h100",
       "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-03",
+      "value": 7.2,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
     }
   ],
   "NeoCloud B200": [

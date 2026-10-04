@@ -128,7 +128,7 @@
   {
     "name": "Cboe VIX historical price data",
     "url": "https://www.cboe.com/tradable-products/vix/vix-historical-data",
-    "publication_date": "updated daily; latest observation 2026-10-01",
+    "publication_date": "updated daily; latest observation 2026-10-02",
     "used_for": "VIX complacency row and 5-year sparkline in Froth Components."
   },
   {
@@ -139,26 +139,26 @@
   },
   {
     "name": "New York Fed EFFR API",
-    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-08-19&endDate=2026-10-03&type=rate",
-    "publication_date": "latest EFFR observation 2026-09-30",
+    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-08-20&endDate=2026-10-04&type=rate",
+    "publication_date": "latest EFFR observation 2026-10-01",
     "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS."
   },
   {
     "name": "TradingView SET:MAI daily history",
     "url": "https://www.tradingview.com/symbols/SET-MAI/",
-    "publication_date": "Data fetched 2026-10-03; latest observation 2026-10-02",
+    "publication_date": "Data fetched 2026-10-04; latest observation 2026-10-02",
     "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
   },
   {
     "name": "TradingView SET:SET daily history",
     "url": "https://www.tradingview.com/symbols/SET-SET/",
-    "publication_date": "Refresh 2026-10-03 (live); latest exchange session 2026-10-02",
+    "publication_date": "Refresh 2026-10-04 (live); latest exchange session 2026-10-02",
     "used_for": "Source-backed recent SET daily observations and trading-date verification, cross-checked against the official SET latest close."
   },
   {
     "name": "SEC Company Facts API",
     "url": "https://data.sec.gov/api/xbrl/companyfacts/",
-    "publication_date": "Data fetched 2026-10-03",
+    "publication_date": "Data fetched 2026-10-04",
     "used_for": "Quarterly hyperscaler capex, Micron revenue/inventory/capex, and CoreWeave debt/PPE/capex/debt issuance."
   },
   {
