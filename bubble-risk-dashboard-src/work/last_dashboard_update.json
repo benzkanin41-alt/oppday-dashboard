@@ -1,249 +1,249 @@
 {
   "status": "ok",
-  "started_at": "2026-10-10 11:34:38 Bangkok",
+  "started_at": "2026-10-11 11:18:51 Bangkok",
   "workspace": "D:\\a\\oppday-dashboard\\oppday-dashboard\\bubble-risk-dashboard-src",
   "steps": [
     {
       "script": "work/build_bubble_dashboard.py",
-      "started_at": "2026-10-10 11:34:38 Bangkok",
+      "started_at": "2026-10-11 11:18:51 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"status\": \"ok\",\n  \"out\": \"D:\\\\a\\\\oppday-dashboard\\\\oppday-dashboard\\\\bubble-risk-dashboard-src\\\\outputs\\\\dashboard\",\n  \"items\": 28,\n  \"failures\": 3\n}\n"
     },
     {
       "script": "work/enhance_dashboard_thailand_rates.py",
-      "started_at": "2026-10-10 11:34:52 Bangkok",
+      "started_at": "2026-10-11 11:19:05 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"status\": \"ok\",\n  \"thai_indices\": [\n    {\n      \"symbol\": \"SET\",\n      \"name\": \"SET Index\",\n      \"region\": \"Thailand\",\n      \"latest\": 1577.65,\n      \"change\": 7.04,\n      \"change_pct\": 0.45,\n      \"as_of\": \"2026-10-10 03:20:09 Bangkok\",\n      \"url\": \"https://www.set.or.th/en/market/index/set/overview\"\n    },\n    {\n      \"symbol\": \"mai\",\n      \"name\": \"mai Index\",\n      \"region\": \"Thailand\",\n      \"latest\": 222.23,\n      \"change\": 0.81,\n      \"change_pct\": 0.37,\n      \"as_of\": \"2026-10-10 03:20:09 Bangkok\",\n      \"url\": \"https://www.set.or.th/en/market/index/mai/overview\"\n    }\n  ],\n  \"yield_curves\": 2,\n  \"eyg_rows\": 13,\n  \"html\": \"D:\\\\a\\\\oppday-dashboard\\\\oppday-dashboard\\\\bubble-risk-dashboard-src\\\\outputs\\\\dashboard\\\\index.html\"\n}\n"
     },
     {
       "script": "work/enhance_dashboard_interactive_v03.py",
-      "started_at": "2026-10-10 11:35:01 Bangkok",
+      "started_at": "2026-10-11 11:19:15 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"status\": \"ok\",\n  \"top_watchlist_rows\": 12,\n  \"price_series\": {\n    \"SKYY\": 2514,\n    \"CIBR\": 2514,\n    \"XLK\": 2514,\n    \"SMH\": 2514,\n    \"IBB\": 2514,\n    \"XLE\": 2514,\n    \"QQQ\": 2514,\n    \"EWY\": 2514,\n    \"ARKK\": 2514,\n    \"SPY\": 2514,\n    \"SET\": 1,\n    \"mai\": 1\n  },\n  \"yield_curves\": [\n    [\n      \"United States\",\n      5004,\n      {\n        \"2Y\": 4.75,\n        \"5Y\": 4.99,\n        \"10Y\": 5.22,\n        \"30Y\": 5.6\n      }\n    ],\n    [\n      \"Thailand\",\n      4873,\n      {\n        \"2Y\": 1.334297,\n        \"5Y\": 1.782341,\n        \"10Y\": 2.370144,\n        \"30Y\": 3.329663\n      }\n    ]\n  ],\n  \"set_trailing_pe\": 15.71,\n  \"mai_trailing_pe\": 85.01,\n  \"eyg_rows\": 13,\n  \"html\": \"D:\\\\a\\\\oppday-dashboard\\\\oppday-dashboard\\\\bubble-risk-dashboard-src\\\\outputs\\\\dashboard\\\\index.html\"\n}\n"
+      "output_tail": "{\n  \"status\": \"ok\",\n  \"top_watchlist_rows\": 12,\n  \"price_series\": {\n    \"SKYY\": 2514,\n    \"CIBR\": 2514,\n    \"XLK\": 2514,\n    \"SMH\": 2514,\n    \"IBB\": 2514,\n    \"XLE\": 2514,\n    \"QQQ\": 2514,\n    \"EWY\": 2514,\n    \"ARKK\": 2514,\n    \"SPY\": 2514,\n    \"SET\": 1,\n    \"mai\": 1\n  },\n  \"yield_curves\": [\n    [\n      \"United States\",\n      5003,\n      {\n        \"2Y\": 4.75,\n        \"5Y\": 4.99,\n        \"10Y\": 5.22,\n        \"30Y\": 5.6\n      }\n    ],\n    [\n      \"Thailand\",\n      4872,\n      {\n        \"2Y\": 1.334297,\n        \"5Y\": 1.782341,\n        \"10Y\": 2.370144,\n        \"30Y\": 3.329663\n      }\n    ]\n  ],\n  \"set_trailing_pe\": 15.71,\n  \"mai_trailing_pe\": 85.01,\n  \"eyg_rows\": 13,\n  \"html\": \"D:\\\\a\\\\oppday-dashboard\\\\oppday-dashboard\\\\bubble-risk-dashboard-src\\\\outputs\\\\dashboard\\\\index.html\"\n}\n"
     },
     {
       "script": "work/enhance_dashboard_v04.py",
-      "started_at": "2026-10-10 11:36:09 Bangkok",
+      "started_at": "2026-10-11 11:20:18 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"status\": \"ok\",\n  \"top_watchlist_rows\": 12,\n  \"price_series\": {\n    \"SKYY\": 2514,\n    \"CIBR\": 2514,\n    \"XLK\": 2514,\n    \"SMH\": 2514,\n    \"IBB\": 2514,\n    \"XLE\": 2514,\n    \"QQQ\": 2514,\n    \"EWY\": 2514,\n    \"ARKK\": 2514,\n    \"SPY\": 2514,\n    \"SET\": 1,\n    \"mai\": 1\n  },\n  \"yield_curves\": [\n    [\n      \"United States\",\n      5004,\n      {\n        \"2Y\": 4.75,\n        \"5Y\": 4.99,\n        \"10Y\": 5.22,\n        \"30Y\": 5.6\n      }\n    ],\n    [\n      \"Thailand\",\n      4873,\n      {\n        \"2Y\": 1.334297,\n        \"5Y\": 1.782341,\n        \"10Y\": 2.370144,\n        \"30Y\": 3.329663\n      }\n    ]\n  ],\n  \"set_trailing_pe\": 15.71,\n  \"mai_trailing_pe\": 85.01,\n  \"eyg_rows\": 13,\n  \"html\": \"D:\\\\a\\\\oppday-dashboard\\\\oppday-dashboard\\\\bubble-risk-dashboard-src\\\\outputs\\\\dashboard\\\\index.html\"\n}\n{\n  \"status\": \"ok\",\n  \"price_series\": {\n    \"SKYY\": 3839,\n    \"CIBR\": 2833,\n    \"XLK\": 6992,\n    \"SMH\": 6627,\n    \"IBB\": 6453,\n    \"XLE\": 6992,\n    \"QQQ\": 9261,\n    \"EWY\": 7340,\n    \"ARKK\": 3002,\n    \"SPY\": 9261,\n    \"SET\": 7220,\n    \"mai\": 2\n  },\n  \"yield_curves\": [\n    [\n      \"United States\",\n      9199,\n      \"1990-01-02\",\n      \"2026-10-08\"\n    ],\n    [\n      \"Thailand\",\n      4873,\n      \"2006-10-10\",\n      \"2026-10-09\"\n    ]\n  ],\n  \"valuations\": {\n    \"SPY\": {\n      \"trailing_pe\": 25.155354,\n      \"forward_pe\": 20.69,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": \"State Street SPDR Price/Earnings Ratio FY1\"\n    },\n    \"QQQ\": {\n      \"trailing_pe\": 30.620718,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"IWM\": {\n      \"trailing_pe\": 16.42155,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"FEZ\": {\n      \"trailing_pe\": 17.393415,\n      \"forward_pe\": 15.41,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": \"State Street SPDR Price/Earnings Ratio FY1\"\n    },\n    \"VGK\": {\n      \"trailing_pe\": 16.751335,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"EWJ\": {\n      \"trailing_pe\": 19.500399,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"MCHI\": {\n      \"trailing_pe\": 11.38364,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"FXI\": {\n      \"trailing_pe\": 9.070952,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"INDA\": {\n      \"trailing_pe\": 20.992277,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"EWY\": {\n      \"trailing_pe\": 10.198612,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"ACWI\": {\n      \"trailing_pe\": 21.37394,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"SET\": {\n      \"trailing_pe\": 15.71,\n      \"forward_pe\": null,\n      \"source\": \"SET Market Overview, as of 2026-10-09\",\n      \"forward_source\": null\n    },\n    \"mai\": {\n      \"trailing_pe\": 85.01,\n      \"forward_pe\": null,\n      \"source\": \"SET Market Overview, as of 2026-10-09\",\n      \"forward_source\": null\n    }\n  },\n  \"html\": \"D:\\\\a\\\\oppday-dashboard\\\\oppday-dashboard\\\\bubble-risk-dashboard-src\\\\outputs\\\\dashboard\\\\index.html\"\n}\n"
+      "output_tail": "{\n  \"status\": \"ok\",\n  \"top_watchlist_rows\": 12,\n  \"price_series\": {\n    \"SKYY\": 2514,\n    \"CIBR\": 2514,\n    \"XLK\": 2514,\n    \"SMH\": 2514,\n    \"IBB\": 2514,\n    \"XLE\": 2514,\n    \"QQQ\": 2514,\n    \"EWY\": 2514,\n    \"ARKK\": 2514,\n    \"SPY\": 2514,\n    \"SET\": 1,\n    \"mai\": 1\n  },\n  \"yield_curves\": [\n    [\n      \"United States\",\n      5003,\n      {\n        \"2Y\": 4.75,\n        \"5Y\": 4.99,\n        \"10Y\": 5.22,\n        \"30Y\": 5.6\n      }\n    ],\n    [\n      \"Thailand\",\n      4872,\n      {\n        \"2Y\": 1.334297,\n        \"5Y\": 1.782341,\n        \"10Y\": 2.370144,\n        \"30Y\": 3.329663\n      }\n    ]\n  ],\n  \"set_trailing_pe\": 15.71,\n  \"mai_trailing_pe\": 85.01,\n  \"eyg_rows\": 13,\n  \"html\": \"D:\\\\a\\\\oppday-dashboard\\\\oppday-dashboard\\\\bubble-risk-dashboard-src\\\\outputs\\\\dashboard\\\\index.html\"\n}\n{\n  \"status\": \"ok\",\n  \"price_series\": {\n    \"SKYY\": 3839,\n    \"CIBR\": 2833,\n    \"XLK\": 6992,\n    \"SMH\": 6627,\n    \"IBB\": 6453,\n    \"XLE\": 6992,\n    \"QQQ\": 9261,\n    \"EWY\": 7340,\n    \"ARKK\": 3002,\n    \"SPY\": 9261,\n    \"SET\": 7220,\n    \"mai\": 1\n  },\n  \"yield_curves\": [\n    [\n      \"United States\",\n      9199,\n      \"1990-01-02\",\n      \"2026-10-08\"\n    ],\n    [\n      \"Thailand\",\n      4872,\n      \"2006-10-11\",\n      \"2026-10-09\"\n    ]\n  ],\n  \"valuations\": {\n    \"SPY\": {\n      \"trailing_pe\": 24.718744,\n      \"forward_pe\": 20.69,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": \"State Street SPDR Price/Earnings Ratio FY1\"\n    },\n    \"QQQ\": {\n      \"trailing_pe\": 28.766678,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"IWM\": {\n      \"trailing_pe\": 16.410427,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"FEZ\": {\n      \"trailing_pe\": 18.081985,\n      \"forward_pe\": 15.41,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": \"State Street SPDR Price/Earnings Ratio FY1\"\n    },\n    \"VGK\": {\n      \"trailing_pe\": 16.751335,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"EWJ\": {\n      \"trailing_pe\": 15.333888,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"MCHI\": {\n      \"trailing_pe\": 11.468084,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"FXI\": {\n      \"trailing_pe\": 9.290807,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"INDA\": {\n      \"trailing_pe\": 20.992277,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"EWY\": {\n      \"trailing_pe\": 10.096763,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"ACWI\": {\n      \"trailing_pe\": 20.91918,\n      \"forward_pe\": null,\n      \"source\": \"Yahoo Finance key-statistics embedded trailingPE\",\n      \"forward_source\": null\n    },\n    \"SET\": {\n      \"trailing_pe\": 15.71,\n      \"forward_pe\": null,\n      \"source\": \"SET Market Overview, as of 2026-10-09\",\n      \"forward_source\": null\n    },\n    \"mai\": {\n      \"trailing_pe\": 85.01,\n      \"forward_pe\": null,\n      \"source\": \"SET Market Overview, as of 2026-10-09\",\n      \"forward_source\": null\n    }\n  },\n  \"html\": \"D:\\\\a\\\\oppday-dashboard\\\\oppday-dashboard\\\\bubble-risk-dashboard-src\\\\outputs\\\\dashboard\\\\index.html\"\n}\n"
     },
     {
       "script": "work/update_froth_components_fred.py",
-      "started_at": "2026-10-10 11:37:50 Bangkok",
+      "started_at": "2026-10-11 11:21:50 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"Buffett Indicator (US equities / GDP)\": {\n    \"latest\": 2.550464345609116,\n    \"date\": \"2026-04-01\",\n    \"pct\": 100.0\n  },\n  \"Credit Risk Premium (Baa - 10Y)\": {\n    \"latest\": 1.6799999999999997,\n    \"date\": \"2026-09-01\",\n    \"pct\": 82.72727272727272\n  },\n  \"High Yield OAS\": {\n    \"latest\": 3.15,\n    \"date\": \"2026-10-08\",\n    \"pct\": 36.25954198473282\n  },\n  \"VIX complacency\": {\n    \"latest\": 15.41,\n    \"date\": \"2026-10-08\",\n    \"pct\": 65.38585728123991\n  },\n  \"Yield Curve 10Y-2Y\": {\n    \"latest\": 0.46999999999999975,\n    \"date\": \"2026-10-08\",\n    \"pct\": 64.27872594847267\n  },\n  \"Fed Assets YoY\": {\n    \"latest\": 2.3782339513398476,\n    \"date\": \"2026-10-07\",\n    \"pct\": 41.8975650713686\n  },\n  \"Real Policy Proxy\": {\n    \"latest\": 1.4,\n    \"date\": \"2026-09-01\",\n    \"pct\": 77.46478873239437\n  }\n}\n"
     },
     {
       "script": "work/update_current_market_indicators.py",
-      "started_at": "2026-10-10 11:37:57 Bangkok",
+      "started_at": "2026-10-11 11:21:57 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"status\": \"ok\",\n  \"cboe_vix\": {\n    \"date\": \"2026-10-09\",\n    \"url\": \"https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv\"\n  },\n  \"treasury_curve_10y2y\": {\n    \"date\": \"2026-10-09\",\n    \"feed_updated\": \"2026-10-09T15:51:08Z\",\n    \"url\": \"https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026\"\n  },\n  \"nyfed_effr\": {\n    \"date\": \"2026-10-08\"\n  },\n  \"fred_t10yie\": {\n    \"date\": \"2026-10-09\"\n  },\n  \"real_policy_proxy\": {\n    \"date\": \"2026-10-08\"\n  }\n}\n"
+      "output_tail": "{\n  \"status\": \"ok\",\n  \"cboe_vix\": {\n    \"date\": \"2026-10-09\",\n    \"url\": \"https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv\"\n  },\n  \"treasury_curve_10y2y\": {\n    \"date\": \"2026-10-09\",\n    \"feed_updated\": \"2026-10-10T02:07:32Z\",\n    \"url\": \"https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026\"\n  },\n  \"nyfed_effr\": {\n    \"date\": \"2026-10-08\"\n  },\n  \"fred_t10yie\": {\n    \"date\": \"2026-10-09\"\n  },\n  \"real_policy_proxy\": {\n    \"date\": \"2026-10-08\"\n  }\n}\n"
     },
     {
       "script": "work/sync_latest_dashboard_summary.py",
-      "started_at": "2026-10-10 11:38:27 Bangkok",
+      "started_at": "2026-10-11 11:22:24 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"status\": \"ok\",\n  \"generated_at\": \"2026-10-10 11:38:28 Bangkok\",\n  \"vix\": 14.84,\n  \"vix_as_of\": \"2026-10-09\",\n  \"overall_score\": 62.88437569293369,\n  \"overall_band\": \"Warm\",\n  \"sentiment_score\": 75.8,\n  \"credit_liquidity_score\": 62.784116975669924,\n  \"chip_score\": 68\n}\n"
+      "output_tail": "{\n  \"status\": \"ok\",\n  \"generated_at\": \"2026-10-11 11:22:24 Bangkok\",\n  \"vix\": 14.84,\n  \"vix_as_of\": \"2026-10-09\",\n  \"overall_score\": 62.88437569293369,\n  \"overall_band\": \"Warm\",\n  \"sentiment_score\": 75.8,\n  \"credit_liquidity_score\": 62.784116975669924,\n  \"chip_score\": 68\n}\n"
     },
     {
       "script": "work/rebuild_clean_macro.py",
-      "started_at": "2026-10-10 11:38:28 Bangkok",
+      "started_at": "2026-10-11 11:22:24 Bangkok",
       "returncode": 0,
       "output_tail": "clean macro section rebuilt\n"
     },
     {
       "script": "work/patch_dashboard_full_price_universe.py",
-      "started_at": "2026-10-10 11:38:28 Bangkok",
+      "started_at": "2026-10-11 11:22:25 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"SKYY\": 3839,\n  \"CIBR\": 2833,\n  \"XLK\": 6992,\n  \"SMH\": 6627,\n  \"IBB\": 6453,\n  \"XLE\": 6992,\n  \"QQQ\": 9261,\n  \"EWY\": 7340,\n  \"ARKK\": 3002,\n  \"SPY\": 9261,\n  \"SET\": 7275,\n  \"mai\": 2,\n  \"IWM\": 9261,\n  \"FEZ\": 4896,\n  \"VGK\": 5431,\n  \"EWJ\": 9022,\n  \"MCHI\": 7089,\n  \"FXI\": 9075,\n  \"INDA\": 4677,\n  \"ACWI\": 4664\n}\n"
+      "output_tail": "{\n  \"SKYY\": 3839,\n  \"CIBR\": 2833,\n  \"XLK\": 6992,\n  \"SMH\": 6627,\n  \"IBB\": 6453,\n  \"XLE\": 6992,\n  \"QQQ\": 9261,\n  \"EWY\": 7340,\n  \"ARKK\": 3002,\n  \"SPY\": 9261,\n  \"SET\": 7279,\n  \"mai\": 1,\n  \"IWM\": 9261,\n  \"FEZ\": 4896,\n  \"VGK\": 5431,\n  \"EWJ\": 9022,\n  \"MCHI\": 7089,\n  \"FXI\": 9075,\n  \"INDA\": 4677,\n  \"ACWI\": 4664\n}\n"
     },
     {
       "script": "work/rebuild_clean_interactive.py",
-      "started_at": "2026-10-10 11:38:38 Bangkok",
+      "started_at": "2026-10-11 11:22:33 Bangkok",
       "returncode": 0,
       "output_tail": "clean interactive section rebuilt\n"
     },
     {
       "script": "work/patch_thailand_heat_mai_treasury.py",
-      "started_at": "2026-10-10 11:38:39 Bangkok",
+      "started_at": "2026-10-11 11:22:34 Bangkok",
       "returncode": 0,
       "output_tail": "clean macro section rebuilt\n{\n  \"status\": \"ok\",\n  \"treasury_rows\": 195,\n  \"treasury_latest\": \"2026-10-09\",\n  \"heat_has_set_mai\": true\n}\n"
     },
     {
       "script": "work/recalculate_eyg_latest_yields.py",
-      "started_at": "2026-10-10 11:38:59 Bangkok",
+      "started_at": "2026-10-11 11:22:55 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"status\": \"ok\",\n  \"changed\": [\n    {\n      \"symbol\": \"SPY\",\n      \"old_10y\": 5.22,\n      \"new_10y\": 5.24,\n      \"yield_as_of\": \"2026-10-09\",\n      \"gap_pp\": -1.264703130792753\n    },\n    {\n      \"symbol\": \"QQQ\",\n      \"old_10y\": 5.22,\n      \"new_10y\": 5.24,\n      \"yield_as_of\": \"2026-10-09\",\n      \"gap_pp\": -1.9742372572713678\n    },\n    {\n      \"symbol\": \"IWM\",\n      \"old_10y\": 5.22,\n      \"new_10y\": 5.24,\n      \"yield_as_of\": \"2026-10-09\",\n      \"gap_pp\": 0.8495591463655989\n    },\n    {\n      \"symbol\": \"SET\",\n      \"old_10y\": 2.370144,\n      \"new_10y\": 2.370144,\n      \"yield_as_of\": \"2026-10-09\",\n      \"gap_pp\": 3.9952283742838954\n    },\n    {\n      \"symbol\": \"mai\",\n      \"old_10y\": 2.370144,\n      \"new_10y\": 2.370144,\n      \"yield_as_of\": \"2026-10-09\",\n      \"gap_pp\": -1.1938118037877896\n    }\n  ]\n}\n"
+      "output_tail": "{\n  \"status\": \"ok\",\n  \"changed\": [\n    {\n      \"symbol\": \"SPY\",\n      \"old_10y\": 5.22,\n      \"new_10y\": 5.24,\n      \"yield_as_of\": \"2026-10-09\",\n      \"gap_pp\": -1.1944870079159369\n    },\n    {\n      \"symbol\": \"QQQ\",\n      \"old_10y\": 5.22,\n      \"new_10y\": 5.24,\n      \"yield_as_of\": \"2026-10-09\",\n      \"gap_pp\": -1.7637557148586986\n    },\n    {\n      \"symbol\": \"IWM\",\n      \"old_10y\": 5.22,\n      \"new_10y\": 5.24,\n      \"yield_as_of\": \"2026-10-09\",\n      \"gap_pp\": 0.8536866542229529\n    },\n    {\n      \"symbol\": \"SET\",\n      \"old_10y\": 2.370144,\n      \"new_10y\": 2.370144,\n      \"yield_as_of\": \"2026-10-09\",\n      \"gap_pp\": 3.9952283742838954\n    },\n    {\n      \"symbol\": \"mai\",\n      \"old_10y\": 2.370144,\n      \"new_10y\": 2.370144,\n      \"yield_as_of\": \"2026-10-09\",\n      \"gap_pp\": -1.1938118037877896\n    }\n  ]\n}\n"
     },
     {
       "script": "work/patch_mai_tradingview_history.py",
-      "started_at": "2026-10-10 11:39:00 Bangkok",
+      "started_at": "2026-10-11 11:22:57 Bangkok",
       "returncode": 0,
       "output_tail": "D:\\a\\oppday-dashboard\\oppday-dashboard\\bubble-risk-dashboard-src\\work\\patch_mai_tradingview_history.py:68: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).\n  \"fetched_at\": datetime.utcnow().isoformat() + \"Z\",\n{\n  \"status\": \"ok\",\n  \"mai_points\": 5367,\n  \"first\": \"2004-08-10\",\n  \"last\": \"2026-10-09\",\n  \"chart_symbol\": \"SET:MAI\"\n}\n"
     },
     {
       "script": "work/patch_set_session_history.py",
-      "started_at": "2026-10-10 11:39:03 Bangkok",
+      "started_at": "2026-10-11 11:23:00 Bangkok",
       "returncode": 0,
       "output_tail": "{\"status\": \"ok\", \"mode\": \"live\", \"session\": \"2026-10-09\", \"retained_points\": 7279}\n"
     },
     {
       "script": "work/finalize_requested_dashboard_metrics.py",
-      "started_at": "2026-10-10 11:39:05 Bangkok",
+      "started_at": "2026-10-11 11:23:02 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"status\": \"ok\",\n  \"thailand\": {\n    \"SET\": {\n      \"points\": 7279,\n      \"first\": \"1996-12-11\",\n      \"last\": \"2026-10-09\",\n      \"ret_1y\": 22.463633117538386,\n      \"dist_200dma\": 5.53404716398278,\n      \"drawdown_1y\": -4.556646521110485\n    },\n    \"mai\": {\n      \"points\": 5367,\n      \"first\": \"2004-08-10\",\n      \"last\": \"2026-10-09\",\n      \"ret_1y\": -11.250000000000004,\n      \"dist_200dma\": 1.2683492776034644,\n      \"drawdown_1y\": -11.363273771537974\n    }\n  },\n  \"top_watchlist_drawdown\": true\n}\n"
     },
     {
       "script": "work/refresh_ai_semiconductor_direct_data.py",
-      "started_at": "2026-10-10 11:39:06 Bangkok",
+      "started_at": "2026-10-11 11:23:03 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"status\": \"ok\",\n  \"capex_latest\": {\n    \"MSFT\": 35.802,\n    \"GOOGL\": 44.924,\n    \"META\": 30.116,\n    \"AMZN\": null,\n    \"ORCL\": 28.499\n  },\n  \"coreweave_latest\": {\n    \"CRWV capex\": 6.422,\n    \"CRWV long-term debt\": 24.859,\n    \"CRWV gross debt\": 35.551,\n    \"CRWV PP&E net\": 46.736,\n    \"CRWV debt issuance\": 13.457\n  },\n  \"gpu_latest\": {\n    \"NeoCloud H100\": 2.64,\n    \"NeoCloud B200\": 5.35,\n    \"Hyperscaler H100\": 7.46\n  },\n  \"micron_latest\": {\n    \"MU revenue\": 54.229,\n    \"MU inventory\": 10.372,\n    \"MU capex\": 11.11\n  }\n}\n{\n  \"status\": \"ok\",\n  \"refreshed_at\": \"2026-10-10 04:39:11 local\",\n  \"fetched\": [\n    \"MSFT\",\n    \"GOOGL\",\n    \"META\",\n    \"AMZN\",\n    \"ORCL\",\n    \"CRWV\",\n    \"MU\"\n  ],\n  \"cache_fallback\": [],\n  \"errors\": {}\n}\n"
+      "output_tail": "{\n  \"status\": \"ok\",\n  \"capex_latest\": {\n    \"MSFT\": 35.802,\n    \"GOOGL\": 44.924,\n    \"META\": 30.116,\n    \"AMZN\": null,\n    \"ORCL\": 28.499\n  },\n  \"coreweave_latest\": {\n    \"CRWV capex\": 6.422,\n    \"CRWV long-term debt\": 24.859,\n    \"CRWV gross debt\": 35.551,\n    \"CRWV PP&E net\": 46.736,\n    \"CRWV debt issuance\": 13.457\n  },\n  \"gpu_latest\": {\n    \"NeoCloud H100\": 2.64,\n    \"NeoCloud B200\": 5.35,\n    \"Hyperscaler H100\": 7.46\n  },\n  \"micron_latest\": {\n    \"MU revenue\": 54.229,\n    \"MU inventory\": 10.372,\n    \"MU capex\": 11.11\n  }\n}\n{\n  \"status\": \"ok\",\n  \"refreshed_at\": \"2026-10-11 04:23:08 local\",\n  \"fetched\": [\n    \"MSFT\",\n    \"GOOGL\",\n    \"META\",\n    \"AMZN\",\n    \"ORCL\",\n    \"CRWV\",\n    \"MU\"\n  ],\n  \"cache_fallback\": [],\n  \"errors\": {}\n}\n"
     },
     {
       "script": "work/patch_meta_latest_release_capex.py",
-      "started_at": "2026-10-10 11:39:12 Bangkok",
+      "started_at": "2026-10-11 11:23:09 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"status\": \"ok\",\n  \"mode\": \"live; retained authoritative SEC fact\",\n  \"meta_q2_capex_b\": 30.116,\n  \"period_end\": \"2026-06-30\"\n}\n"
     },
     {
       "script": "work/fix_amzn_ai_direct.py",
-      "started_at": "2026-10-10 11:39:14 Bangkok",
+      "started_at": "2026-10-11 11:23:10 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"AMZN\": [\n    {\n      \"date\": \"2024-09-30\",\n      \"period_start\": \"2024-07-01\",\n      \"value\": 22.62,\n      \"tag\": \"PaymentsToAcquireProductiveAssets\",\n      \"form\": \"10-Q\",\n      \"filed\": \"2025-10-31\",\n      \"accn\": \"0001018724-25-000123\",\n      \"basis\": \"Reported quarter\",\n      \"derived_from\": [\n        {\n          \"start\": \"2024-07-01\",\n          \"end\": \"2024-09-30\",\n          \"val\": 22620000000,\n          \"filed\": \"2025-10-31\",\n          \"accn\": \"0001018724-25-000123\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2024-12-31\",\n      \"period_start\": \"2024-10-01\",\n      \"value\": 27.834,\n      \"tag\": \"PaymentsToAcquireProductiveAssets\",\n      \"form\": \"10-K\",\n      \"filed\": \"2026-02-06\",\n      \"accn\": \"0001018724-26-000004\",\n      \"basis\": \"Adjacent YTD difference\",\n      \"derived_from\": [\n        {\n          \"start\": \"2024-01-01\",\n          \"end\": \"2024-12-31\",\n          \"val\": 82999000000,\n          \"filed\": \"2026-02-06\",\n          \"accn\": \"0001018724-26-000004\"\n        },\n        {\n          \"start\": \"2024-01-01\",\n          \"end\": \"2024-09-30\",\n          \"val\": 55165000000,\n          \"filed\": \"2025-10-31\",\n          \"accn\": \"0001018724-25-000123\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2025-03-31\",\n      \"period_start\": \"2025-01-01\",\n      \"value\": 25.019,\n      \"tag\": \"PaymentsToAcquireProductiveAssets\",\n      \"form\": \"10-Q\",\n      \"filed\": \"2026-04-30\",\n      \"accn\": \"0001018724-26-000014\",\n      \"basis\": \"Reported quarter\",\n      \"derived_from\": [\n        {\n          \"start\": \"2025-01-01\",\n          \"end\": \"2025-03-31\",\n          \"val\": 25019000000,\n          \"filed\": \"2026-04-30\",\n          \"accn\": \"0001018724-26-000014\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2025-06-30\",\n      \"period_start\": \"2025-04-01\",\n      \"value\": 32.183,\n      \"tag\": \"PaymentsToAcquireProductiveAssets\",\n      \"form\": \"10-Q\",\n      \"filed\": \"2026-07-31\",\n      \"accn\": \"0001018724-26-000026\",\n      \"basis\": \"Reported quarter\",\n      \"derived_from\": [\n        {\n          \"start\": \"2025-04-01\",\n          \"end\": \"2025-06-30\",\n          \"val\": 32183000000,\n          \"filed\": \"2026-07-31\",\n          \"accn\": \"0001018724-26-000026\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2025-09-30\",\n      \"period_start\": \"2025-07-01\",\n      \"value\": 35.095,\n      \"tag\": \"PaymentsToAcquireProductiveAssets\",\n      \"form\": \"10-Q\",\n      \"filed\": \"2025-10-31\",\n      \"accn\": \"0001018724-25-000123\",\n      \"basis\": \"Reported quarter\",\n      \"derived_from\": [\n        {\n          \"start\": \"2025-07-01\",\n          \"end\": \"2025-09-30\",\n          \"val\": 35095000000,\n          \"filed\": \"2025-10-31\",\n          \"accn\": \"0001018724-25-000123\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2025-12-31\",\n      \"period_start\": \"2025-10-01\",\n      \"value\": 39.522,\n      \"tag\": \"PaymentsToAcquireProductiveAssets\",\n      \"form\": \"10-K\",\n      \"filed\": \"2026-02-06\",\n      \"accn\": \"0001018724-26-000004\",\n      \"basis\": \"Adjacent YTD difference\",\n      \"derived_from\": [\n        {\n          \"start\": \"2025-01-01\",\n          \"end\": \"2025-12-31\",\n          \"val\": 131819000000,\n          \"filed\": \"2026-02-06\",\n          \"accn\": \"0001018724-26-000004\"\n        },\n        {\n          \"start\": \"2025-01-01\",\n          \"end\": \"2025-09-30\",\n          \"val\": 92297000000,\n          \"filed\": \"2025-10-31\",\n          \"accn\": \"0001018724-25-000123\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-03-31\",\n      \"period_start\": \"2026-01-01\",\n      \"value\": 44.203,\n      \"tag\": \"PaymentsToAcquireProductiveAssets\",\n      \"form\": \"10-Q\",\n      \"filed\": \"2026-04-30\",\n      \"accn\": \"0001018724-26-000014\",\n      \"basis\": \"Reported quarter\",\n      \"derived_from\": [\n        {\n          \"start\": \"2026-01-01\",\n          \"end\": \"2026-03-31\",\n          \"val\": 44203000000,\n          \"filed\": \"2026-04-30\",\n          \"accn\": \"0001018724-26-000014\"\n        }\n      ]\n    },\n    {\n      \"date\": \"2026-06-30\",\n      \"period_start\": \"2026-04-01\",\n      \"value\": 54.208,\n      \"tag\": \"PaymentsToAcquireProductiveAssets\",\n      \"form\": \"10-Q\",\n      \"filed\": \"2026-07-31\",\n      \"accn\": \"0001018724-26-000026\",\n      \"basis\": \"Reported quarter\",\n      \"derived_from\": [\n        {\n          \"start\": \"2026-04-01\",\n          \"end\": \"2026-06-30\",\n          \"val\": 54208000000,\n          \"filed\": \"2026-07-31\",\n          \"accn\": \"0001018724-26-000026\"\n        }\n      ]\n    }\n  ]\n}\n"
     },
     {
       "script": "work/refresh_ai_public_sources.py",
-      "started_at": "2026-10-10 11:39:15 Bangkok",
+      "started_at": "2026-10-11 11:23:12 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"attempted_at\": \"2026-10-10T04:39:15.686847\",\n  \"sources\": [\n    {\n      \"name\": \"h100\",\n      \"mode\": \"live\",\n      \"latest\": \"2026-10-09\"\n    },\n    {\n      \"name\": \"b200\",\n      \"mode\": \"live\",\n      \"latest\": \"2026-10-09\"\n    },\n    {\n      \"name\": \"micron_q4_2026\",\n      \"mode\": \"live\",\n      \"period_end\": \"2026-09-03\"\n    }\n  ],\n  \"errors\": {}\n}\n"
+      "output_tail": "{\n  \"attempted_at\": \"2026-10-11T04:23:12.583688\",\n  \"sources\": [\n    {\n      \"name\": \"h100\",\n      \"mode\": \"live\",\n      \"latest\": \"2026-10-10\"\n    },\n    {\n      \"name\": \"b200\",\n      \"mode\": \"live\",\n      \"latest\": \"2026-10-10\"\n    },\n    {\n      \"name\": \"micron_q4_2026\",\n      \"mode\": \"live\",\n      \"period_end\": \"2026-09-03\"\n    }\n  ],\n  \"errors\": {}\n}\n"
     },
     {
       "script": "work/retain_dashboard_history.py",
-      "started_at": "2026-10-10 11:39:17 Bangkok",
+      "started_at": "2026-10-11 11:23:15 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"status\": \"preserved\",\n  \"price_series\": 20,\n  \"archive\": \"work/raw/dashboard_history.json\"\n}\n"
     },
     {
       "script": "work/rebuild_ai_direct_layout_v08.py",
-      "started_at": "2026-10-10 11:39:19 Bangkok",
+      "started_at": "2026-10-11 11:23:16 Bangkok",
       "returncode": 0,
       "output_tail": "rebuilt AI direct v08 under AI Chip Bubble Risk with 5 cards\n"
     },
     {
       "script": "work/fix_ai_spacing_and_manifest_order.py",
-      "started_at": "2026-10-10 11:39:21 Bangkok",
+      "started_at": "2026-10-11 11:23:18 Bangkok",
       "returncode": 0,
       "output_tail": "patched AI chart spacing and moved Source Manifest to the bottom\n"
     },
     {
       "script": "work/fix_ai_to_score_spacing.py",
-      "started_at": "2026-10-10 11:39:21 Bangkok",
+      "started_at": "2026-10-11 11:23:18 Bangkok",
       "returncode": 0,
       "output_tail": "inserted spacer between AI direct section and score tiles\n"
     },
     {
       "script": "work/clean_payload_user_text.py",
-      "started_at": "2026-10-10 11:39:21 Bangkok",
+      "started_at": "2026-10-11 11:23:18 Bangkok",
       "returncode": 0,
       "output_tail": "{\"payload_text_cleaned\": true, \"embedded_chart_data_cleaned\": true}\n"
     },
     {
       "script": "work/sync_latest_dashboard_summary.py",
-      "started_at": "2026-10-10 11:39:22 Bangkok",
+      "started_at": "2026-10-11 11:23:20 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"status\": \"ok\",\n  \"generated_at\": \"2026-10-10 11:39:23 Bangkok\",\n  \"vix\": 14.84,\n  \"vix_as_of\": \"2026-10-09\",\n  \"overall_score\": 62.88437569293369,\n  \"overall_band\": \"Warm\",\n  \"sentiment_score\": 75.8,\n  \"credit_liquidity_score\": 62.784116975669924,\n  \"chip_score\": 68\n}\n"
+      "output_tail": "{\n  \"status\": \"ok\",\n  \"generated_at\": \"2026-10-11 11:23:20 Bangkok\",\n  \"vix\": 14.84,\n  \"vix_as_of\": \"2026-10-09\",\n  \"overall_score\": 62.88437569293369,\n  \"overall_band\": \"Warm\",\n  \"sentiment_score\": 75.8,\n  \"credit_liquidity_score\": 62.784116975669924,\n  \"chip_score\": 68\n}\n"
     },
     {
       "script": "work/validate_macro_v04_nonzero.py",
-      "started_at": "2026-10-10 11:39:23 Bangkok",
+      "started_at": "2026-10-11 11:23:21 Bangkok",
       "returncode": 0,
       "output_tail": "macro_v04_scores {'froth': 66, 'recession': 66, 'debt': 68, 'chip': 68, 'chip1': 66, 'chip2': 67, 'chip3': 75}\nmacro_v04_indicators 7\n"
     },
     {
       "script": "work/test_refresh_adapters.py",
-      "started_at": "2026-10-10 11:39:24 Bangkok",
+      "started_at": "2026-10-11 11:23:21 Bangkok",
       "returncode": 0,
-      "output_tail": "test_actual_amazon_missing_q4 (__main__.RefreshAdapterTests.test_actual_amazon_missing_q4) ... ok\ntest_actual_coreweave_q3_filing_vintage (__main__.RefreshAdapterTests.test_actual_coreweave_q3_filing_vintage) ... ok\ntest_annual_minus_nine_months (__main__.RefreshAdapterTests.test_annual_minus_nine_months) ... ok\ntest_different_fiscal_starts_not_mixed (__main__.RefreshAdapterTests.test_different_fiscal_starts_not_mixed) ... ok\ntest_disagreeing_session_is_not_confirmed (__main__.RefreshAdapterTests.test_disagreeing_session_is_not_confirmed) ... ok\ntest_explicit_quarter (__main__.RefreshAdapterTests.test_explicit_quarter) ... ok\ntest_instrument_mismatch_rejected (__main__.RefreshAdapterTests.test_instrument_mismatch_rejected) ... ok\ntest_later_restatement_not_mixed_into_earlier_quarter (__main__.RefreshAdapterTests.test_later_restatement_not_mixed_into_earlier_quarter) ... ok\ntest_lone_ytd_is_not_quarter (__main__.RefreshAdapterTests.test_lone_ytd_is_not_quarter) ... ok\ntest_macro_curve_matches_bond_chart (__main__.RefreshAdapterTests.test_macro_curve_matches_bond_chart) ... ok\ntest_market_anchor_prefers_verified_session (__main__.RefreshAdapterTests.test_market_anchor_prefers_verified_session) ... ok\ntest_micron_quarter_vs_annual_and_gross_vs_net (__main__.RefreshAdapterTests.test_micron_quarter_vs_annual_and_gross_vs_net) ... ok\ntest_point_retention_and_revision (__main__.RefreshAdapterTests.test_point_retention_and_revision) ... ok\ntest_public_gpu_structured_primary_data (__main__.RefreshAdapterTests.test_public_gpu_structured_primary_data) ... ok\ntest_rank_change_keeps_old_symbol (__main__.RefreshAdapterTests.test_rank_change_keeps_old_symbol) ... ok\ntest_skipped_quarter_is_not_difference (__main__.RefreshAdapterTests.test_skipped_quarter_is_not_difference) ... ok\ntest_webpage_update_is_not_trading_date (__main__.RefreshAdapterTests.test_webpage_update_is_not_trading_date) ... ok\n\n----------------------------------------------------------------------\nRan 17 tests in 0.125s\n\nOK\n"
+      "output_tail": "test_actual_amazon_missing_q4 (__main__.RefreshAdapterTests.test_actual_amazon_missing_q4) ... ok\ntest_actual_coreweave_q3_filing_vintage (__main__.RefreshAdapterTests.test_actual_coreweave_q3_filing_vintage) ... ok\ntest_annual_minus_nine_months (__main__.RefreshAdapterTests.test_annual_minus_nine_months) ... ok\ntest_different_fiscal_starts_not_mixed (__main__.RefreshAdapterTests.test_different_fiscal_starts_not_mixed) ... ok\ntest_disagreeing_session_is_not_confirmed (__main__.RefreshAdapterTests.test_disagreeing_session_is_not_confirmed) ... ok\ntest_explicit_quarter (__main__.RefreshAdapterTests.test_explicit_quarter) ... ok\ntest_instrument_mismatch_rejected (__main__.RefreshAdapterTests.test_instrument_mismatch_rejected) ... ok\ntest_later_restatement_not_mixed_into_earlier_quarter (__main__.RefreshAdapterTests.test_later_restatement_not_mixed_into_earlier_quarter) ... ok\ntest_lone_ytd_is_not_quarter (__main__.RefreshAdapterTests.test_lone_ytd_is_not_quarter) ... ok\ntest_macro_curve_matches_bond_chart (__main__.RefreshAdapterTests.test_macro_curve_matches_bond_chart) ... ok\ntest_market_anchor_prefers_verified_session (__main__.RefreshAdapterTests.test_market_anchor_prefers_verified_session) ... ok\ntest_micron_quarter_vs_annual_and_gross_vs_net (__main__.RefreshAdapterTests.test_micron_quarter_vs_annual_and_gross_vs_net) ... ok\ntest_point_retention_and_revision (__main__.RefreshAdapterTests.test_point_retention_and_revision) ... ok\ntest_public_gpu_structured_primary_data (__main__.RefreshAdapterTests.test_public_gpu_structured_primary_data) ... ok\ntest_rank_change_keeps_old_symbol (__main__.RefreshAdapterTests.test_rank_change_keeps_old_symbol) ... ok\ntest_skipped_quarter_is_not_difference (__main__.RefreshAdapterTests.test_skipped_quarter_is_not_difference) ... ok\ntest_webpage_update_is_not_trading_date (__main__.RefreshAdapterTests.test_webpage_update_is_not_trading_date) ... ok\n\n----------------------------------------------------------------------\nRan 17 tests in 0.135s\n\nOK\n"
     },
     {
       "script": "work/validate_froth_components_populated.py",
-      "started_at": "2026-10-10 11:39:24 Bangkok",
+      "started_at": "2026-10-11 11:23:21 Bangkok",
       "returncode": 0,
       "output_tail": "froth_components {'Buffett Indicator (US equities / GDP)': {'latest': 2.550464345609116, 'date': '2026-04-01', 'pct': 100.0}, 'Credit Risk Premium (Baa - 10Y)': {'latest': 1.6799999999999997, 'date': '2026-09-01', 'pct': 82.72727272727272}, 'High Yield OAS': {'latest': 3.15, 'date': '2026-10-08', 'pct': 36.25954198473282}, 'VIX complacency': {'latest': 14.84, 'date': '2026-10-09', 'pct': 69.09912818856958}, 'Yield Curve 10Y-2Y': {'latest': 0.4400000000000004, 'date': '2026-10-09', 'pct': 65.72826086956522}, 'Fed Assets YoY': {'latest': 2.3782339513398476, 'date': '2026-10-07', 'pct': 41.8975650713686}, 'Real Policy Proxy': {'latest': 1.5299999999999998, 'date': '2026-10-08', 'pct': 78.01976880549506}}\n"
     },
     {
       "script": "work/validate_current_market_indicators.py",
-      "started_at": "2026-10-10 11:39:24 Bangkok",
+      "started_at": "2026-10-11 11:23:22 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"status\": \"ok\",\n  \"vix\": {\n    \"date\": \"2026-10-09\",\n    \"latest\": 14.84\n  },\n  \"yield_curve_10y_2y\": {\n    \"date\": \"2026-10-09\",\n    \"latest\": 0.4400000000000004\n  },\n  \"real_policy_proxy\": {\n    \"date\": \"2026-10-08\",\n    \"latest\": 1.5299999999999998\n  }\n}\n"
     },
     {
       "script": "work/validate_current_summary_sync.py",
-      "started_at": "2026-10-10 11:39:25 Bangkok",
+      "started_at": "2026-10-11 11:23:22 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"status\": \"ok\",\n  \"generated_at\": \"2026-10-10 11:39:23 Bangkok\",\n  \"data_anchor\": \"2026-10-09\",\n  \"overall_score\": 62.88437569293369,\n  \"overall_band\": \"Warm\",\n  \"vix\": 14.84,\n  \"vix_as_of\": \"2026-10-09\",\n  \"fed_assets_yoy\": 2.3782339513398476,\n  \"fed_assets_as_of\": \"2026-10-07\",\n  \"chip_score\": 68\n}\n"
+      "output_tail": "{\n  \"status\": \"ok\",\n  \"generated_at\": \"2026-10-11 11:23:20 Bangkok\",\n  \"data_anchor\": \"2026-10-09\",\n  \"overall_score\": 62.88437569293369,\n  \"overall_band\": \"Warm\",\n  \"vix\": 14.84,\n  \"vix_as_of\": \"2026-10-09\",\n  \"fed_assets_yoy\": 2.3782339513398476,\n  \"fed_assets_as_of\": \"2026-10-07\",\n  \"chip_score\": 68\n}\n"
     },
     {
       "script": "work/validate_thailand_heat_mai_treasury.py",
-      "started_at": "2026-10-10 11:39:25 Bangkok",
+      "started_at": "2026-10-11 11:23:22 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"status\": \"ok\",\n  \"indices\": [\n    \"SET\",\n    \"mai\"\n  ],\n  \"mai_points\": 5367,\n  \"us_yield_as_of\": \"2026-10-09\",\n  \"us_latest\": {\n    \"2Y\": 4.8,\n    \"5Y\": 5.02,\n    \"10Y\": 5.24,\n    \"30Y\": 5.6\n  }\n}\n"
     },
     {
       "script": "work/validate_mai_chart_history.py",
-      "started_at": "2026-10-10 11:39:25 Bangkok",
+      "started_at": "2026-10-11 11:23:22 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"status\": \"ok\",\n  \"mai_points\": 5367,\n  \"first\": \"2004-08-10\",\n  \"last\": \"2026-10-09\"\n}\n"
     },
     {
       "script": "work/validate_ai_direct_v08.py",
-      "started_at": "2026-10-10 11:39:26 Bangkok",
+      "started_at": "2026-10-11 11:23:23 Bangkok",
       "returncode": 0,
-      "output_tail": "html_size 6579776\nai_position_ok True\ngenerated_at 2026-10-10 11:39:20 Bangkok\ncard gpu-rental points 52 observations 52 sparse True\ncard hbm-memory points 27 observations 2 sparse False\ncard cowos-packaging points 3 observations 3 sparse True\ncard hyperscaler-capex points 41 observations 0 sparse False\ncard vendor-financing points 36 observations 6 sparse False\nsource_gap GPU rental dense historical API Open search found only dated public observations; full 2-year daily/monthly history requires licensed Silicon Data or provider-history adapter.\nsource_gap CoWoS monthly capacity history Open search found dated capacity/demand observations but no complete monthly CoWoS public API; chart stores sourced observations and keeps the gap visible.\njs_extract D:\\a\\oppday-dashboard\\oppday-dashboard\\bubble-risk-dashboard-src\\work\\ai_direct_v08_inline.js\n"
+      "output_tail": "html_size 6582463\nai_position_ok True\ngenerated_at 2026-10-11 11:23:17 Bangkok\ncard gpu-rental points 55 observations 55 sparse True\ncard hbm-memory points 27 observations 2 sparse False\ncard cowos-packaging points 3 observations 3 sparse True\ncard hyperscaler-capex points 41 observations 0 sparse False\ncard vendor-financing points 36 observations 6 sparse False\nsource_gap GPU rental dense historical API Open search found only dated public observations; full 2-year daily/monthly history requires licensed Silicon Data or provider-history adapter.\nsource_gap CoWoS monthly capacity history Open search found dated capacity/demand observations but no complete monthly CoWoS public API; chart stores sourced observations and keeps the gap visible.\njs_extract D:\\a\\oppday-dashboard\\oppday-dashboard\\bubble-risk-dashboard-src\\work\\ai_direct_v08_inline.js\n"
     },
     {
       "script": "work/validate_ai_direct_interactive.py",
-      "started_at": "2026-10-10 11:39:26 Bangkok",
+      "started_at": "2026-10-11 11:23:23 Bangkok",
       "returncode": 0,
-      "output_tail": "html_size 6579776\nwindow 2024-10-10 2026-10-10\ncards 5\ncard gpu-rental points 52 observations 52 badge Sparse public observations\ncard hbm-memory points 27 observations 2 badge SEC + official release\ncard cowos-packaging points 3 observations 3 badge Sparse source-backed index\ncard hyperscaler-capex points 41 observations 0 badge Full SEC quarterly\ncard vendor-financing points 36 observations 6 badge SEC quarterly plus events\ninteractive_script_chars 8938\n"
+      "output_tail": "html_size 6582463\nwindow 2024-10-11 2026-10-11\ncards 5\ncard gpu-rental points 55 observations 55 badge Sparse public observations\ncard hbm-memory points 27 observations 2 badge SEC + official release\ncard cowos-packaging points 3 observations 3 badge Sparse source-backed index\ncard hyperscaler-capex points 41 observations 0 badge Full SEC quarterly\ncard vendor-financing points 36 observations 6 badge SEC quarterly plus events\ninteractive_script_chars 8938\n"
     },
     {
       "script": "work/validate_dashboard_v04.py",
-      "started_at": "2026-10-10 11:39:26 Bangkok",
+      "started_at": "2026-10-11 11:23:23 Bangkok",
       "returncode": 0,
-      "output_tail": "html_size 6579776\ndata_size 16755605\nembedded_price_series 20\ndata_price_series 20\nprice SPY 9261 1990-01-02 2026-10-09\nvaluation SPY 25.155354 20.69\nprice QQQ 9261 1990-01-02 2026-10-09\nvaluation QQQ 30.620718 None\nprice IWM 9261 1990-01-02 2026-10-09\nvaluation IWM 16.42155 None\nprice FEZ 4896 2007-03-30 2026-10-09\nvaluation FEZ 17.393415 15.41\nprice VGK 5431 2005-03-10 2026-10-09\nvaluation VGK 16.751335 None\nprice EWJ 9022 1990-01-04 2026-10-09\nvaluation EWJ 19.500399 None\nprice MCHI 7089 1997-07-02 2026-10-09\nvaluation MCHI 11.38364 None\nprice FXI 9075 1990-01-02 2026-10-09\nvaluation FXI 9.070952 None\nprice INDA 4677 2007-09-17 2026-10-09\nvaluation INDA 20.992277 None\nprice EWY 7340 1996-12-11 2026-10-08\nvaluation EWY 10.198612 None\nprice ACWI 4664 2008-03-28 2026-10-09\nvaluation ACWI 21.37394 None\nprice SET 7279 1996-12-11 2026-10-09\nvaluation SET 15.71 None\nprice mai 5367 2004-08-10 2026-10-09\nvaluation mai 85.01 None\npreserved_price ARKK 3002 2014-10-31 2026-10-09\nyield United States 9200 1990-01-02 2026-10-09\nyield Thailand 4879 2006-10-02 2026-10-09\neyg_rows 13\npointer_fix True\n"
+      "output_tail": "html_size 6582463\ndata_size 16758573\nembedded_price_series 20\ndata_price_series 20\nprice SPY 9261 1990-01-02 2026-10-09\nvaluation SPY 24.718744 20.69\nprice QQQ 9261 1990-01-02 2026-10-09\nvaluation QQQ 28.766678 None\nprice IWM 9261 1990-01-02 2026-10-09\nvaluation IWM 16.410427 None\nprice FEZ 4896 2007-03-30 2026-10-09\nvaluation FEZ 18.081985 15.41\nprice VGK 5431 2005-03-10 2026-10-09\nvaluation VGK 16.751335 None\nprice EWJ 9022 1990-01-04 2026-10-09\nvaluation EWJ 15.333888 None\nprice MCHI 7089 1997-07-02 2026-10-09\nvaluation MCHI 11.468084 None\nprice FXI 9075 1990-01-02 2026-10-09\nvaluation FXI 9.290807 None\nprice INDA 4677 2007-09-17 2026-10-09\nvaluation INDA 20.992277 None\nprice EWY 7340 1996-12-11 2026-10-08\nvaluation EWY 10.096763 None\nprice ACWI 4664 2008-03-28 2026-10-09\nvaluation ACWI 20.91918 None\nprice SET 7279 1996-12-11 2026-10-09\nvaluation SET 15.71 None\nprice mai 5367 2004-08-10 2026-10-09\nvaluation mai 85.01 None\npreserved_price ARKK 3002 2014-10-31 2026-10-09\nyield United States 9200 1990-01-02 2026-10-09\nyield Thailand 4879 2006-10-02 2026-10-09\neyg_rows 13\npointer_fix True\n"
     },
     {
       "script": "work/validate_dashboard_v04b.py",
-      "started_at": "2026-10-10 11:39:27 Bangkok",
+      "started_at": "2026-10-11 11:23:24 Bangkok",
       "returncode": 0,
-      "output_tail": "eyg ACWI trailing 21.37394 forward None gap_pp None\neyg EWJ trailing 19.500399 forward None gap_pp None\neyg EWY trailing 10.198612 forward None gap_pp None\neyg FEZ trailing 17.393415 forward 15.41 gap_pp None\neyg FXI trailing 9.070952 forward None gap_pp None\neyg INDA trailing 20.992277 forward None gap_pp None\neyg IWM trailing 16.42155 forward None gap_pp 0.8495591463655989\neyg MCHI trailing 11.38364 forward None gap_pp None\neyg QQQ trailing 30.620718 forward None gap_pp -1.9742372572713678\neyg SET trailing 15.71 forward None gap_pp 3.9952283742838954\neyg SPY trailing 25.155354 forward 20.69 gap_pp -1.264703130792753\neyg VGK trailing 16.751335 forward None gap_pp None\neyg mai trailing 85.01 forward None gap_pp -1.1938118037877896\neyg_rows 13\nstatus ok\n"
+      "output_tail": "eyg ACWI trailing 20.91918 forward None gap_pp None\neyg EWJ trailing 15.333888 forward None gap_pp None\neyg EWY trailing 10.096763 forward None gap_pp None\neyg FEZ trailing 18.081985 forward 15.41 gap_pp None\neyg FXI trailing 9.290807 forward None gap_pp None\neyg INDA trailing 20.992277 forward None gap_pp None\neyg IWM trailing 16.410427 forward None gap_pp 0.8536866542229529\neyg MCHI trailing 11.468084 forward None gap_pp None\neyg QQQ trailing 28.766678 forward None gap_pp -1.7637557148586986\neyg SET trailing 15.71 forward None gap_pp 3.9952283742838954\neyg SPY trailing 24.718744 forward 20.69 gap_pp -1.1944870079159369\neyg VGK trailing 16.751335 forward None gap_pp None\neyg mai trailing 85.01 forward None gap_pp -1.1938118037877896\neyg_rows 13\nstatus ok\n"
     },
     {
       "script": "work/validate_requested_regressions.py",
-      "started_at": "2026-10-10 11:39:27 Bangkok",
+      "started_at": "2026-10-11 11:23:24 Bangkok",
       "returncode": 0,
       "output_tail": "{\n  \"status\": \"ok\",\n  \"thailand\": {\n    \"SET\": {\n      \"ret_1y\": 22.463633117538386,\n      \"dist_200dma\": 5.53404716398278,\n      \"drawdown_1y\": -4.556646521110485\n    },\n    \"mai\": {\n      \"ret_1y\": -11.250000000000004,\n      \"dist_200dma\": 1.2683492776034644,\n      \"drawdown_1y\": -11.363273771537974\n    }\n  },\n  \"meta_q2_capex_b\": 30.116,\n  \"top_watchlist_drawdown\": true\n}\n"
     },
     {
       "script": "work/validate_layout_manifest_order.py",
-      "started_at": "2026-10-10 11:39:27 Bangkok",
+      "started_at": "2026-10-11 11:23:24 Bangkok",
       "returncode": 0,
-      "output_tail": "manifest_exists True\nsource_gaps_before_manifest True\nmanifest_before_main_end True\nmanifest_near_bottom True\nai_spacing_css True\nchart_viewbox_360 True\nchart_height_360 True\nbad_mojibake_absent True\nai_before_manifest True\nhtml_size 6579776\npositions {'ai': 30906, 'gaps': 220990, 'manifest': 6567448, 'main_end': 6576760}\n"
+      "output_tail": "manifest_exists True\nsource_gaps_before_manifest True\nmanifest_before_main_end True\nmanifest_near_bottom True\nai_spacing_css True\nchart_viewbox_360 True\nchart_height_360 True\nbad_mojibake_absent True\nai_before_manifest True\nhtml_size 6582463\npositions {'ai': 30906, 'gaps': 223672, 'manifest': 6570135, 'main_end': 6579447}\n"
     },
     {
       "script": "work/validate_final_dashboard.py",
-      "started_at": "2026-10-10 11:39:28 Bangkok",
+      "started_at": "2026-10-11 11:23:25 Bangkok",
       "returncode": 0,
-      "output_tail": "html_bytes 6579776\ndata_bytes 16755605\nbad_token_counts {'html_c1_controls': 0, 'data_c1_controls': 0, 'html_thai_euro': 0, 'data_thai_euro': 0}\npointer_fix True\nprice_symbols 20 SKYY,CIBR,XLK,SMH,IBB,XLE,QQQ,EWY,ARKK,SPY,SET,mai,IWM,FEZ,VGK,EWJ,MCHI,FXI,INDA,ACWI\nprice SPY 9261 1990-01-02 2026-10-09\nprice QQQ 9261 1990-01-02 2026-10-09\nprice IWM 9261 1990-01-02 2026-10-09\nprice FEZ 4896 2007-03-30 2026-10-09\nprice VGK 5431 2005-03-10 2026-10-09\nprice EWJ 9022 1990-01-04 2026-10-09\nprice MCHI 7089 1997-07-02 2026-10-09\nprice FXI 9075 1990-01-02 2026-10-09\nprice INDA 4677 2007-09-17 2026-10-09\nprice EWY 7340 1996-12-11 2026-10-08\nprice SET 7279 1996-12-11 2026-10-09\nprice mai 5367 2004-08-10 2026-10-09\nyield United States 9200 1990-01-02 2026-10-09\nyield Thailand 4879 2006-10-02 2026-10-09\neyg SPY 25.155354 20.69 3.9752968692072472 -1.264703130792753 Computed from Trailing P/E minus local 10Y yield\neyg QQQ 30.620718 None 3.2657627427286324 -1.9742372572713678 Computed from Trailing P/E minus local 10Y yield\neyg FEZ 17.393415 15.41 5.749302250305647 None Valuation is available, but local 10Y yield or forward source is still missing\neyg SET 15.71 None 6.365372374283895 3.9952283742838954 Computed from Trailing P/E minus local 10Y yield\neyg mai 85.01 None 1.1763321962122102 -1.1938118037877896 Computed from Trailing P/E minus local 10Y yield\nsource_failures [{'source': 'TradingView Remix MCP integration', 'status': \"The standalone Python updater cannot invoke the user's MCP tools directly; TradingView SET:MAI chart history is a separate web adapter.\"}, {'source': 'EDGAR global valuation coverage', 'status': 'SEC Company Facts powers selected AI company data, but is not aggregated into global index valuations.'}, {'source': 'BIS global rates/assets', 'status': 'Planned adapter; current live macro panel uses FRED US series first.'}, {'source': 'Official SET historical download adapter', 'status': 'Official SET historical downloads remained blocked; the dashboard uses disclosed Yahoo Finance ^SET.BK and TradingView SET:MAI daily histories, with current levels and trailing P/E cross-checked from official SET pages.'}, {'source': 'Non-US/Thailand sovereign curves', 'status': '2Y/5Y/10Y/30Y adapters for Europe, Japan, China/HK, India, and South Korea are listed as coverage gaps.'}, {'source': 'Earnings yield gap valuation inputs', 'status': 'SET/mai trailing P/E is sourced from the official SET Market Overview; other markets remain n/a unless a source-backed valuation is available.'}, {'source': 'SET historical index Excel files', 'status': 'Official SET Table_Index.xls and Table_PE.xls links were discoverable on SET Market Statistics but direct download returned an Incapsula protection page in this run; current SET/mai stats were parsed from official SET Market Overview HTML instead.'}, {'source': 'Forward P/E coverage', 'status': 'Forward P/E is only populated where source-backed; earnings-yield-gap calculation uses trailing P/E only.'}, {'source': 'Forward P/E full global coverage', 'status': 'Forward P/E is populated only where a source-backed FY1/forward value was found; missing values are left n/a rather than estimated.'}, {'source': 'FRED Python urllib adapter', 'status': 'urllib timed out in this Windows/Codex runtime; Froth Components are fetched with curl.exe CSV fallback.'}, {'source': 'SET direct mai historical API', 'status': 'Direct SET historical API remained blocked in this run; Top Watchlist mai chart uses TradingView SET:MAI daily history with SET as the underlying exchange source.'}, {'source': 'GPU rental dense historical API', 'status': 'Open search found only dated public observations; full 2-year daily/monthly history requires licensed Silicon Data or provider-history adapter.'}, {'source': 'CoWoS monthly capacity history', 'status': 'Open search found dated capacity/demand observations but no complete monthly CoWoS public API; chart stores sourced observations and keeps the gap visible.'}]\n"
+      "output_tail": "html_bytes 6582463\ndata_bytes 16758573\nbad_token_counts {'html_c1_controls': 0, 'data_c1_controls': 0, 'html_thai_euro': 0, 'data_thai_euro': 0}\npointer_fix True\nprice_symbols 20 SKYY,CIBR,XLK,SMH,IBB,XLE,QQQ,EWY,ARKK,SPY,SET,mai,IWM,FEZ,VGK,EWJ,MCHI,FXI,INDA,ACWI\nprice SPY 9261 1990-01-02 2026-10-09\nprice QQQ 9261 1990-01-02 2026-10-09\nprice IWM 9261 1990-01-02 2026-10-09\nprice FEZ 4896 2007-03-30 2026-10-09\nprice VGK 5431 2005-03-10 2026-10-09\nprice EWJ 9022 1990-01-04 2026-10-09\nprice MCHI 7089 1997-07-02 2026-10-09\nprice FXI 9075 1990-01-02 2026-10-09\nprice INDA 4677 2007-09-17 2026-10-09\nprice EWY 7340 1996-12-11 2026-10-08\nprice SET 7279 1996-12-11 2026-10-09\nprice mai 5367 2004-08-10 2026-10-09\nyield United States 9200 1990-01-02 2026-10-09\nyield Thailand 4879 2006-10-02 2026-10-09\neyg SPY 24.718744 20.69 4.045512992084063 -1.1944870079159369 Computed from Trailing P/E minus local 10Y yield\neyg QQQ 28.766678 None 3.4762442851413016 -1.7637557148586986 Computed from Trailing P/E minus local 10Y yield\neyg FEZ 18.081985 15.41 5.530366273393104 None Valuation is available, but local 10Y yield or forward source is still missing\neyg SET 15.71 None 6.365372374283895 3.9952283742838954 Computed from Trailing P/E minus local 10Y yield\neyg mai 85.01 None 1.1763321962122102 -1.1938118037877896 Computed from Trailing P/E minus local 10Y yield\nsource_failures [{'source': 'TradingView Remix MCP integration', 'status': \"The standalone Python updater cannot invoke the user's MCP tools directly; TradingView SET:MAI chart history is a separate web adapter.\"}, {'source': 'EDGAR global valuation coverage', 'status': 'SEC Company Facts powers selected AI company data, but is not aggregated into global index valuations.'}, {'source': 'BIS global rates/assets', 'status': 'Planned adapter; current live macro panel uses FRED US series first.'}, {'source': 'Official SET historical download adapter', 'status': 'Official SET historical downloads remained blocked; the dashboard uses disclosed Yahoo Finance ^SET.BK and TradingView SET:MAI daily histories, with current levels and trailing P/E cross-checked from official SET pages.'}, {'source': 'Non-US/Thailand sovereign curves', 'status': '2Y/5Y/10Y/30Y adapters for Europe, Japan, China/HK, India, and South Korea are listed as coverage gaps.'}, {'source': 'Earnings yield gap valuation inputs', 'status': 'SET/mai trailing P/E is sourced from the official SET Market Overview; other markets remain n/a unless a source-backed valuation is available.'}, {'source': 'SET historical index Excel files', 'status': 'Official SET Table_Index.xls and Table_PE.xls links were discoverable on SET Market Statistics but direct download returned an Incapsula protection page in this run; current SET/mai stats were parsed from official SET Market Overview HTML instead.'}, {'source': 'Forward P/E coverage', 'status': 'Forward P/E is only populated where source-backed; earnings-yield-gap calculation uses trailing P/E only.'}, {'source': 'Forward P/E full global coverage', 'status': 'Forward P/E is populated only where a source-backed FY1/forward value was found; missing values are left n/a rather than estimated.'}, {'source': 'FRED Python urllib adapter', 'status': 'urllib timed out in this Windows/Codex runtime; Froth Components are fetched with curl.exe CSV fallback.'}, {'source': 'SET direct mai historical API', 'status': 'Direct SET historical API remained blocked in this run; Top Watchlist mai chart uses TradingView SET:MAI daily history with SET as the underlying exchange source.'}, {'source': 'GPU rental dense historical API', 'status': 'Open search found only dated public observations; full 2-year daily/monthly history requires licensed Silicon Data or provider-history adapter.'}, {'source': 'CoWoS monthly capacity history', 'status': 'Open search found dated capacity/demand observations but no complete monthly CoWoS public API; chart stores sourced observations and keeps the gap visible.'}]\n"
     },
     {
       "script": "work/validate_refresh_hard_guards.py",
-      "started_at": "2026-10-10 11:39:29 Bangkok",
+      "started_at": "2026-10-11 11:23:27 Bangkok",
       "returncode": 0,
-      "output_tail": "{\n  \"status\": \"ok\",\n  \"updater_status\": \"running\",\n  \"updater_completed_at\": null,\n  \"updater_updated_at\": \"2026-10-10 11:39:29 Bangkok\",\n  \"v04_price_series\": 20,\n  \"v03_price_series\": 12,\n  \"embedded_price_series\": 20,\n  \"min_v04_points\": 2833,\n  \"min_v03_points\": 1,\n  \"min_embedded_points\": 2833,\n  \"treasury_xml_latest\": \"2026-10-09\",\n  \"dashboard_us_yield_as_of\": \"2026-10-09\",\n  \"manifest_sources\": 40,\n  \"manifest_exact_match\": true,\n  \"source_manifest_sections\": 1\n}\n"
+      "output_tail": "{\n  \"status\": \"ok\",\n  \"updater_status\": \"running\",\n  \"updater_completed_at\": null,\n  \"updater_updated_at\": \"2026-10-11 11:23:27 Bangkok\",\n  \"v04_price_series\": 20,\n  \"v03_price_series\": 12,\n  \"embedded_price_series\": 20,\n  \"min_v04_points\": 2833,\n  \"min_v03_points\": 1,\n  \"min_embedded_points\": 2833,\n  \"treasury_xml_latest\": \"2026-10-09\",\n  \"dashboard_us_yield_as_of\": \"2026-10-09\",\n  \"manifest_sources\": 40,\n  \"manifest_exact_match\": true,\n  \"source_manifest_sections\": 1\n}\n"
     }
   ],
-  "updated_at": "2026-10-10 11:39:48 Bangkok",
-  "completed_at": "2026-10-10 11:39:50 Bangkok"
+  "updated_at": "2026-10-11 11:23:46 Bangkok",
+  "completed_at": "2026-10-11 11:23:47 Bangkok"
 }
