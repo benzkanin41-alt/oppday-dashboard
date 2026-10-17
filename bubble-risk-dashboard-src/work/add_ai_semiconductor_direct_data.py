@@ -377,7 +377,7 @@ def patch_source_manifest_table(html_text: str, sources: list[dict]) -> str:
         for s in sources
     )
     pattern = r'(<h2>Source Manifest</h2>\s*<table>\s*<thead><tr><th>Source</th><th>Used For</th><th>Publication / Access Date</th><th>Link</th></tr></thead>\s*)<tbody>.*?</tbody>'
-    return re.sub(pattern, r"\1<tbody>" + rows + "</tbody>", html_text, flags=re.S)
+    return re.sub(pattern, lambda match: match.group(1) + "<tbody>" + rows + "</tbody>", html_text, flags=re.S)
 
 
 def main() -> None:

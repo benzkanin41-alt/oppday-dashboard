@@ -27,13 +27,16 @@ class PublicHTML(HTMLParser):
         self.scripts = []
         self.script = None
         self.tables = []
+        self.table_links = []
         self.stack = []
 
     def handle_starttag(self, tag, attrs):
         if tag == "script":
             self.script = []
         elif tag == "table":
-            self.stack.append({"rows": [], "row": None, "cell": None})
+            self.stack.append({"rows": [], "row": None, "cell": None, "links": []})
+        elif self.stack and tag == "a":
+            self.stack[-1]["links"].append(dict(attrs).get("href"))
         elif self.stack and tag == "tr":
             self.stack[-1]["row"] = []
         elif self.stack and tag in {"td", "th"}:
@@ -62,7 +65,9 @@ class PublicHTML(HTMLParser):
                 table["rows"].append(table["row"])
             table["row"] = None
         elif self.stack and tag == "table":
-            self.tables.append(self.stack.pop()["rows"])
+            table = self.stack.pop()
+            self.tables.append(table["rows"])
+            self.table_links.append(table["links"])
 
 
 def walk_json(value):
@@ -192,7 +197,7 @@ def main() -> None:
             latest = max(point["date"] for points in series.values() for point in points)
             upsert_source(payload, {"name": f"Silicon Data official {gpu.upper()} rental index", "url": url,
                 "publication_date": f"Observations through {latest}; refresh mode: {mode}",
-                "used_for": "Published public 7-day GPU rental readings, accumulated without deleting prior observations; not licensed full history."})
+                "used_for": "Published dated GPU rental readings, accumulated without deleting prior observations; not licensed full history."})
             status["sources"].append({"name": gpu, "mode": mode, "latest": latest})
         except Exception as exc:
             status["errors"][gpu] = str(exc)
@@ -218,7 +223,8 @@ def main() -> None:
         additions = json.loads(seeds.read_text(encoding="utf-8"))
         for name, points in additions.get("gpu_rental", {}).items():
             ai["gpu_rental"][name] = merge_points(points, ai["gpu_rental"].get(name, []))
-        ai["vendor_events"] = merge_rows(ai.get("vendor_events", []), additions.get("vendor_events", []))
+        for key in ("vendor_events", "cowos_observations"):
+            ai[key] = merge_rows(ai.get(key, []), additions.get(key, []))
         for entry in additions.get("sources", []):
             upsert_source(payload, entry)
     for name, error in status["errors"].items():

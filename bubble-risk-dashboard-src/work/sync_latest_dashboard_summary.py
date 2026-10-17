@@ -8,6 +8,8 @@ import statistics
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from add_ai_semiconductor_direct_data import patch_source_manifest_table
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "outputs" / "dashboard"
 DATA = OUT / "data.json"
@@ -263,6 +265,7 @@ def synchronize_html(payload: dict) -> None:
     table_start = page.index("<table>", macro_heading)
     table_end = page.index("</table>", table_start) + len("</table>")
     page = page[:table_start] + render_macro_table(payload) + page[table_end:]
+    page = patch_source_manifest_table(page, payload.get("sources", []))
     HTML.write_text(page, encoding="utf-8")
 
 

@@ -6,7 +6,7 @@ import json
 import math
 import subprocess
 import xml.etree.ElementTree as ET
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 
@@ -24,6 +24,7 @@ TREASURY_XML_URL = (
 NYFED_EFFR_URL = "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate={start}&endDate={end}&type=rate"
 FRED_CSV_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
 START_1990 = date(1990, 1, 1)
+FETCH_STATUS = {}
 
 
 def parse_float(value):
@@ -40,7 +41,7 @@ def parse_float(value):
 
 def run_curl(url: str, timeout: int = 70) -> str:
     proc = subprocess.run(
-        ["curl.exe", "-L", "--silent", "--show-error", "--max-time", str(timeout), url],
+        ["curl.exe", "--fail", "-L", "--silent", "--show-error", "--max-time", str(timeout), url],
         cwd=ROOT,
         text=True,
         encoding="utf-8",
@@ -54,18 +55,65 @@ def run_curl(url: str, timeout: int = 70) -> str:
     return proc.stdout
 
 
+def validate_source_text(name: str, text: str) -> None:
+    valid = False
+    if name.endswith(".csv"):
+        column = Path(name).stem
+        for row in csv.DictReader(io.StringIO(text)):
+            raw_date = (row.get("DATE") or row.get("Date")) if name == "VIX_History.csv" else row.get("observation_date")
+            value = parse_float(row.get("CLOSE") or row.get("Close") or row.get("VIX Close")) if name == "VIX_History.csv" else parse_float(row.get(column))
+            try:
+                datetime.strptime(raw_date, "%m/%d/%Y") if name == "VIX_History.csv" else date.fromisoformat(raw_date[:10])
+                valid = value is not None and math.isfinite(value)
+            except (TypeError, ValueError):
+                continue
+            if valid:
+                break
+    elif name.endswith(".xml"):
+        root = ET.fromstring(text)
+        ns = {"d": "http://schemas.microsoft.com/ado/2007/08/dataservices", "m": "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata"}
+        for row in root.findall(".//m:properties", ns):
+            raw_date = row.findtext("d:NEW_DATE", namespaces=ns)
+            values = [parse_float(row.findtext(f"d:BC_{term}YEAR", namespaces=ns)) for term in (2, 10)]
+            if raw_date and all(value is not None and math.isfinite(value) for value in values):
+                date.fromisoformat(raw_date[:10])
+                valid = True
+                break
+    elif name == "nyfed_effr_latest.json":
+        data = json.loads(text)
+        for row in data.get("refRates", []):
+            value = parse_float(row.get("percentRate"))
+            if row.get("effectiveDate") and value is not None and math.isfinite(value):
+                date.fromisoformat(row["effectiveDate"])
+                valid = True
+                break
+    if not valid:
+        raise ValueError(f"No valid observations in {name}")
+
+
 def cached_text(name: str, url: str, timeout: int = 70) -> str:
     RAW.mkdir(parents=True, exist_ok=True)
     path = RAW / name
+    previous = json.loads(LATEST.read_text(encoding="utf-8")) if LATEST.exists() else {}
+    old_status = previous.get("fetch_status", {}).get(name, {})
+    status = {"url": url, "attempted_at": datetime.now(timezone.utc).isoformat(), "last_successful_fetch": old_status.get("last_successful_fetch")}
     try:
         text = run_curl(url, timeout=timeout)
-        if len(text) < 20:
-            raise RuntimeError(f"short response for {url}")
-        path.write_text(text, encoding="utf-8")
+        validate_source_text(name, text)
+        temporary = path.with_name(path.name + ".tmp")
+        temporary.write_text(text, encoding="utf-8")
+        temporary.replace(path)
+        status.update(mode="live", last_successful_fetch=status["attempted_at"])
+        FETCH_STATUS[name] = status
         return text
-    except Exception:
-        if path.exists() and path.stat().st_size > 100:
-            return path.read_text(encoding="utf-8", errors="replace")
+    except Exception as exc:
+        status.update(mode="unavailable", error=str(exc))
+        FETCH_STATUS[name] = status
+        if path.exists():
+            cached = path.read_text(encoding="utf-8", errors="replace")
+            validate_source_text(name, cached)
+            status["mode"] = "cache"
+            return cached
         raise
 
 
@@ -257,6 +305,7 @@ def update_scores(payload: dict) -> None:
 
 
 def main() -> None:
+    FETCH_STATUS.clear()
     payload = json.loads(DATA.read_text(encoding="utf-8"))
     vix = parse_cboe_vix()
     fred_dgs10 = fred_points("DGS10")
@@ -327,6 +376,7 @@ def main() -> None:
         },
     )
     latest = {
+        "fetch_status": FETCH_STATUS,
         "cboe_vix": {"date": vix[-1]["date"] if vix else None, "url": CBOE_VIX_CSV},
         "treasury_curve_10y2y": {
             "date": treasury_curve[-1]["date"] if treasury_curve else None,
@@ -337,6 +387,18 @@ def main() -> None:
         "fred_t10yie": {"date": t10yie[-1]["date"] if t10yie else None},
         "real_policy_proxy": {"date": real_policy[-1]["date"] if real_policy else None},
     }
+    payload["current_market_fetch_status"] = FETCH_STATUS
+    for name, status in FETCH_STATUS.items():
+        if status["mode"] != "live":
+            payload.setdefault("source_failures", []).append({"source": f"Current market refresh: {name}", "status": f"Used validated cache; original observation dates retained. Last successful fetch: {status['last_successful_fetch'] or 'unknown'}. {status.get('error', '')}"})
+    for source in payload.get("sources", []):
+        status = next((item for item in FETCH_STATUS.values() if item["url"] == source.get("url")), None)
+        if source.get("name") == "Cboe VIX historical price data":
+            status = FETCH_STATUS.get("VIX_History.csv")
+        if status:
+            source["refresh_mode"] = status["mode"]
+            source["last_successful_fetch"] = status["last_successful_fetch"]
+            source["publication_date"] += f"; refresh mode: {status['mode']}; last successful retrieval: {status['last_successful_fetch'] or 'unknown'}"
     LATEST.write_text(json.dumps(latest, ensure_ascii=False, indent=2), encoding="utf-8")
     DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"status": "ok", **latest}, ensure_ascii=False, indent=2))

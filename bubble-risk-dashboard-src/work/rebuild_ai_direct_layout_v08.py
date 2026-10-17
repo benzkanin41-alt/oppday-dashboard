@@ -211,7 +211,7 @@ def gpu_observations(ai: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def cowos_observations(ai: dict[str, Any]) -> list[dict[str, Any]]:
-    rows: list[dict[str, Any]] = []
+    rows: list[dict[str, Any]] = list(ai.get("cowos_observations", []))
     for series_name, points in ai.get("cowos", {}).items():
         for point in points:
             rows.append(
@@ -251,7 +251,7 @@ def build_model(ai: dict[str, Any]) -> dict[str, Any]:
             "unit": "$/GPU-hour index",
             "badge": "Sparse public observations",
             "badge_class": "ai-badge-warn",
-            "coverage": "Public 7-day readings are refreshed from Silicon Data and accumulated with dated historical observations. The full 2-year chart window is shown, but missing dates are not interpolated; full older daily history remains a licensed-data gap.",
+            "coverage": "Published dated readings are refreshed from Silicon Data and accumulated with historical observations. The full 2-year chart window is shown, but missing dates are not interpolated; full older daily history remains a licensed-data gap.",
             "latest": latest_values(ai["gpu_rental"]),
             "series": normalize_series(ai["gpu_rental"], "GPU rental observation"),
             "observations": gpu_observations(ai),

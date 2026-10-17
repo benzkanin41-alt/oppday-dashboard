@@ -17,6 +17,9 @@ def clean_price_series(series: dict) -> None:
         chart_symbol = item.get("chart_symbol") or item.get("symbol") or symbol
         if symbol == "SET" and item.get("market_session_date"):
             item["note"] = "SET Index: Yahoo Finance + TradingView daily history; official SET latest close verified by exchange-session date."
+        elif symbol == "mai" and item.get("history_fetch_mode"):
+            status = item.get("history_fetch_status") or {}
+            item["note"] = f"TradingView SET:MAI daily history; official SET close cross-checked. Refresh mode: {item['history_fetch_mode']}; last successful retrieval: {status.get('fetched_at') or 'unknown'}."
         else:
             item["note"] = f"Proxy {chart_symbol}; if the first date is after 1990, the source starts there."
 

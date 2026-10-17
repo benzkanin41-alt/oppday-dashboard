@@ -8,6 +8,7 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 
 from retain_dashboard_history import assert_history_preserved
+from refresh_ai_public_sources import PublicHTML
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -101,6 +102,18 @@ if ai:
 manifest_sections = len(re.findall(r"<h2>\s*Source Manifest\s*</h2>", html, re.I))
 if manifest_sections != 1:
     fail(f"HTML must contain exactly one Source Manifest section; found {manifest_sections}")
+document = PublicHTML()
+document.feed(html)
+headers = ["Source", "Used For", "Publication / Access Date", "Link"]
+tables = [index for index, rows in enumerate(document.tables) if rows and rows[0] == headers]
+if len(tables) != 1:
+    fail("HTML Source Manifest table is missing or duplicated")
+table_index = tables[0]
+expected_rows = [[" ".join(str(source.get(key) or "").split()) for key in ("name", "used_for", "publication_date")] + ["source"] for source in manifest]
+if document.tables[table_index][1:] != expected_rows:
+    fail("HTML Source Manifest rows do not match the JSON manifest")
+if document.table_links[table_index] != [source.get("url", "") for source in manifest]:
+    fail("HTML Source Manifest URLs do not match the JSON manifest")
 
 year = datetime.now().year
 treasury_url = (
@@ -184,6 +197,8 @@ summary = {
     "dashboard_us_yield_as_of": us_curve.get("as_of"),
     "manifest_sources": len(manifest),
     "manifest_exact_match": True,
+    "rendered_manifest_rows": len(expected_rows),
+    "rendered_manifest_exact_match": True,
     "source_manifest_sections": manifest_sections,
 }
 print(json.dumps(summary, ensure_ascii=False, indent=2))

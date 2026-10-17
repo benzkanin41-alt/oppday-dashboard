@@ -1,6 +1,76 @@
 {
   "NeoCloud H100": [
     {
+      "date": "2026-09-17",
+      "value": 2.65,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-18",
+      "value": 2.65,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-19",
+      "value": 2.63,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-20",
+      "value": 2.65,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-21",
+      "value": 2.6,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-22",
+      "value": 2.6,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-23",
+      "value": 2.61,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-24",
+      "value": 2.61,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-25",
+      "value": 2.64,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-26",
+      "value": 2.72,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
       "date": "2026-09-27",
       "value": 2.7,
       "source": "Silicon Data official public index reading",
@@ -111,9 +181,100 @@
       "source": "Silicon Data official public index reading",
       "source_url": "https://www.silicondata.com/products/silicon-index/h100",
       "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-13",
+      "value": 2.85,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-14",
+      "value": 2.85,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-15",
+      "value": 2.81,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-16",
+      "value": 2.83,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
     }
   ],
   "Hyperscaler H100": [
+    {
+      "date": "2026-09-17",
+      "value": 7.2,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-18",
+      "value": 7.2,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-19",
+      "value": 7.2,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-20",
+      "value": 7.2,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-21",
+      "value": 7.17,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-22",
+      "value": 7.18,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-23",
+      "value": 7.18,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-24",
+      "value": 7.18,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-25",
+      "value": 7.18,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
     {
       "date": "2026-09-26",
       "value": 7.18,
@@ -232,9 +393,107 @@
       "source": "Silicon Data official public index reading",
       "source_url": "https://www.silicondata.com/products/silicon-index/h100",
       "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-13",
+      "value": 7.15,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-14",
+      "value": 7.15,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-15",
+      "value": 7.15,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-16",
+      "value": 7.15,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
     }
   ],
   "NeoCloud B200": [
+    {
+      "date": "2026-09-17",
+      "value": 5.71,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-18",
+      "value": 5.72,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-19",
+      "value": 5.73,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-20",
+      "value": 5.73,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-21",
+      "value": 5.74,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-22",
+      "value": 5.76,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-23",
+      "value": 5.77,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-24",
+      "value": 5.79,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-25",
+      "value": 5.87,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-09-26",
+      "value": 5.87,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
     {
       "date": "2026-09-27",
       "value": 5.87,
@@ -343,6 +602,34 @@
     {
       "date": "2026-10-12",
       "value": 5.94,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-13",
+      "value": 5.95,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-14",
+      "value": 5.95,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-15",
+      "value": 6.01,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-16",
+      "value": 6.01,
       "source": "Silicon Data official public index reading",
       "source_url": "https://www.silicondata.com/products/silicon-index/b200",
       "basis": "Published dated observation; no interpolation"

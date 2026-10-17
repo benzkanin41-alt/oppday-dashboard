@@ -3,7 +3,7 @@ from __future__ import annotations
 import io
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from urllib.request import Request, urlopen
 
@@ -47,26 +47,30 @@ def fetch_release_point() -> dict:
     }
 
 
-def read_or_fetch() -> tuple[dict, str]:
+def read_or_fetch() -> tuple[dict, dict]:
+    attempted = datetime.now(timezone.utc).isoformat()
     try:
         point = fetch_release_point()
         RAW.parent.mkdir(parents=True, exist_ok=True)
         RAW.write_text(
-            json.dumps({"fetched_at": datetime.now().isoformat(), "url": RELEASE_URL, "point": point}, ensure_ascii=False, indent=2),
+            json.dumps({"fetched_at": attempted, "url": RELEASE_URL, "point": point}, ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
-        return point, "live"
-    except Exception:
+        return point, {"mode": "live", "fetched_at": attempted, "attempted_at": attempted}
+    except Exception as exc:
         if RAW.exists() and RAW.stat().st_size:
-            return json.loads(RAW.read_text(encoding="utf-8"))["point"], "cache"
+            cached = json.loads(RAW.read_text(encoding="utf-8"))
+            return cached["point"], {"mode": "cache", "fetched_at": cached.get("fetched_at"), "attempted_at": attempted, "error": str(exc)}
         raise
 
 
-def upsert_source(sources: list[dict]) -> None:
+def upsert_source(sources: list[dict], fetch_status: dict) -> None:
     entry = {
         "name": "Meta Q2 2026 earnings release",
         "url": RELEASE_PAGE,
-        "publication_date": "Published 2026-07-29; accessed by daily dashboard refresh",
+        "publication_date": f"Published 2026-07-29; refresh mode: {fetch_status['mode']}; last successful retrieval: {fetch_status.get('fetched_at') or 'unknown'}",
+        "refresh_mode": fetch_status["mode"],
+        "last_successful_fetch": fetch_status.get("fetched_at"),
         "used_for": "META Q2 2026 purchases of property and equipment ($30.116B) until SEC Company Facts includes the new quarter.",
     }
     for source in sources:
@@ -82,7 +86,8 @@ def main() -> None:
     capex = ai.get("capex") or {}
     if "META" not in capex:
         raise RuntimeError("META capex series missing")
-    point, mode = read_or_fetch()
+    point, fetch_status = read_or_fetch()
+    mode = fetch_status["mode"]
     existing = next((item for item in capex["META"] if item.get("date") == PERIOD_END), None)
     if not existing or existing.get("form") not in {"10-Q", "10-K"}:
         capex["META"] = sorted(
@@ -94,7 +99,10 @@ def main() -> None:
             raise RuntimeError("Meta SEC and earnings-release capex disagree")
         mode += "; retained authoritative SEC fact"
     sources = payload.setdefault("sources", [])
-    upsert_source(sources)
+    upsert_source(sources, fetch_status)
+    payload.setdefault("source_refresh_status", {})["meta_q2_release"] = fetch_status
+    if fetch_status["mode"] != "live":
+        payload.setdefault("source_failures", []).append({"source": "Meta Q2 earnings-release cross-check", "status": f"Used cached IR release; retained original filing period and authoritative SEC fact where available. Last successful retrieval: {fetch_status.get('fetched_at') or 'unknown'}. {fetch_status.get('error', '')}"})
     DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     MANIFEST.write_text(json.dumps(sources, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"status": "ok", "mode": mode, "meta_q2_capex_b": point["value"], "period_end": point["date"]}, ensure_ascii=False, indent=2))

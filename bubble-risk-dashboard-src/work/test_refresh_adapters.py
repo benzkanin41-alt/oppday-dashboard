@@ -2,14 +2,22 @@ from __future__ import annotations
 
 import json
 import unittest
+from datetime import date, timedelta
 from pathlib import Path
+from tempfile import TemporaryDirectory
+from types import SimpleNamespace
+from unittest.mock import patch
 
-from add_ai_semiconductor_direct_data import quarterly_cashflow
-from refresh_ai_public_sources import micron_release_points, parse_gpu_cards
+from add_ai_semiconductor_direct_data import quarterly_cashflow, patch_source_manifest_table
+from refresh_ai_public_sources import PublicHTML, micron_release_points, parse_gpu_cards
 from retain_dashboard_history import merge_history, merge_points
 from patch_set_session_history import normalize_snapshot, verified_session
 from patch_thailand_heat_mai_treasury import synchronize_curve_indicator
 from sync_latest_dashboard_summary import latest_market_anchor
+import update_current_market_indicators as market_refresh
+import patch_mai_tradingview_history as mai_refresh
+import patch_meta_latest_release_capex as meta_refresh
+from validate_mai_chart_history import verify_session
 
 
 RAW = Path(__file__).resolve().parent / "raw" / "ai_direct_v06"
@@ -24,7 +32,19 @@ def row(start, end, value, form="10-Q"):
     return {"start": start, "end": end, "val": value * 1e9, "form": form, "filed": "2026-02-01", "accn": "test"}
 
 
+def gpu_document(count, headline=None):
+    points = [{"date": (date(2025, 1, 1) + timedelta(days=i)).isoformat(), "price": round(2 + i / 100, 2)} for i in range(count)]
+    card = {"key": "h100-neo", "points": points, "rawValue": points[-1]["price"] if headline is None else headline}
+    packet = [1, "0:" + json.dumps({"cards": [card]}) + "\n"]
+    return "<script>self.__next_f.push(" + json.dumps(packet) + ")</script>"
+
+
 class RefreshAdapterTests(unittest.TestCase):
+    def temporary_cache(self):
+        directory = RAW.parents[1] / ".build_cache"
+        directory.mkdir(parents=True, exist_ok=True)
+        return TemporaryDirectory(prefix="adapter-tests-", dir=directory)
+
     def test_explicit_quarter(self):
         points = quarterly_cashflow(facts([row("2025-04-01", "2025-06-30", 20)]), [TAG])
         self.assertEqual(points[0]["value"], 20)
@@ -64,10 +84,109 @@ class RefreshAdapterTests(unittest.TestCase):
     def test_public_gpu_structured_primary_data(self):
         for gpu in ("h100", "b200"):
             result = parse_gpu_cards((RAW / f"silicon_{gpu}.html").read_text(encoding="utf-8"), f"https://www.silicondata.com/products/silicon-index/{gpu}")
-            self.assertTrue(result)
+            expected = {"NeoCloud H100", "Hyperscaler H100"} if gpu == "h100" else {"NeoCloud B200"}
+            self.assertTrue(expected.issubset(result))
             for points in result.values():
-                self.assertEqual(len(points), 7)
+                self.assertTrue(points)
+                days = [point["date"] for point in points]
+                self.assertEqual(days, sorted(set(days)))
+                self.assertTrue(all(0 < point["value"] < 100 for point in points))
                 self.assertTrue(all(point["source_url"].startswith("https://www.silicondata.com/") for point in points))
+
+    def test_public_gpu_variable_window(self):
+        url = "https://www.silicondata.com/products/silicon-index/h100"
+        for count in (7, 30):
+            with self.subTest(count=count):
+                points = parse_gpu_cards(gpu_document(count), url)["NeoCloud H100"]
+                self.assertEqual(len(points), count)
+                self.assertEqual(points[0]["date"], "2025-01-01")
+                self.assertEqual(points[-1]["value"], round(2 + (count - 1) / 100, 2))
+
+    def test_public_gpu_headline_mismatch_rejected(self):
+        with self.assertRaisesRegex(ValueError, "headline and dated chart disagree"):
+            parse_gpu_cards(gpu_document(30, headline=9), "https://www.silicondata.com/products/silicon-index/h100")
+
+    def test_source_manifest_renders_all_rows_and_links(self):
+        sources = [{"name": "API A&B", "used_for": "Risk <data>", "publication_date": "2026-10-17", "url": "https://example.test/?x=1&y=2"}, {"name": r"Source \1", "used_for": "History", "publication_date": "2026-10-16", "url": "https://example.test/history"}]
+        page = '<h2>Source Manifest</h2><table><thead><tr><th>Source</th><th>Used For</th><th>Publication / Access Date</th><th>Link</th></tr></thead><tbody></tbody></table>'
+        document = PublicHTML()
+        document.feed(patch_source_manifest_table(page, sources))
+        self.assertEqual(len(document.tables[0]) - 1, len(sources))
+        self.assertEqual([row[0] for row in document.tables[0][1:]], [source["name"] for source in sources])
+        self.assertEqual(document.table_links[0], [source["url"] for source in sources])
+
+    def test_macro_http_error_keeps_valid_cache(self):
+        with self.temporary_cache() as folder:
+            root = Path(folder)
+            original = "observation_date,DGS10\n2026-10-01,5.26\n"
+            (root / "DGS10.csv").write_text(original, encoding="utf-8")
+            (root / "latest_sources.json").write_text(json.dumps({"fetch_status": {"DGS10.csv": {"last_successful_fetch": "2026-10-01T20:00:00Z"}}}), encoding="utf-8")
+            with patch.object(market_refresh, "RAW", root), patch.object(market_refresh, "LATEST", root / "latest_sources.json"), patch.object(market_refresh, "run_curl", return_value="<html>upstream unavailable, try again later</html>"):
+                self.assertEqual(market_refresh.cached_text("DGS10.csv", "https://example.test"), original)
+            self.assertEqual((root / "DGS10.csv").read_text(encoding="utf-8"), original)
+            status = market_refresh.FETCH_STATUS["DGS10.csv"]
+            self.assertEqual(status["mode"], "cache")
+            self.assertEqual(status["last_successful_fetch"], "2026-10-01T20:00:00Z")
+            self.assertIn("No valid observations", status["error"])
+
+    def test_macro_valid_response_replaces_cache(self):
+        with self.temporary_cache() as folder:
+            root = Path(folder)
+            valid = "observation_date,DGS10\n2026-10-16,5.14\n"
+            with patch.object(market_refresh, "RAW", root), patch.object(market_refresh, "LATEST", root / "latest_sources.json"), patch.object(market_refresh, "run_curl", return_value=valid):
+                self.assertEqual(market_refresh.cached_text("DGS10.csv", "https://example.test"), valid)
+            self.assertEqual((root / "DGS10.csv").read_text(encoding="utf-8"), valid)
+            self.assertFalse((root / "DGS10.csv.tmp").exists())
+            self.assertEqual(market_refresh.FETCH_STATUS["DGS10.csv"]["mode"], "live")
+
+    def test_macro_invalid_documents_rejected(self):
+        for name, text in (("DGS10.csv", "observation_date,DGS10\n2026-10-16,NaN\n"), ("treasury.xml", "<html>unavailable</html>"), ("nyfed_effr_latest.json", '{"error":"unavailable"}')):
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                market_refresh.validate_source_text(name, text)
+
+    def test_macro_curl_requires_http_success(self):
+        with patch.object(market_refresh.subprocess, "run", return_value=SimpleNamespace(returncode=22, stderr="HTTP 503", stdout="")) as run:
+            with self.assertRaises(RuntimeError):
+                market_refresh.run_curl("https://example.test")
+            self.assertIn("--fail", run.call_args.args[0])
+
+    def test_mai_mismatched_cache_cannot_overwrite_official_close(self):
+        item = {"as_of": "2026-10-17", "metrics": {"latest": 225.0}}
+        with self.assertRaises(RuntimeError):
+            mai_refresh.verify_official_close(item, [{"date": "2026-10-12", "value": 221.0}])
+        self.assertEqual(item, {"as_of": "2026-10-17", "metrics": {"latest": 225.0}})
+
+    def test_mai_incomplete_fetch_keeps_cache_timestamp(self):
+        with self.temporary_cache() as folder:
+            path = Path(folder) / "mai.json"
+            cached = {"fetched_at": "2026-10-01T12:00:00Z", "points": [{"date": (date(2024, 1, 1) + timedelta(days=i)).isoformat(), "value": 221.0} for i in range(1000)]}
+            path.write_text(json.dumps(cached), encoding="utf-8")
+            with patch.object(mai_refresh, "RAW_TV", path), patch.object(mai_refresh, "load_tv_fetcher", return_value=SimpleNamespace(fetch_history=lambda *args: [])):
+                points, status = mai_refresh.read_or_fetch_points()
+            self.assertEqual(points, cached["points"])
+            self.assertEqual(status["mode"], "cache")
+            self.assertEqual(status["fetched_at"], cached["fetched_at"])
+            self.assertEqual(json.loads(path.read_text(encoding="utf-8")), cached)
+
+    def test_mai_session_guard_rejects_old_history(self):
+        payload = {"indices": [{"symbol": "SET", "market_session_date": "2026-10-16"}, {"symbol": "mai", "metrics": {"latest": 225.0}}]}
+        with self.assertRaises(AssertionError):
+            verify_session(payload, [{"date": "2026-07-03", "value": 225.0}])
+        verify_session(payload, [{"date": "2026-10-16", "value": 225.0}])
+
+    def test_meta_cache_mode_and_retrieval_are_disclosed(self):
+        with self.temporary_cache() as folder:
+            path = Path(folder) / "meta.json"
+            point = {"date": "2026-06-30", "value": 30.116}
+            path.write_text(json.dumps({"fetched_at": "2026-10-01T12:00:00Z", "point": point}), encoding="utf-8")
+            with patch.object(meta_refresh, "RAW", path), patch.object(meta_refresh, "fetch_release_point", side_effect=RuntimeError("offline")):
+                actual, status = meta_refresh.read_or_fetch()
+            self.assertEqual(actual, point)
+            self.assertEqual(status["mode"], "cache")
+            sources = []
+            meta_refresh.upsert_source(sources, status)
+            self.assertEqual(sources[0]["last_successful_fetch"], "2026-10-01T12:00:00Z")
+            self.assertIn("refresh mode: cache", sources[0]["publication_date"])
 
     def test_micron_quarter_vs_annual_and_gross_vs_net(self):
         result = micron_release_points((RAW / "micron_q4_2026.html").read_text(encoding="utf-8"))

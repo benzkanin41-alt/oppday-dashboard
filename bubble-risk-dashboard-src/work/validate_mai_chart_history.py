@@ -15,6 +15,15 @@ def require(condition: bool, message: str) -> None:
         raise AssertionError(message)
 
 
+def verify_session(payload: dict, points: list[dict]) -> None:
+    indices = {item.get("symbol"): item for item in payload.get("indices", [])}
+    session = indices.get("SET", {}).get("market_session_date")
+    require(bool(session), "Verified SET exchange session is missing")
+    require(bool(points) and points[-1]["date"] == session, f"mai history session differs from verified SET session {session}")
+    official = indices.get("mai", {}).get("metrics", {}).get("latest")
+    require(official is not None and abs(float(points[-1]["value"]) - float(official)) <= 0.011, "mai history and official latest close differ")
+
+
 def main() -> None:
     payload = json.loads(DATA.read_text(encoding="utf-8"))
     html = HTML.read_text(encoding="utf-8")
@@ -23,7 +32,7 @@ def main() -> None:
     require(mai.get("chart_symbol") == "SET:MAI", f"mai chart_symbol is {mai.get('chart_symbol')}")
     require(len(points) >= 1000, f"mai history has only {len(points)} points")
     require(points[0]["date"] <= "2005-01-01", f"mai history starts too late: {points[0]['date']}")
-    require(points[-1]["date"] >= "2026-07-03", f"mai history stale: {points[-1]['date']}")
+    verify_session(payload, points)
     require("mai Index - SET:MAI" in html, "HTML select label still does not show SET:MAI")
     match = re.search(r'<script id="v03-data" type="application/json">(.*?)</script>', html, re.S)
     require(match is not None, "v03-data script missing")

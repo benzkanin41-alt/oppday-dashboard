@@ -3,7 +3,7 @@ from __future__ import annotations
 import importlib.util
 import json
 import re
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
@@ -55,17 +55,20 @@ def remove_stale_mai_failures(payload: dict) -> None:
         )
 
 
-def read_or_fetch_points() -> list[dict]:
+def read_or_fetch_points() -> tuple[list[dict], dict]:
+    attempted = datetime.now(timezone.utc).isoformat()
     try:
         mod = load_tv_fetcher()
         points = mod.fetch_history(SYMBOL, 10000)
+        if len(points) < 1000:
+            raise RuntimeError(f"TradingView SET:MAI returned too few points: {len(points)}")
         RAW_TV.parent.mkdir(parents=True, exist_ok=True)
         RAW_TV.write_text(
             json.dumps(
                 {
                     "source": "TradingView chart websocket",
                     "symbol": SYMBOL,
-                    "fetched_at": datetime.utcnow().isoformat() + "Z",
+                    "fetched_at": attempted,
                     "points": points,
                 },
                 ensure_ascii=False,
@@ -73,12 +76,22 @@ def read_or_fetch_points() -> list[dict]:
             ),
             encoding="utf-8",
         )
-        return points
-    except Exception:
+        return points, {"mode": "live", "fetched_at": attempted, "attempted_at": attempted}
+    except Exception as exc:
         if RAW_TV.exists() and RAW_TV.stat().st_size > 1000:
             payload = json.loads(RAW_TV.read_text(encoding="utf-8"))
-            return payload.get("points") or []
+            return payload.get("points") or [], {"mode": "cache", "fetched_at": payload.get("fetched_at"), "attempted_at": attempted, "error": str(exc)}
         raise
+
+
+def verify_official_close(item: dict, points: list[dict]) -> None:
+    official = float(item["metrics"]["latest"])
+    if not points or abs(float(points[-1]["value"]) - official) > 0.011:
+        raise RuntimeError("mai daily last close disagrees with the official SET overview; official snapshot has not been overwritten")
+    item["page_updated_at"] = item.get("page_updated_at") or item.get("as_of")
+    item["market_session_date"] = points[-1]["date"]
+    item["as_of"] = points[-1]["date"]
+    item["metrics"]["as_of"] = points[-1]["date"]
 
 
 def compute_price_metrics(points: list[dict]) -> dict:
@@ -140,9 +153,14 @@ def update_chart_json(html_text: str, payload: dict) -> str:
 
 def main() -> None:
     payload = json.loads(DATA.read_text(encoding="utf-8"))
-    points = read_or_fetch_points()
+    points, fetch_status = read_or_fetch_points()
     if len(points) < 1000:
         raise RuntimeError(f"TradingView SET:MAI returned too few points: {len(points)}")
+    item = next(item for item in payload["indices"] if item.get("symbol") == "mai")
+    verify_official_close(item, points)
+    snapshot = payload.get("price_histories_v03", {}).get("mai")
+    if snapshot:
+        snapshot["points"] = [{"date": points[-1]["date"], "value": float(item["metrics"]["latest"])}]
 
     price_histories = payload.setdefault("price_histories_v04", {})
     price_histories["mai"] = {
@@ -151,7 +169,10 @@ def main() -> None:
         "chart_symbol": SYMBOL,
         "source": "TradingView chart history for SET:MAI",
         "source_url": TV_SOURCE_URL,
-        "note": "Daily mai Index history from TradingView symbol SET:MAI; official SET overview remains the current-value cross-check.",
+        "note": f"TradingView SET:MAI daily history; official SET close cross-checked. Refresh mode: {fetch_status['mode']}; last successful retrieval: {fetch_status.get('fetched_at') or 'unknown'}.",
+        "history_fetch_mode": fetch_status["mode"],
+        "history_fetch_status": fetch_status,
+        "market_session_date": points[-1]["date"],
         "points": [{"date": p["date"], "value": p["value"]} for p in points],
     }
 
@@ -160,7 +181,7 @@ def main() -> None:
         if item.get("symbol") == "mai":
             item.setdefault("metrics", {}).update(metrics)
             item["as_of"] = points[-1]["date"]
-            item["source_note"] = "Daily history from TradingView SET:MAI; live current snapshot from official SET overview."
+            item["source_note"] = f"Daily history from TradingView SET:MAI (refresh mode: {fetch_status['mode']}); current snapshot cross-checked with official SET overview."
             item.pop("latest_only", None)
             break
 
@@ -174,11 +195,13 @@ def main() -> None:
         {
             "name": "TradingView SET:MAI daily history",
             "url": TV_SOURCE_URL,
-            "publication_date": f"Data fetched {datetime.now().strftime('%Y-%m-%d')}; latest observation {points[-1]['date']}",
+            "publication_date": f"Refresh mode: {fetch_status['mode']}; last successful retrieval {fetch_status.get('fetched_at') or 'unknown'}; latest observation {points[-1]['date']}",
             "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts.",
         },
     )
     remove_stale_mai_failures(payload)
+    if fetch_status["mode"] != "live":
+        payload.setdefault("source_failures", []).append({"source": "TradingView SET:MAI refresh", "status": f"Used dated cache; last successful retrieval {fetch_status.get('fetched_at') or 'unknown'}. {fetch_status.get('error', '')}"})
     DATA.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     (OUT / "source-manifest.json").write_text(json.dumps(payload.get("sources", []), ensure_ascii=False, indent=2), encoding="utf-8")
 
