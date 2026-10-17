@@ -128,31 +128,31 @@
   {
     "name": "Cboe VIX historical price data",
     "url": "https://www.cboe.com/tradable-products/vix/vix-historical-data",
-    "publication_date": "updated daily; latest observation 2026-10-16; refresh mode: live; last successful retrieval: 2026-10-17T04:51:23.753072+00:00",
+    "publication_date": "updated daily; latest observation 2026-10-16; refresh mode: live; last successful retrieval: 2026-10-17T04:59:35.022027+00:00",
     "used_for": "VIX complacency row and 5-year sparkline in Froth Components.",
     "refresh_mode": "live",
-    "last_successful_fetch": "2026-10-17T04:51:23.753072+00:00"
+    "last_successful_fetch": "2026-10-17T04:59:35.022027+00:00"
   },
   {
     "name": "U.S. Treasury Daily Treasury Rates XML",
     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-    "publication_date": "feed updated 2026-10-16T15:47:36Z; latest observation 2026-10-16",
+    "publication_date": "feed updated 2026-10-17T00:59:39Z; latest observation 2026-10-16",
     "used_for": "U.S. 2Y, 5Y, 10Y, and 30Y yield curve current-year observations and latest dashboard point.",
     "refresh_mode": "live",
-    "last_successful_fetch": "2026-10-17T04:51:27.721436+00:00"
+    "last_successful_fetch": "2026-10-17T04:59:38.775539+00:00"
   },
   {
     "name": "New York Fed EFFR API",
     "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-02&endDate=2026-10-17&type=rate",
-    "publication_date": "latest EFFR observation 2026-10-15; refresh mode: live; last successful retrieval: 2026-10-17T04:51:45.443863+00:00",
+    "publication_date": "latest EFFR observation 2026-10-15; refresh mode: live; last successful retrieval: 2026-10-17T04:59:57.547763+00:00",
     "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS.",
     "refresh_mode": "live",
-    "last_successful_fetch": "2026-10-17T04:51:45.443863+00:00"
+    "last_successful_fetch": "2026-10-17T04:59:57.547763+00:00"
   },
   {
     "name": "TradingView SET:MAI daily history",
     "url": "https://www.tradingview.com/symbols/SET-MAI/",
-    "publication_date": "Refresh mode: live; last successful retrieval 2026-10-17T04:52:46.182568+00:00; latest observation 2026-10-15",
+    "publication_date": "Refresh mode: live; last successful retrieval 2026-10-17T05:00:29.920830+00:00; latest observation 2026-10-15",
     "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
   },
   {
@@ -200,9 +200,9 @@
   {
     "name": "Meta Q2 2026 earnings release",
     "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx",
-    "publication_date": "Published 2026-07-29; refresh mode: live; last successful retrieval: 2026-10-17T04:52:56.309997+00:00",
+    "publication_date": "Published 2026-07-29; refresh mode: live; last successful retrieval: 2026-10-17T05:00:39.132395+00:00",
     "refresh_mode": "live",
-    "last_successful_fetch": "2026-10-17T04:52:56.309997+00:00",
+    "last_successful_fetch": "2026-10-17T05:00:39.132395+00:00",
     "used_for": "META Q2 2026 purchases of property and equipment ($30.116B) until SEC Company Facts includes the new quarter."
   },
   {

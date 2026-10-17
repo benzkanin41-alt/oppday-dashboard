@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "snapshot_generated_at": "2026-10-17 11:53:05 Bangkok",
+  "snapshot_generated_at": "2026-10-17 12:00:47 Bangkok",
   "prices": {
     "XLE": {
       "label": "S&P 500 Energy",
@@ -287125,12 +287125,12 @@
       "chart_symbol": "SET:MAI",
       "source": "TradingView chart history for SET:MAI",
       "source_url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "note": "TradingView SET:MAI daily history; official SET close cross-checked. Refresh mode: live; last successful retrieval: 2026-10-17T04:52:46.182568+00:00.",
+      "note": "TradingView SET:MAI daily history; official SET close cross-checked. Refresh mode: live; last successful retrieval: 2026-10-17T05:00:29.920830+00:00.",
       "history_fetch_mode": "live",
       "history_fetch_status": {
         "mode": "live",
-        "fetched_at": "2026-10-17T04:52:46.182568+00:00",
-        "attempted_at": "2026-10-17T04:52:46.182568+00:00"
+        "fetched_at": "2026-10-17T05:00:29.920830+00:00",
+        "attempted_at": "2026-10-17T05:00:29.920830+00:00"
       },
       "market_session_date": "2026-10-15",
       "points": [

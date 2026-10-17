@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-17 11:53:05 Bangkok",
+  "generated_at": "2026-10-17 12:00:47 Bangkok",
   "data_anchor": "2026-10-16",
   "overall": {
     "score": 59.23203502932401,
@@ -23059,31 +23059,31 @@
     {
       "name": "Cboe VIX historical price data",
       "url": "https://www.cboe.com/tradable-products/vix/vix-historical-data",
-      "publication_date": "updated daily; latest observation 2026-10-16; refresh mode: live; last successful retrieval: 2026-10-17T04:51:23.753072+00:00",
+      "publication_date": "updated daily; latest observation 2026-10-16; refresh mode: live; last successful retrieval: 2026-10-17T04:59:35.022027+00:00",
       "used_for": "VIX complacency row and 5-year sparkline in Froth Components.",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-10-17T04:51:23.753072+00:00"
+      "last_successful_fetch": "2026-10-17T04:59:35.022027+00:00"
     },
     {
       "name": "U.S. Treasury Daily Treasury Rates XML",
       "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-      "publication_date": "feed updated 2026-10-16T15:47:36Z; latest observation 2026-10-16",
+      "publication_date": "feed updated 2026-10-17T00:59:39Z; latest observation 2026-10-16",
       "used_for": "U.S. 2Y, 5Y, 10Y, and 30Y yield curve current-year observations and latest dashboard point.",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-10-17T04:51:27.721436+00:00"
+      "last_successful_fetch": "2026-10-17T04:59:38.775539+00:00"
     },
     {
       "name": "New York Fed EFFR API",
       "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-02&endDate=2026-10-17&type=rate",
-      "publication_date": "latest EFFR observation 2026-10-15; refresh mode: live; last successful retrieval: 2026-10-17T04:51:45.443863+00:00",
+      "publication_date": "latest EFFR observation 2026-10-15; refresh mode: live; last successful retrieval: 2026-10-17T04:59:57.547763+00:00",
       "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS.",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-10-17T04:51:45.443863+00:00"
+      "last_successful_fetch": "2026-10-17T04:59:57.547763+00:00"
     },
     {
       "name": "TradingView SET:MAI daily history",
       "url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "publication_date": "Refresh mode: live; last successful retrieval 2026-10-17T04:52:46.182568+00:00; latest observation 2026-10-15",
+      "publication_date": "Refresh mode: live; last successful retrieval 2026-10-17T05:00:29.920830+00:00; latest observation 2026-10-15",
       "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
     },
     {
@@ -23131,9 +23131,9 @@
     {
       "name": "Meta Q2 2026 earnings release",
       "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx",
-      "publication_date": "Published 2026-07-29; refresh mode: live; last successful retrieval: 2026-10-17T04:52:56.309997+00:00",
+      "publication_date": "Published 2026-07-29; refresh mode: live; last successful retrieval: 2026-10-17T05:00:39.132395+00:00",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-10-17T04:52:56.309997+00:00",
+      "last_successful_fetch": "2026-10-17T05:00:39.132395+00:00",
       "used_for": "META Q2 2026 purchases of property and equipment ($30.116B) until SEC Company Facts includes the new quarter."
     },
     {
@@ -519214,12 +519214,12 @@
       "chart_symbol": "SET:MAI",
       "source": "TradingView chart history for SET:MAI",
       "source_url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "note": "TradingView SET:MAI daily history; official SET close cross-checked. Refresh mode: live; last successful retrieval: 2026-10-17T04:52:46.182568+00:00.",
+      "note": "TradingView SET:MAI daily history; official SET close cross-checked. Refresh mode: live; last successful retrieval: 2026-10-17T05:00:29.920830+00:00.",
       "history_fetch_mode": "live",
       "history_fetch_status": {
         "mode": "live",
-        "fetched_at": "2026-10-17T04:52:46.182568+00:00",
-        "attempted_at": "2026-10-17T04:52:46.182568+00:00"
+        "fetched_at": "2026-10-17T05:00:29.920830+00:00",
+        "attempted_at": "2026-10-17T05:00:29.920830+00:00"
       },
       "market_session_date": "2026-10-15",
       "points": [
@@ -787157,50 +787157,50 @@
   "current_market_fetch_status": {
     "VIX_History.csv": {
       "url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
-      "attempted_at": "2026-10-17T04:51:23.753072+00:00",
-      "last_successful_fetch": "2026-10-17T04:51:23.753072+00:00",
+      "attempted_at": "2026-10-17T04:59:35.022027+00:00",
+      "last_successful_fetch": "2026-10-17T04:59:35.022027+00:00",
       "mode": "live"
     },
     "DGS10.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10",
-      "attempted_at": "2026-10-17T04:51:24.330600+00:00",
-      "last_successful_fetch": "2026-10-17T04:51:24.330600+00:00",
+      "attempted_at": "2026-10-17T04:59:35.417038+00:00",
+      "last_successful_fetch": "2026-10-17T04:59:35.417038+00:00",
       "mode": "live"
     },
     "DGS2.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2",
-      "attempted_at": "2026-10-17T04:51:24.924125+00:00",
-      "last_successful_fetch": "2026-10-17T04:51:24.924125+00:00",
+      "attempted_at": "2026-10-17T04:59:35.571234+00:00",
+      "last_successful_fetch": "2026-10-17T04:59:35.571234+00:00",
       "mode": "live"
     },
     "treasury_yield_curve_2026.xml": {
       "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-      "attempted_at": "2026-10-17T04:51:27.721436+00:00",
-      "last_successful_fetch": "2026-10-17T04:51:27.721436+00:00",
+      "attempted_at": "2026-10-17T04:59:38.775539+00:00",
+      "last_successful_fetch": "2026-10-17T04:59:38.775539+00:00",
       "mode": "live"
     },
     "EFFR.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=EFFR",
-      "attempted_at": "2026-10-17T04:51:44.790315+00:00",
-      "last_successful_fetch": "2026-10-17T04:51:44.790315+00:00",
+      "attempted_at": "2026-10-17T04:59:57.369704+00:00",
+      "last_successful_fetch": "2026-10-17T04:59:57.369704+00:00",
       "mode": "live"
     },
     "nyfed_effr_latest.json": {
       "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-02&endDate=2026-10-17&type=rate",
-      "attempted_at": "2026-10-17T04:51:45.443863+00:00",
-      "last_successful_fetch": "2026-10-17T04:51:45.443863+00:00",
+      "attempted_at": "2026-10-17T04:59:57.547763+00:00",
+      "last_successful_fetch": "2026-10-17T04:59:57.547763+00:00",
       "mode": "live"
     },
     "T10YIE.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10YIE",
-      "attempted_at": "2026-10-17T04:51:46.124039+00:00",
-      "last_successful_fetch": "2026-10-17T04:51:46.124039+00:00",
+      "attempted_at": "2026-10-17T04:59:57.958524+00:00",
+      "last_successful_fetch": "2026-10-17T04:59:57.958524+00:00",
       "mode": "live"
     }
   },
-  "dashboard_refreshed_at": "2026-10-17 11:53:05 Bangkok",
+  "dashboard_refreshed_at": "2026-10-17 12:00:47 Bangkok",
   "ai_semiconductor_direct_v06": {
-    "generated_at": "2026-10-17 11:52:54 Bangkok",
+    "generated_at": "2026-10-17 05:00:35 Bangkok",
     "lookback_start": "2024-07-01",
     "capex": {
       "MSFT": [
@@ -789990,8 +789990,8 @@
   "source_refresh_status": {
     "meta_q2_release": {
       "mode": "live",
-      "fetched_at": "2026-10-17T04:52:56.309997+00:00",
-      "attempted_at": "2026-10-17T04:52:56.309997+00:00"
+      "fetched_at": "2026-10-17T05:00:39.132395+00:00",
+      "attempted_at": "2026-10-17T05:00:39.132395+00:00"
     }
   },
   "history_retention": {
@@ -790000,8 +790000,8 @@
     "archive": "work/raw/dashboard_history.json"
   },
   "ai_semiconductor_direct_v08": {
-    "generated_at": "2026-10-17 11:53:02 Bangkok",
-    "data_source_generated_at": "2026-10-17 11:52:54 Bangkok",
+    "generated_at": "2026-10-17 12:00:45 Bangkok",
+    "data_source_generated_at": "2026-10-17 05:00:35 Bangkok",
     "window_start": "2024-10-17",
     "window_end": "2026-10-17",
     "groups": [
