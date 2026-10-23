@@ -1,44 +1,8 @@
 {
   "source": "TradingView chart websocket",
   "symbol": "SET:SET",
-  "fetched_at": "2026-10-18T03:20:15.246471+00:00",
+  "fetched_at": "2026-10-23T03:40:57.096120+00:00",
   "points": [
-    {
-      "date": "2022-09-05",
-      "value": 1622.0,
-      "open": 1622.38,
-      "high": 1622.72,
-      "low": 1611.86,
-      "close": 1622.0,
-      "volume": null
-    },
-    {
-      "date": "2022-09-06",
-      "value": 1633.87,
-      "open": 1626.62,
-      "high": 1636.7,
-      "low": 1624.92,
-      "close": 1633.87,
-      "volume": null
-    },
-    {
-      "date": "2022-09-07",
-      "value": 1639.92,
-      "open": 1631.49,
-      "high": 1641.25,
-      "low": 1628.8,
-      "close": 1639.92,
-      "volume": null
-    },
-    {
-      "date": "2022-09-08",
-      "value": 1640.0,
-      "open": 1645.75,
-      "high": 1649.17,
-      "low": 1636.33,
-      "close": 1640.0,
-      "volume": null
-    },
     {
       "date": "2022-09-09",
       "value": 1654.62,
@@ -9001,6 +8965,42 @@
       "high": 1573.01,
       "low": 1557.67,
       "close": 1573.01,
+      "volume": null
+    },
+    {
+      "date": "2026-10-19",
+      "value": 1571.72,
+      "open": 1578.03,
+      "high": 1580.46,
+      "low": 1569.64,
+      "close": 1571.72,
+      "volume": null
+    },
+    {
+      "date": "2026-10-20",
+      "value": 1554.94,
+      "open": 1571.15,
+      "high": 1574.97,
+      "low": 1554.94,
+      "close": 1554.94,
+      "volume": null
+    },
+    {
+      "date": "2026-10-21",
+      "value": 1556.09,
+      "open": 1560.85,
+      "high": 1563.04,
+      "low": 1532.71,
+      "close": 1556.09,
+      "volume": null
+    },
+    {
+      "date": "2026-10-22",
+      "value": 1562.67,
+      "open": 1554.3,
+      "high": 1565.36,
+      "low": 1551.32,
+      "close": 1562.67,
       "volume": null
     }
   ]
