@@ -24,9 +24,11 @@ folders are discovered rather than hard-coding a current quarter. Production run
 artifacts, configuration, QA and private snapshots are kept in `.oppday-work`.
 They must never be committed or uploaded to Pages.
 
-New imports are limited to `<TICKER>-Earning call-<QUARTER>.md` summaries (with
-the reviewed PDF pair for full production). Transcript and Presentation files remain review sources, not new reader
-records. This forward-only rule preserves accepted historical records.
+New Dashboard records contain only `<TICKER>-Earning call-<QUARTER>.md` summaries.
+Do not add PDFs to new reader records, including after full production or current
+requalification. Their required report/PDF QA remains separate private acceptance
+evidence, not reader attachments. Transcript and Presentation remain source
+material, not new reader records. Preserve all accepted historical attachments.
 
 For production, use the installed `multiagent-oppday` Skill with this project's
 profile. The project entrypoint injects it automatically:
@@ -65,7 +67,7 @@ receipt records the separate current authorization and actual outcome privately.
 ### Existing Markdown Imports
 
 An explicit dashboard-only request can import existing Earning call MD without
-producing, opening, validating or copying a PDF. It is a separate additive path,
+producing, opening, validating or copying its accompanying PDF. It is a separate additive path,
 not a successful Agent 6 review or a fallback after failed production QA. Source
 UTF-8/heading/identity/hash checks, an exact complete quarter inventory, current
 authorization, immutable copies, historical payload preservation and the usual

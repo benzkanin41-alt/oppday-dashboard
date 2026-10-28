@@ -278,6 +278,20 @@ def verify_prepared_release(release_id: str, manifest: dict) -> dict | None:
     _require(bool(selected_ids) and len(selected_ids) == len(set(selected_ids)), "Qualified release selection is invalid")
     items = [item for item in index["items"] if item["id"] in selected_ids]
     _require(len(items) == len(selected_ids), "Qualified release selection differs from its snapshot")
+    if manifest.get("readerFilePolicy") == "markdown-only-v1":
+        from scripts.build_static_site import public_item
+        from scripts.release_snapshot import markdown_reader_item
+        admitted = manifest.get("admissionItems") or []
+        _require(len(admitted) == len(selected_ids) and {item["id"] for item in admitted} == set(selected_ids),
+                 "Qualified source admission set differs")
+        admitted_by_id = {item["id"]: item for item in admitted}
+        for reader in items:
+            source = markdown_reader_item(admitted_by_id[reader["id"]])
+            _require(public_item(reader) == public_item(source)
+                     and store.sha256(Path(reader["files"][0]["path"]))
+                     == store.sha256(Path(source["files"][0]["path"])),
+                     "Qualified reader Markdown differs from its reviewed source")
+        items = admitted
     proof = verify_qualification(qualification_id, items)
     _require(proof == manifest.get("qualificationVerification"), "Qualification evidence changed; prepare a new release ID")
     return proof

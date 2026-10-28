@@ -116,6 +116,28 @@ class ReleaseSnapshotTests(unittest.TestCase):
     def test_new_earning_call_summary_names_are_accepted(self):
         release.require_earning_call_summary(self.new)
 
+    def test_future_production_records_publish_md_only_and_preserve_old_pdf_attachments(self):
+        old_pdf = self.source / "OLD-Earning call-2Q69.pdf"
+        old_pdf.write_bytes(b"historical PDF bytes")
+        self.old["files"].append(server.file_payload(old_pdf))
+        self.old.update(hasPdf=True, primaryPdfId=self.old["files"][-1]["id"])
+        static.write_json(self.docs / "index.json", {"items": [static.public_item(self.old)], "stats": {}})
+        self.old_payload = json.dumps({"item": {**static.public_item(self.old), "markdown": "# OLD\nReviewed conclusion"}}).encode()
+        (self.docs / "items" / f"{self.old['id']}.json").write_bytes(self.old_payload)
+        new_pdf = self.source / "NEW-Earning call-3Q69.pdf"
+        new_pdf.write_bytes(b"source QA PDF, not a reader attachment")
+        self.new["files"].append(server.file_payload(new_pdf))
+        self.new.update(hasPdf=True, primaryPdfId=self.new["files"][-1]["id"])
+        self.prepare()
+        directory = store.release_directory("release-1")
+        public = store.read_json(directory / "public/data/items" / f"{self.new['id']}.json")["item"]
+        local = next(item for item in store.read_json(directory / "index.local.json")["items"] if item["id"] == self.new["id"])
+        self.assertEqual([file["extension"] for file in public["files"]], [".md"])
+        self.assertEqual([file["extension"] for file in local["files"]], [".md"])
+        self.assertFalse(public["hasPdf"])
+        self.assertIsNone(local["primaryPdfId"])
+        self.assertEqual((directory / "public/data/items" / f"{self.old['id']}.json").read_bytes(), self.old_payload)
+
     def test_current_qualification_preserves_original_run_and_history(self):
         from scripts import requalification
         proof = {"pass": True, "kind": "current-existing-earning-call-qualification"}
@@ -133,6 +155,31 @@ class ReleaseSnapshotTests(unittest.TestCase):
         self.assertEqual((directory / "public/data/items" / f"{self.old['id']}.json").read_bytes(), self.old_payload)
         item = store.read_json(directory / "public/data/items" / f"{self.new['id']}.json")["item"]
         self.assertEqual(item["runId"], "new-run")
+
+    def test_qualified_md_reader_remains_bound_to_complete_source_qa(self):
+        from scripts import requalification
+        pdf = self.source / "NEW-Earning call-3Q69.pdf"
+        pdf.write_bytes(b"PDF retained at its source for QA only")
+        self.new["files"].append(server.file_payload(pdf))
+        self.new.update(hasPdf=True, primaryPdfId=self.new["files"][-1]["id"])
+        proof = {"pass": True, "kind": "current-existing-earning-call-qualification"}
+        with (
+            mock.patch.object(requalification, "select_items", return_value=[self.new]),
+            mock.patch.object(requalification, "verify_qualification", return_value=proof) as verifier,
+        ):
+            release.prepare_release("qualified-release", qualification_id="current", tickers=["NEW"])
+            release.verify_release_admission("qualified-release")
+            self.assertEqual([file["extension"] for file in verifier.call_args.args[1][0]["files"]], [".md", ".pdf"])
+            directory = store.release_directory("qualified-release")
+            local = store.read_json(directory / "index.local.json")
+            reader = next(item for item in local["items"] if item["id"] == self.new["id"])
+            self.assertEqual([file["extension"] for file in reader["files"]], [".md"])
+            substitute = self.root / "unreviewed.md"
+            substitute.write_text("unreviewed text", encoding="utf-8")
+            reader["files"][0]["path"] = str(substitute)
+            store.write_json_atomic(directory / "index.local.json", local)
+            with self.assertRaisesRegex(ValueError, "reader Markdown differs"):
+                release.verify_release_admission("qualified-release")
 
     def test_failed_current_qualification_never_falls_back_to_legacy_or_exports(self):
         from scripts import requalification

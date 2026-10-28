@@ -156,6 +156,17 @@ def require_earning_call_summary(item: dict) -> None:
             raise ValueError("Only Earning call summaries may enter a new release")
 
 
+def markdown_reader_item(item: dict) -> dict:
+    reader = copy.deepcopy(item)
+    reader["files"] = [entry for entry in reader["files"] if entry["extension"] == ".md"]
+    if len(reader["files"]) != 1:
+        raise ValueError("New Dashboard records require exactly one Earning call Markdown file")
+    reader.update(hasMarkdown=True, hasPdf=False, primaryPdfId=None,
+                  primaryMarkdownId=reader["files"][0]["id"],
+                  latestModified=reader["files"][0]["modified"])
+    return reader
+
+
 def prepare_release(
     release_id: str, *, run_id: str = "", registrations: list[str] | None = None,
     baseline_only: bool = False, qualification_id: str = "", tickers: list[str] | None = None,
@@ -252,6 +263,9 @@ def prepare_release(
         if manifest.get("sourceSelectionSha256") != signature:
             raise ValueError("Selected source bytes changed; prepare a new release ID")
         return verify_release(release_id)
+    # Source/report acceptance is separate from the forward-only reader file policy.
+    admission_items = copy.deepcopy(incoming) if qualification_id else None
+    incoming = [markdown_reader_item(item) for item in incoming]
     public_items = {item["id"]: item for item in baseline["items"]}
     for item in incoming:
         public_items[item["id"]] = static.public_item(item, include_markdown=False)
@@ -334,6 +348,7 @@ def prepare_release(
             "runId": run_id, "registrations": expected, "createdAt": now,
             "qualificationId": qualification_id, "qualificationVerification": qualification_proof,
             "markdownImportId": markdown_import_id, "markdownImportVerification": markdown_proof,
+            "readerFilePolicy": "markdown-only-v1", "admissionItems": admission_items,
             "sourceRunIds": sorted({item["runId"] for item in incoming}),
             "sourceSelectionSha256": signature,
             "baselineItemCount": len(baseline["items"]), "itemCount": len(ordered),
