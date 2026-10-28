@@ -186,6 +186,7 @@ class PublishRecoveryTests(IsolatedPublisherTest):
         self.patch(publisher.snapshots, "export_release", side_effect=self.fake_export)
         self.promote = self.patch(publisher.snapshots, "promote_release", side_effect=self.fake_promote)
         self.patch(publisher, "registered_dashboard", return_value={"url": "http://example.invalid/", "root": str(self.root)})
+        self.patch(publisher, "ensure_local_running", return_value={"status": "already_running"})
         self.sync_remote = self.patch(publisher, "sync_remote")
         self.publish_files = self.patch(publisher, "publish_files", side_effect=self.fake_publish_files)
         self.wait_pages = self.patch(publisher, "wait_pages", side_effect=self.fake_wait_pages)

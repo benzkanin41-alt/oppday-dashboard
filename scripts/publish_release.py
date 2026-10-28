@@ -168,6 +168,28 @@ def registered_dashboard() -> dict:
     return payload
 
 
+def probe_local(registered: dict) -> dict:
+    request = urllib.request.Request(registered["url"].rstrip("/") + "/api/index",
+                                     headers={"Cache-Control": "no-cache"})
+    with urllib.request.urlopen(request, timeout=5) as response:
+        if not response.getheader("Server", "").startswith("OppdayDashboard/"):
+            raise ValueError("Registered Local port belongs to a different service")
+        payload = json.loads(response.read())
+    expected = store.current_pointer()["releaseId"]
+    if payload.get("releaseId") != expected or not isinstance(payload.get("items"), list):
+        raise ValueError("Local must serve the prior verified snapshot before publication")
+    return {"releaseId": expected, "items": len(payload["items"])}
+
+
+def ensure_local_running(registered: dict) -> dict:
+    try:
+        return {"status": "already_running", **probe_local(registered)}
+    except (urllib.error.URLError, TimeoutError, ConnectionError):
+        command(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+                 registered["entry_point"]], timeout=90)
+        return {"status": "started", **probe_local(registered)}
+
+
 def verify_local(release_id: str, registered: dict) -> dict:
     from scripts.build_static_site import public_item
     directory = store.release_directory(release_id)
@@ -194,6 +216,7 @@ def publish(release_id: str, *, full_verification: bool = False, rollback: bool 
     online_proof = None
     with snapshots.release_lock():
         sync_remote(release_id)
+        ensure_local_running(registered)
         manifest = store.read_json(store.release_directory(release_id) / "manifest.json")
         repository_index = store.read_json(ROOT / "docs/data/index.json")
         if repository_index.get("releaseId") != release_id:
