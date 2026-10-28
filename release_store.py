@@ -82,7 +82,9 @@ def current_cache() -> dict:
     if {item["id"]: public_item(item) for item in items} != {item["id"]: item for item in public_index["items"]}:
         raise ValueError("Active Local/public release metadata differs")
     blob_root = WORK / "blobs"
-    if blob_root.resolve() != blob_root.absolute():
+    work_root = WORK.resolve()
+    work_root.relative_to(ROOT.resolve())
+    if blob_root.resolve() != work_root / "blobs":
         raise ValueError("Private blob root must not redirect outside the project")
     for item in items:
         for entry in item["files"]:
