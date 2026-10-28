@@ -445,6 +445,33 @@ class PublishRecoveryTests(IsolatedPublisherTest):
         self.assertEqual(self.remote_release, self.previous)
         self.assertIn(("verify_online", self.previous), self.events)
 
+    def markdown_manifest(self):
+        def read(path):
+            value = self.fake_read_json(path)
+            if Path(path) == self.releases / self.candidate / "manifest.json":
+                value["markdownImportId"] = "md-only"
+            return value
+        self.patch(publisher.store, "read_json", side_effect=read)
+
+    def test_md_import_authorization_rechecked_before_public_write(self):
+        from scripts import markdown_import
+        self.markdown_manifest()
+        with mock.patch.object(markdown_import, "verify_prepared_release", side_effect=ValueError("MD authorization revoked")):
+            with self.assertRaisesRegex(ValueError, "MD authorization revoked"):
+                publisher.publish(self.candidate)
+        self.publish_files.assert_not_called()
+        self.promote.assert_not_called()
+
+    def test_md_import_mid_publication_revocation_rolls_back(self):
+        from scripts import markdown_import
+        self.markdown_manifest()
+        with mock.patch.object(markdown_import, "verify_prepared_release", side_effect=[{}, ValueError("MD revoked after online")]):
+            with self.assertRaisesRegex(ValueError, "MD revoked after online"):
+                publisher.publish(self.candidate)
+        self.promote.assert_not_called()
+        self.assertEqual(self.current, self.previous_pointer)
+        self.assertEqual(self.remote_release, self.previous)
+
 
 if __name__ == "__main__":
     unittest.main()

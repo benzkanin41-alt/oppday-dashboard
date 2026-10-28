@@ -218,9 +218,7 @@ def publish(release_id: str, *, full_verification: bool = False, rollback: bool 
         sync_remote(release_id)
         ensure_local_running(registered)
         manifest = store.read_json(store.release_directory(release_id) / "manifest.json")
-        if manifest.get("qualificationId"):
-            from scripts.requalification import verify_prepared_release
-            verify_prepared_release(release_id, manifest)
+        snapshots.verify_release_admission(release_id, manifest)
         repository_index = store.read_json(ROOT / "docs/data/index.json")
         if repository_index.get("releaseId") != release_id:
             if manifest["previousReleaseId"] == "legacy-public-baseline":
@@ -239,8 +237,7 @@ def publish(release_id: str, *, full_verification: bool = False, rollback: bool 
             pages = wait_pages(commit)
             emit("verify_online", releaseId=release_id, full=full_verification)
             online_proof = verify_online(release_id, pages["headSha"], all_payloads=full_verification)
-            if manifest.get("qualificationId"):
-                verify_prepared_release(release_id, manifest)
+            snapshots.verify_release_admission(release_id, manifest)
             store.write_json_atomic(store.release_directory(release_id) / "online-verification.json", online_proof)
             snapshots.promote_release(release_id, online_proof)
             local = verify_local(release_id, registered)
@@ -284,10 +281,16 @@ def main():
     parser.add_argument("--run-id")
     parser.add_argument("--registration-id", action="append", default=[])
     parser.add_argument("--qualification-id")
+    parser.add_argument("--markdown-import-id")
     parser.add_argument("--ticker", action="append", default=[])
     parser.add_argument("--full-verification", action="store_true")
     parser.add_argument("--rollback", action="store_true")
     args = parser.parse_args()
+    if args.markdown_import_id:
+        if args.qualification_id or args.run_id or args.registration_id or args.ticker or not args.release_id:
+            parser.error("--markdown-import-id requires --release-id without production/qualification selections")
+        with snapshots.release_lock():
+            snapshots.prepare_release(args.release_id, markdown_import_id=args.markdown_import_id)
     if args.qualification_id:
         if args.run_id or args.registration_id or not args.ticker or not args.release_id:
             parser.error("--qualification-id requires --release-id and exact --ticker values, without a replacement --run-id")

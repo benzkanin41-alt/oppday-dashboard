@@ -159,17 +159,20 @@ def require_earning_call_summary(item: dict) -> None:
 def prepare_release(
     release_id: str, *, run_id: str = "", registrations: list[str] | None = None,
     baseline_only: bool = False, qualification_id: str = "", tickers: list[str] | None = None,
+    markdown_import_id: str = "",
 ) -> dict:
     import server
     from scripts import build_static_site as static
     if not store.RELEASE_ID_RE.fullmatch(release_id):
         raise ValueError("Invalid release ID")
     expected = sorted(set(registrations or []))
+    if markdown_import_id and (run_id or expected or baseline_only or qualification_id or tickers):
+        raise ValueError("Markdown import is a separate explicit mode; do not mix production/qualification selections")
     if qualification_id and (run_id or expected or baseline_only or not tickers):
         raise ValueError("Current qualification requires only its exact ticker set, not a replacement source run")
     if tickers and not qualification_id:
         raise ValueError("Ticker selection requires an explicit current qualification")
-    if not baseline_only and not qualification_id and (not run_id or not expected):
+    if not baseline_only and not qualification_id and not markdown_import_id and (not run_id or not expected):
         raise ValueError("A release must name its exact run and registration set")
     target = store.RELEASES / release_id
     if store.CURRENT.exists():
@@ -193,6 +196,10 @@ def prepare_release(
         from scripts import requalification
         incoming = requalification.select_items(qualification_id, tickers, raw["items"])
         expected = sorted(str(item["registrationId"]) for item in incoming)
+    if markdown_import_id:
+        from scripts import markdown_import
+        incoming = markdown_import.select_items(markdown_import_id)
+        expected = sorted(str(item["registrationId"]) for item in incoming)
     actual = sorted(str(item.get("registrationId")) for item in incoming)
     if actual != expected:
         raise ValueError(f"Release selection mismatch: expected={expected}, actual={actual}")
@@ -201,12 +208,17 @@ def prepare_release(
     source_digests = {entry["id"]: store.sha256(Path(entry["path"]))
                       for item in incoming for entry in item["files"]}
     qualification_proof = None
+    markdown_proof = None
+    if markdown_import_id:
+        markdown_proof = markdown_import.verify_import(markdown_import_id, incoming)
+        if markdown_proof["baseReleaseId"] != previous_id:
+            raise ValueError("Markdown import must extend its exact accepted baseline")
     if incoming:
         if qualification_id:
             qualification_proof = requalification.verify_qualification(qualification_id, incoming)
-        else:
+        elif not markdown_import_id:
             verify_run_provenance(run_id, incoming)
-    for item in incoming:
+    for item in ([] if markdown_import_id else incoming):
         if item.get("workflowStatus") not in server.COMPLETED_CONCLUSION_STATUSES:
             raise ValueError("An unfinished conclusion cannot enter a release")
         status_path = server.OPPDAY_ROOT / item["quarter"] / "Oppday" / f"workflow_status_{item['quarter']}.csv"
@@ -231,6 +243,10 @@ def prepare_release(
             raise ValueError("Existing release ID belongs to a different qualification")
         if qualification_id and manifest.get("qualificationVerification") != qualification_proof:
             raise ValueError("Qualification evidence changed; prepare a new release ID")
+        if manifest.get("markdownImportId", "") != markdown_import_id:
+            raise ValueError("Existing release ID belongs to a different Markdown import")
+        if markdown_import_id and manifest.get("markdownImportVerification") != markdown_proof:
+            raise ValueError("Markdown import evidence changed; prepare a new release ID")
         if (manifest.get("runId"), manifest.get("registrations")) != (run_id, expected):
             raise ValueError("Existing release ID belongs to a different selection")
         if manifest.get("sourceSelectionSha256") != signature:
@@ -317,6 +333,7 @@ def prepare_release(
             "baseIndexSha256": store.sha256(base_public / "data/index.json"),
             "runId": run_id, "registrations": expected, "createdAt": now,
             "qualificationId": qualification_id, "qualificationVerification": qualification_proof,
+            "markdownImportId": markdown_import_id, "markdownImportVerification": markdown_proof,
             "sourceRunIds": sorted({item["runId"] for item in incoming}),
             "sourceSelectionSha256": signature,
             "baselineItemCount": len(baseline["items"]), "itemCount": len(ordered),
@@ -329,6 +346,18 @@ def prepare_release(
         static.write_json(stage / "manifest.json", manifest)
         os.replace(stage, target)
     return verify_release(release_id)
+
+
+def verify_release_admission(release_id: str, manifest: dict | None = None) -> None:
+    manifest = manifest or store.read_json(store.release_directory(release_id) / "manifest.json")
+    if manifest.get("qualificationId") and manifest.get("markdownImportId"):
+        raise ValueError("A release cannot mix qualification and Markdown import admission")
+    if manifest.get("qualificationId"):
+        from scripts.requalification import verify_prepared_release
+        verify_prepared_release(release_id, manifest)
+    if manifest.get("markdownImportId"):
+        from scripts.markdown_import import verify_prepared_release
+        verify_prepared_release(release_id, manifest)
 
 
 def verify_release(release_id: str, *, verify_blobs: bool = False) -> dict:
@@ -391,9 +420,7 @@ def export_release(release_id: str) -> dict:
     result = verify_release(release_id)
     directory = store.release_directory(release_id)
     manifest = store.read_json(directory / "manifest.json")
-    if manifest.get("qualificationId"):
-        from scripts.requalification import verify_prepared_release
-        verify_prepared_release(release_id, manifest)
+    verify_release_admission(release_id, manifest)
     from scripts import build_static_site as static
     with tempfile.TemporaryDirectory(prefix=".release-export-", dir=ROOT) as temporary:
         stage = Path(temporary)
@@ -409,9 +436,7 @@ def export_release(release_id: str) -> dict:
 def promote_release(release_id: str, verification: dict, *, bootstrap: bool = False) -> dict:
     result = verify_release(release_id, verify_blobs=True)
     manifest = store.read_json(store.release_directory(release_id) / "manifest.json")
-    if manifest.get("qualificationId"):
-        from scripts.requalification import verify_prepared_release
-        verify_prepared_release(release_id, manifest)
+    verify_release_admission(release_id, manifest)
     if not bootstrap:
         if verification.get("ok") is not True or verification.get("releaseId") != release_id:
             raise ValueError("Online byte verification must pass before Local promotion")

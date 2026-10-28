@@ -24,8 +24,8 @@ folders are discovered rather than hard-coding a current quarter. Production run
 artifacts, configuration, QA and private snapshots are kept in `.oppday-work`.
 They must never be committed or uploaded to Pages.
 
-New imports are limited to `<TICKER>-Earning call-<QUARTER>.md/.pdf` summary
-pairs. Transcript and Presentation files remain review sources, not new reader
+New imports are limited to `<TICKER>-Earning call-<QUARTER>.md` summaries (with
+the reviewed PDF pair for full production). Transcript and Presentation files remain review sources, not new reader
 records. This forward-only rule preserves accepted historical records.
 
 For production, use the installed `multiagent-oppday` Skill with this project's
@@ -61,6 +61,31 @@ does not reconstruct or claim old jobs, author identity, rendering history, or
 audio-recognition QA. No failed or unreviewed record may use that path. D:
 originals and their historical status rows remain unchanged; the new publication
 receipt records the separate current authorization and actual outcome privately.
+
+### Existing Markdown Imports
+
+An explicit dashboard-only request can import existing Earning call MD without
+producing, opening, validating or copying a PDF. It is a separate additive path,
+not a successful Agent 6 review or a fallback after failed production QA. Source
+UTF-8/heading/identity/hash checks, an exact complete quarter inventory, current
+authorization, immutable copies, historical payload preservation and the usual
+online-before-Local release checks remain mandatory. Source reports and historical
+CSV statuses are read-only. Existing semantic findings remain findings; this path
+does not claim to correct or recertify report contents. An already accepted item
+is retained byte-for-byte; changed existing text requires a separate decision.
+
+Keep an authorization JSON on E: containing `action` equal to
+`import_existing_earning_call_markdown`, `importId`, `quarter`, the actual
+`userRequest`, `preserveOriginals: true`, and `preserveHistory: true`. Then:
+
+```powershell
+python -B -X utf8 scripts/markdown_import.py --import-id IMPORT_ID --quarter 3Q69 --authorization-file PRIVATE_AUTHORIZATION_JSON
+python -B -X utf8 scripts/publish_release.py --markdown-import-id IMPORT_ID --release-id RELEASE_ID
+```
+
+Requests and proofs stay in `.oppday-work/markdown-imports/IMPORT_ID`. This mode
+does not waive PDF or independent semantic/Q&A gates for creating new reports,
+does not invoke Intelligence, and never schedules a scan or publication.
 
 GitHub Pages receives only the public output under `docs`. Preserve the co-hosted
 `docs/bubble-risk-dashboard`, reconcile remote changes, and never force-push.
