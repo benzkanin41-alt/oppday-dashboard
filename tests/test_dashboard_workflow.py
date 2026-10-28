@@ -16,6 +16,17 @@ from scripts import sync_static_site
 
 
 class MultiQuarterIndexTests(unittest.TestCase):
+    def test_new_quarters_and_year_boundary_keep_separate_events(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "OPPDAY"
+            for quarter in ("3Q69", "4Q69", "1Q70"):
+                summary = root / quarter / "Oppday" / server.SUMMARY_DIR_NAME / "2026-10-14"
+                summary.mkdir(parents=True)
+                (summary / f"AAA-Earning call-{quarter}.md").write_text("# AAA", encoding="utf-8")
+            built = server.build_index(root, root / "PAST")
+            self.assertEqual(built["stats"]["quarters"], ["1Q70", "4Q69", "3Q69"])
+            self.assertEqual(len({item["id"] for item in built["items"]}), 3)
+
     def test_completed_statuses_and_manifest_set(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / "OPPDAY"

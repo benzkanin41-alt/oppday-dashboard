@@ -1,62 +1,67 @@
 # OPPDAY Dashboard
 
-Local dashboard สำหรับอ่าน Oppday แยกตามหุ้นและไตรมาส
+The main Opportunity Day reader and publication pipeline. Local and GitHub Pages
+serve the same approved release; source scans prepare candidates without changing
+the live reader dataset.
 
-## Online
+Online: https://benzkanin41-alt.github.io/oppday-dashboard/
 
-GitHub Pages:
+## Local Startup
 
-```text
-https://benzkanin41-alt.github.io/oppday-dashboard/
-```
+Resolve stable ID `oppday-dashboard` with the central `dashboard_ports.py` registry,
+then invoke its registered `Start Oppday Dashboard.ps1` launcher. Keep the existing
+Desktop shortcut. Never choose an alternate port or stop another dashboard.
 
-Repository:
+Local retains the established summary/PDF experience and Light/Dark preferences.
+Approved file copies are stored privately on E:, so later source changes do not
+change an accepted release.
 
-```text
-https://github.com/benzkanin41-alt/oppday-dashboard
-```
+## Source And Run Ownership
 
-## Run (registry-bound)
+Canonical delivered documents remain in OneDrive under
+`OPPDAY/<QUARTER>/Oppday`, including the `PAST` archive. All supported quarter
+folders are discovered rather than hard-coding a current quarter. Production run
+artifacts, configuration, QA and private snapshots are kept in `.oppday-work`.
+They must never be committed or uploaded to Pages.
 
-Do not run `server.py` directly and do not select a numeric port manually. Resolve stable ID `oppday-dashboard`, then use the registered launcher:
-
-```powershell
-python -X utf8 "C:\Users\USER\Documents\Codex\LocalDashboardPorts\dashboard_ports.py" resolve --id oppday-dashboard --json
-& "C:\Users\USER\Documents\Codex\LocalDashboardPorts\Start Oppday Dashboard.ps1"
-```
-
-The launcher injects `OPPDAY_DASHBOARD_PORT`, refuses a conflicting fingerprint, and never falls back to another port. Use the URL returned by the registry.
-
-## Data Sources
-
-- Past quarters: `D:\OneDrive\stock\OPPDAY\PAST`
-- Current quarter: `D:\OneDrive\stock\OPPDAY\1Q69\Oppday\สรุป oppday`
-
-Dashboard จะสแกนไฟล์ `.docx`, `.md`, `.pdf`, `.txt` และจับคู่ไฟล์สรุป/PDF ที่เป็นหุ้นเดียวกันในไตรมาสเดียวกัน
-
-บน GitHub Pages จะ publish เฉพาะ static JSON/text เพื่อให้เปิดบน iPhone/iPad/Desktop ได้เร็ว ไม่ upload PDF ต้นฉบับก้อนใหญ่ขึ้น GitHub
-
-สำหรับ `1Q69` ให้ใช้ Markdown summary เป็นหลัก และถ้าบางรายการยังไม่มี Markdown แต่มี PDF เท่านั้น ระบบจะ extract ข้อความจาก PDF เป็น Markdown text สำหรับอ่าน online แทน ส่วน PDF historical สามารถ upload เพิ่มเป็นรอบๆ ภายหลังถ้าต้องการเปิดไฟล์ presentation ต้นฉบับบน online dashboard
-
-ถ้าเจอ PDF historical ที่ยังไม่มี Markdown ให้รัน:
+For production, use the installed `multiagent-oppday` Skill with this project's
+profile. The project entrypoint injects it automatically:
 
 ```powershell
-python -X utf8 .\scripts\convert_historical_pdfs_to_markdown.py
+python -B -X utf8 scripts/oppday.py --help
+python -B -X utf8 scripts/oppday.py prepare --quarter 3Q69 --date-from YYYY-MM-DD --date-to YYYY-MM-DD --stage all
+python -B -X utf8 scripts/oppday.py verify --resume RUN_ID
+python -B -X utf8 scripts/oppday.py finalize-dashboard --resume RUN_ID
 ```
 
-script จะสร้าง `.md` ไว้ใน OneDrive folder เดียวกับ PDF ต้นฉบับ และ dashboard จะใช้ Markdown นั้นในการ deploy ขึ้น GitHub Pages
+The deterministic CLI coordinates stages and verification; Codex dispatches the
+source/report agents required by the Skill. Preserve independent semantic/Q&A
+review and source/hash gates. A successful document copy alone is not release
+eligibility. Intelligence is managed separately from this Project.
 
-ถ้าต้องการแปลง PDF ของ `1Q69` ในโฟลเดอร์วันที่ใดวันที่หนึ่งเป็น Markdown ให้รัน:
+## Publication
+
+The profile-aware finalizer freshly verifies the selected run, creates an immutable
+candidate and publishes only the exact eligible registration set. It waits for
+GitHub Pages, compares live index and item bytes, activates Local atomically, then
+records success. Files-only and dry-run work stay outside the live dataset.
+
+`scripts/publish_release.py` supports resumable publication of prepared releases.
+`scripts/release_snapshot.py verify --release-id RELEASE_ID --verify-blobs` audits
+a private snapshot. Retain recovery evidence and the preceding snapshot.
+
+GitHub Pages receives only the public output under `docs`. Preserve the co-hosted
+`docs/bubble-risk-dashboard`, reconcile remote changes, and never force-push.
+Internal handoff, glossary and runbooks are local Project documents excluded from
+the public repository and Pages.
+
+## Tests
 
 ```powershell
-python -X utf8 .\scripts\convert_current_pdfs_to_markdown.py --folder "D:\OneDrive\stock\OPPDAY\1Q69\Oppday\สรุป oppday\2026-05-25"
+python -B -X utf8 -m unittest discover -s tests -v
 ```
 
-script จะสร้าง `.md` ไว้ข้าง PDF ต้นฉบับใน OneDrive เช่นเดียวกัน
-
-## Refresh
-
-- กดปุ่ม refresh ในหน้า dashboard เพื่อ rescan ทันที
-- Server จะ rescan อัตโนมัติทุกวันเวลา 18:00 ขณะที่ `server.py` กำลังรันอยู่
-- API `/api/index` จะ refresh cache เองถ้า cache เกิน 15 นาที
-- Codex automation `Update OPPDAY dashboard data` จะ build/push static GitHub Pages data ทุกวันเวลา 18:00
+The tests cover multiple quarters/year boundaries, historical continuity,
+files-only isolation, snapshot integrity, failed-publication guards and private
+file copies. Browser and exact shortcut tests are also required before accepting
+a live release.

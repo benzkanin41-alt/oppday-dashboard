@@ -4,3 +4,7 @@ __pycache__/
 .build_cache/
 .DS_Store
 Thumbs.db
+.oppday-work/
+project-docs/
+AGENTS.md
+CONTEXT.md

@@ -58,7 +58,7 @@ def redact_local_paths(text: str) -> str:
     return WINDOWS_ABSOLUTE_PATH_RE.sub(PUBLIC_LOCAL_PATH_PLACEHOLDER, text)
 
 
-def public_item(item: dict, include_markdown: bool = False) -> dict:
+def public_item(item: dict, include_markdown: bool = False, *, text_loader=None) -> dict:
     safe = {
         "id": item["id"],
         "symbol": item["symbol"],
@@ -81,18 +81,19 @@ def public_item(item: dict, include_markdown: bool = False) -> dict:
         "registrationId": item.get("registrationId", ""),
     }
     if include_markdown:
+        load_text = text_loader or cached_text
         markdown = ""
         markdown_id = item.get("primaryMarkdownId")
         file_entry = None
         if markdown_id:
             file_entry = next((entry for entry in item["files"] if entry["id"] == markdown_id), None)
         if file_entry:
-            markdown = cached_text(Path(file_entry["path"]))
+            markdown = load_text(Path(file_entry["path"]))
         elif item.get("primaryPdfId"):
             pdf_file = next((entry for entry in item["files"] if entry["id"] == item["primaryPdfId"]), None)
             filename = pdf_file["name"] if pdf_file else "PDF"
             if pdf_file and item.get("quarter") in PDF_TEXT_FALLBACK_QUARTERS:
-                markdown = cached_text(Path(pdf_file["path"]))
+                markdown = load_text(Path(pdf_file["path"]))
             else:
                 markdown = (
                     f"# {item['symbol']} {item['quarter']}\n\n"
@@ -150,7 +151,12 @@ def merge_oppday_stage(stage: Path, docs: Path) -> None:
         shutil.copy2(source, target_items / source.name)
 
 
-def build() -> dict:
+def build(release_id: str | None = None) -> dict:
+    import release_store
+    if release_id or (ROOT == release_store.ROOT and release_store.snapshot_mode()):
+        from scripts.release_snapshot import export_release
+        selected = release_id or release_store.current_pointer()["releaseId"]
+        return export_release(selected)
     built = server.build_index()
 
     with tempfile.TemporaryDirectory(prefix=".oppday-static-", dir=ROOT) as temporary:
@@ -194,9 +200,10 @@ def build() -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Build static GitHub Pages site for OPPDAY dashboard.")
     parser.add_argument("--json", action="store_true", help="Print compact JSON result.")
+    parser.add_argument("--release-id", help="Export only an explicitly prepared release")
     args = parser.parse_args()
 
-    result = build()
+    result = build(args.release_id)
     if args.json:
         print(json.dumps(result, ensure_ascii=False))
     else:

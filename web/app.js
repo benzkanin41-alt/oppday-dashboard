@@ -238,7 +238,9 @@ async function loadIndex(refresh = false) {
   els.symbolCount.textContent = payload.stats?.symbols ?? 0;
   els.markdownCount.textContent = payload.stats?.markdownItems ?? 0;
   els.pdfCount.textContent = payload.stats?.pdfItems ?? 0;
-  els.lastUpdated.textContent = `อัปเดตล่าสุด ${formatDateTime(payload.updatedAt)} | ${state.staticMode ? "sync จาก OneDrive 18:00" : "auto refresh 18:00"}`;
+  els.lastUpdated.textContent = payload.releaseId
+    ? `อัปเดตล่าสุด ${formatDateTime(payload.updatedAt)}`
+    : `อัปเดตล่าสุด ${formatDateTime(payload.updatedAt)} | ${state.staticMode ? "sync จาก OneDrive 18:00" : "auto refresh 18:00"}`;
 
   renderQuarterOptions(payload.stats?.quarters || []);
   renderSourceOptions(payload.stats?.sources || []);

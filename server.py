@@ -13,7 +13,9 @@ from datetime import datetime, timedelta
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from xml.etree import ElementTree
-from urllib.parse import parse_qs, unquote, urlparse
+from urllib.parse import parse_qs, quote, unquote, urlparse
+
+import release_store
 
 
 HOST = "127.0.0.1"
@@ -489,6 +491,8 @@ def index_payload(params: dict[str, list[str]] | None = None) -> dict:
         "stats": stats,
         "items": selected,
     }
+    if cache.get("release_id"):
+        payload["releaseId"] = cache["release_id"]
     raw_expected = params.get("manifest_tickers") or params.get("manifestTickers")
     if raw_expected:
         expected = sorted(
@@ -512,7 +516,14 @@ def index_payload(params: dict[str, list[str]] | None = None) -> dict:
 
 
 def refresh_cache() -> dict:
-    built = build_index()
+    try:
+        built = release_store.current_cache() if release_store.snapshot_mode() else build_index()
+    except (OSError, ValueError, KeyError):
+        with cache_lock:
+            if cache.get("release_id"):
+                return {"updatedAt": cache["updated_at"], "stats": cache["stats"],
+                        "warning": "Release validation failed; retained the last verified cache"}
+        raise
     with cache_lock:
         cache.clear()
         cache.update(built)
@@ -523,6 +534,19 @@ def refresh_cache() -> dict:
 
 
 def ensure_cache(max_age_seconds: int = 900) -> None:
+    if release_store.snapshot_mode():
+        try:
+            pointer = release_store.read_json(release_store.CURRENT)
+        except (OSError, ValueError):
+            with cache_lock:
+                if cache.get("release_id"):
+                    return
+            raise
+        with cache_lock:
+            changed = pointer.get("releaseId") != cache.get("release_id")
+        if changed:
+            refresh_cache()
+        return
     with cache_lock:
         updated_at = cache.get("updated_at")
     if not updated_at:
@@ -533,15 +557,15 @@ def ensure_cache(max_age_seconds: int = 900) -> None:
     except ValueError:
         refresh_cache()
         return
-    if datetime.now() - updated > timedelta(seconds=max_age_seconds):
+    if datetime.now(updated.tzinfo) - updated > timedelta(seconds=max_age_seconds):
         refresh_cache()
 
 
-def read_text_file(path: Path) -> str:
+def read_text_file(path: Path, *, display_name: str | None = None) -> str:
     if path.suffix.lower() == ".docx":
-        return read_docx_as_markdown(path)
+        return read_docx_as_markdown(path, title=Path(display_name).stem if display_name else None)
     if path.suffix.lower() == ".pdf":
-        return read_pdf_as_markdown(path)
+        return read_pdf_as_markdown(path, title=Path(display_name).stem if display_name else None)
     for encoding in ("utf-8-sig", "utf-8", "cp874"):
         try:
             return path.read_text(encoding=encoding)
@@ -550,7 +574,7 @@ def read_text_file(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="replace")
 
 
-def read_pdf_as_markdown(path: Path) -> str:
+def read_pdf_as_markdown(path: Path, *, title: str | None = None) -> str:
     try:
         from PyPDF2 import PdfReader
     except Exception as exc:
@@ -558,7 +582,7 @@ def read_pdf_as_markdown(path: Path) -> str:
 
     try:
         reader = PdfReader(str(path))
-        chunks = [f"# {path.stem}", ""]
+        chunks = [f"# {title or path.stem}", ""]
         for idx, page in enumerate(reader.pages, start=1):
             text = page.extract_text() or ""
             text = re.sub(r"\n{3,}", "\n\n", text).strip()
@@ -574,7 +598,7 @@ def read_pdf_as_markdown(path: Path) -> str:
         return f"# {path.stem}\n\nไม่สามารถอ่านข้อความจาก PDF นี้ได้: {exc}"
 
 
-def read_docx_as_markdown(path: Path) -> str:
+def read_docx_as_markdown(path: Path, *, title: str | None = None) -> str:
     namespace = {"w": "http://schemas.openxmlformats.org/wordprocessingml/2006/main"}
     try:
         with zipfile.ZipFile(path) as docx:
@@ -582,7 +606,7 @@ def read_docx_as_markdown(path: Path) -> str:
         root = ElementTree.fromstring(xml_bytes)
     except (KeyError, ElementTree.ParseError, zipfile.BadZipFile) as exc:
         return f"# {path.stem}\n\nไม่สามารถอ่านข้อความจาก DOCX นี้ได้: {exc}"
-    chunks: list[str] = [f"# {path.stem}", ""]
+    chunks: list[str] = [f"# {title or path.stem}", ""]
 
     for element in root.iter():
         if element.tag == f"{{{namespace['w']}}}p":
@@ -683,8 +707,17 @@ class DashboardHandler(BaseHTTPRequestHandler):
             with cache_lock:
                 item = cache["by_item_id"].get(requested)
                 by_file = dict(cache["by_file_id"])
+                release_cache = dict(cache) if cache.get("release_id") else None
             if not item:
                 self.send_error(404)
+                return
+            if release_cache:
+                try:
+                    payload = release_store.item_from_cache(release_cache, requested)
+                except (OSError, ValueError, KeyError):
+                    self.send_json({"error": "Published item failed integrity verification"}, status=503)
+                    return
+                self.send_json(payload)
                 return
             payload = dict(item)
             markdown_id = item.get("primaryMarkdownId")
@@ -705,11 +738,15 @@ class DashboardHandler(BaseHTTPRequestHandler):
             if not path.exists() or not path.is_file():
                 self.send_error(404)
                 return
+            if cache.get("release_id") and release_store.sha256(path) != entry.get("sha256"):
+                self.send_error(503, "Published file failed integrity verification")
+                return
             ctype = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
             self.send_response(200)
             self.send_header("Content-Type", ctype)
             self.send_header("Content-Length", str(path.stat().st_size))
-            self.send_header("Content-Disposition", f'inline; filename="{path.name}"')
+            filename = quote(entry.get("name", path.name), safe="")
+            self.send_header("Content-Disposition", f"inline; filename*=UTF-8''{filename}")
             self.end_headers()
             with path.open("rb") as handle:
                 while True:

@@ -1,0 +1,35 @@
+name: OPPDAY Regression Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - server.py
+      - release_store.py
+      - scripts/**
+      - tests/**
+      - .github/workflows/tests.yml
+  pull_request:
+    paths:
+      - server.py
+      - release_store.py
+      - scripts/**
+      - tests/**
+      - .github/workflows/tests.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python -B -m unittest discover -s tests -v
