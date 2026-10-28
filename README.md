@@ -24,6 +24,10 @@ folders are discovered rather than hard-coding a current quarter. Production run
 artifacts, configuration, QA and private snapshots are kept in `.oppday-work`.
 They must never be committed or uploaded to Pages.
 
+New imports are limited to `<TICKER>-Earning call-<QUARTER>.md/.pdf` summary
+pairs. Transcript and Presentation files remain review sources, not new reader
+records. This forward-only rule preserves accepted historical records.
+
 For production, use the installed `multiagent-oppday` Skill with this project's
 profile. The project entrypoint injects it automatically:
 
@@ -49,6 +53,14 @@ records success. Files-only and dry-run work stay outside the live dataset.
 `scripts/publish_release.py` supports resumable publication of prepared releases.
 `scripts/release_snapshot.py verify --release-id RELEASE_ID --verify-blobs` audits
 a private snapshot. Retain recovery evidence and the preceding snapshot.
+
+An explicitly authorized current requalification can accept unchanged existing
+documents when historical producer evidence is unavailable. It requires new
+independent, hash-bound semantic/Q&A review and current PDF/source checks; it
+does not reconstruct or claim old jobs, author identity, rendering history, or
+audio-recognition QA. No failed or unreviewed record may use that path. D:
+originals and their historical status rows remain unchanged; the new publication
+receipt records the separate current authorization and actual outcome privately.
 
 GitHub Pages receives only the public output under `docs`. Preserve the co-hosted
 `docs/bubble-risk-dashboard`, reconcile remote changes, and never force-push.

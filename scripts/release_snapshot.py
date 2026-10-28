@@ -145,16 +145,31 @@ def frozen_text_loader(item: dict):
     return lambda path: server.read_text_file(path, display_name=names.get(str(path)))
 
 
+def require_earning_call_summary(item: dict) -> None:
+    stem = f"{item['symbol']}-Earning call-{item['quarter']}"
+    files = item.get("files", [])
+    if not files or not any(entry.get("extension", "").lower() == ".md" for entry in files):
+        raise ValueError("New records require an Earning call Markdown summary")
+    for entry in files:
+        name = Path(entry["name"])
+        if name.stem.casefold() != stem.casefold() or name.suffix.lower() not in (".md", ".pdf"):
+            raise ValueError("Only Earning call summaries may enter a new release")
+
+
 def prepare_release(
     release_id: str, *, run_id: str = "", registrations: list[str] | None = None,
-    baseline_only: bool = False,
+    baseline_only: bool = False, qualification_id: str = "", tickers: list[str] | None = None,
 ) -> dict:
     import server
     from scripts import build_static_site as static
     if not store.RELEASE_ID_RE.fullmatch(release_id):
         raise ValueError("Invalid release ID")
     expected = sorted(set(registrations or []))
-    if not baseline_only and (not run_id or not expected):
+    if qualification_id and (run_id or expected or baseline_only or not tickers):
+        raise ValueError("Current qualification requires only its exact ticker set, not a replacement source run")
+    if tickers and not qualification_id:
+        raise ValueError("Ticker selection requires an explicit current qualification")
+    if not baseline_only and not qualification_id and (not run_id or not expected):
         raise ValueError("A release must name its exact run and registration set")
     target = store.RELEASES / release_id
     if store.CURRENT.exists():
@@ -174,13 +189,23 @@ def prepare_release(
         item for item in raw["items"]
         if item.get("runId") == run_id and str(item.get("registrationId")) in expected
     ]
+    if qualification_id:
+        from scripts import requalification
+        incoming = requalification.select_items(qualification_id, tickers, raw["items"])
+        expected = sorted(str(item["registrationId"]) for item in incoming)
     actual = sorted(str(item.get("registrationId")) for item in incoming)
     if actual != expected:
         raise ValueError(f"Release selection mismatch: expected={expected}, actual={actual}")
+    for item in incoming:
+        require_earning_call_summary(item)
     source_digests = {entry["id"]: store.sha256(Path(entry["path"]))
                       for item in incoming for entry in item["files"]}
+    qualification_proof = None
     if incoming:
-        verify_run_provenance(run_id, incoming)
+        if qualification_id:
+            qualification_proof = requalification.verify_qualification(qualification_id, incoming)
+        else:
+            verify_run_provenance(run_id, incoming)
     for item in incoming:
         if item.get("workflowStatus") not in server.COMPLETED_CONCLUSION_STATUSES:
             raise ValueError("An unfinished conclusion cannot enter a release")
@@ -202,6 +227,10 @@ def prepare_release(
     signature = selection_signature(incoming, source_digests)
     if target.exists():
         manifest = store.read_json(target / "manifest.json")
+        if manifest.get("qualificationId", "") != qualification_id:
+            raise ValueError("Existing release ID belongs to a different qualification")
+        if qualification_id and manifest.get("qualificationVerification") != qualification_proof:
+            raise ValueError("Qualification evidence changed; prepare a new release ID")
         if (manifest.get("runId"), manifest.get("registrations")) != (run_id, expected):
             raise ValueError("Existing release ID belongs to a different selection")
         if manifest.get("sourceSelectionSha256") != signature:
@@ -287,6 +316,8 @@ def prepare_release(
             "schemaVersion": 1, "releaseId": release_id, "previousReleaseId": previous_id,
             "baseIndexSha256": store.sha256(base_public / "data/index.json"),
             "runId": run_id, "registrations": expected, "createdAt": now,
+            "qualificationId": qualification_id, "qualificationVerification": qualification_proof,
+            "sourceRunIds": sorted({item["runId"] for item in incoming}),
             "sourceSelectionSha256": signature,
             "baselineItemCount": len(baseline["items"]), "itemCount": len(ordered),
             "selectedItemIds": sorted(incoming_by_id), "indexSha256": store.sha256(stage / "public/data/index.json"),
@@ -359,6 +390,10 @@ def verify_release(release_id: str, *, verify_blobs: bool = False) -> dict:
 def export_release(release_id: str) -> dict:
     result = verify_release(release_id)
     directory = store.release_directory(release_id)
+    manifest = store.read_json(directory / "manifest.json")
+    if manifest.get("qualificationId"):
+        from scripts.requalification import verify_prepared_release
+        verify_prepared_release(release_id, manifest)
     from scripts import build_static_site as static
     with tempfile.TemporaryDirectory(prefix=".release-export-", dir=ROOT) as temporary:
         stage = Path(temporary)
@@ -373,6 +408,10 @@ def export_release(release_id: str) -> dict:
 
 def promote_release(release_id: str, verification: dict, *, bootstrap: bool = False) -> dict:
     result = verify_release(release_id, verify_blobs=True)
+    manifest = store.read_json(store.release_directory(release_id) / "manifest.json")
+    if manifest.get("qualificationId"):
+        from scripts.requalification import verify_prepared_release
+        verify_prepared_release(release_id, manifest)
     if not bootstrap:
         if verification.get("ok") is not True or verification.get("releaseId") != release_id:
             raise ValueError("Online byte verification must pass before Local promotion")

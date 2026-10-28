@@ -60,7 +60,7 @@ class ReleaseSnapshotTests(unittest.TestCase):
         self.addCleanup(patcher.stop)
 
     def make_item(self, item_id, symbol, quarter, run_id, registration):
-        path = self.source / f"{symbol}.md"
+        path = self.source / f"{symbol}-Earning call-{quarter}.md"
         path.write_text(f"# {symbol}\nReviewed conclusion", encoding="utf-8")
         entry = server.file_payload(path)
         return {
@@ -104,6 +104,96 @@ class ReleaseSnapshotTests(unittest.TestCase):
         self.assertIn("Reviewed conclusion", payload["item"]["markdown"])
         blob = Path(cache["by_item_id"][self.new["id"]]["files"][0]["path"])
         self.assertIn("Reviewed conclusion", blob.read_text(encoding="utf-8"))
+
+    def test_new_transcript_or_presentation_record_is_rejected(self):
+        for name in ("NEW_transcript_3Q69.md", "NEW_presentation_3Q69.pdf", "NEW-Other-3Q69.md"):
+            with self.subTest(name=name):
+                item = copy.deepcopy(self.new)
+                item["files"][0]["name"] = name
+                with self.assertRaisesRegex(ValueError, "Only Earning call"):
+                    release.require_earning_call_summary(item)
+
+    def test_new_earning_call_summary_names_are_accepted(self):
+        release.require_earning_call_summary(self.new)
+
+    def test_current_qualification_preserves_original_run_and_history(self):
+        from scripts import requalification
+        proof = {"pass": True, "kind": "current-existing-earning-call-qualification"}
+        with (
+            mock.patch.object(requalification, "select_items", return_value=[self.new]),
+            mock.patch.object(requalification, "verify_qualification", return_value=proof) as verifier,
+        ):
+            result = release.prepare_release("qualified-release", qualification_id="current", tickers=["NEW"])
+        self.assertEqual(result["items"], 2)
+        verifier.assert_called_once_with("current", [self.new])
+        directory = store.release_directory("qualified-release")
+        manifest = store.read_json(directory / "manifest.json")
+        self.assertEqual(manifest["qualificationVerification"], proof)
+        self.assertEqual(manifest["sourceRunIds"], ["new-run"])
+        self.assertEqual((directory / "public/data/items" / f"{self.old['id']}.json").read_bytes(), self.old_payload)
+        item = store.read_json(directory / "public/data/items" / f"{self.new['id']}.json")["item"]
+        self.assertEqual(item["runId"], "new-run")
+
+    def test_failed_current_qualification_never_falls_back_to_legacy_or_exports(self):
+        from scripts import requalification
+        with (
+            mock.patch.object(requalification, "select_items", return_value=[self.new]),
+            mock.patch.object(requalification, "verify_qualification", side_effect=ValueError("current review failed")),
+        ):
+            with self.assertRaisesRegex(ValueError, "current review failed"):
+                release.prepare_release("qualified-release", qualification_id="current", tickers=["NEW"])
+        self.assertFalse((store.RELEASES / "qualified-release").exists())
+        self.assertEqual((self.docs / "items" / f"{self.old['id']}.json").read_bytes(), self.old_payload)
+
+    def test_idempotent_qualification_rejects_changed_review_evidence(self):
+        from scripts import requalification
+        with (
+            mock.patch.object(requalification, "select_items", return_value=[self.new]),
+            mock.patch.object(requalification, "verify_qualification", side_effect=[{"pass": True, "reviewer": "first"}, {"pass": True, "reviewer": "second"}]),
+        ):
+            release.prepare_release("qualified-release", qualification_id="current", tickers=["NEW"])
+            with self.assertRaisesRegex(ValueError, "evidence changed"):
+                release.prepare_release("qualified-release", qualification_id="current", tickers=["NEW"])
+
+    def test_standalone_export_cannot_bypass_qualification_revocation(self):
+        from scripts import requalification
+        with (
+            mock.patch.object(requalification, "select_items", return_value=[self.new]),
+            mock.patch.object(requalification, "verify_qualification", return_value={"pass": True}),
+        ):
+            release.prepare_release("qualified-release", qualification_id="current", tickers=["NEW"])
+        with mock.patch.object(requalification, "verify_prepared_release", side_effect=ValueError("authorization revoked")):
+            with self.assertRaisesRegex(ValueError, "authorization revoked"):
+                release.export_release("qualified-release")
+        self.assertFalse(store.CURRENT.exists())
+        self.assertEqual((self.docs / "items" / f"{self.old['id']}.json").read_bytes(), self.old_payload)
+
+    def test_standalone_promotion_cannot_bypass_missing_review_evidence(self):
+        from scripts import requalification
+        with (
+            mock.patch.object(requalification, "select_items", return_value=[self.new]),
+            mock.patch.object(requalification, "verify_qualification", return_value={"pass": True}),
+        ):
+            result = release.prepare_release("qualified-release", qualification_id="current", tickers=["NEW"])
+        with mock.patch.object(requalification, "verify_prepared_release", side_effect=ValueError("review evidence missing")):
+            with self.assertRaisesRegex(ValueError, "review evidence missing"):
+                release.promote_release("qualified-release", {**result, "commit": "verified"})
+        self.assertFalse(store.CURRENT.exists())
+
+    def test_qualification_cannot_replace_source_run_identity_or_be_implicit(self):
+        with self.assertRaisesRegex(ValueError, "replacement source run"):
+            release.prepare_release("bad", qualification_id="current", tickers=["NEW"], run_id="made-up", registrations=["2"])
+        with self.assertRaisesRegex(ValueError, "explicit current qualification"):
+            release.prepare_release("bad", tickers=["NEW"])
+
+    def test_filter_preserves_accepted_historical_non_earning_call_item(self):
+        self.old["files"][0]["name"] = "OLD_original_presentation.md"
+        self.old_payload = json.dumps({"item": {**static.public_item(self.old), "markdown": "# OLD\nReviewed conclusion"}}, separators=(",", ":")).encode()
+        static.write_json(self.docs / "index.json", {"updatedAt": "2026-09-05T00:00:00", "stats": {}, "items": [static.public_item(self.old)]})
+        (self.docs / "items" / f"{self.old['id']}.json").write_bytes(self.old_payload)
+        self.prepare()
+        path = store.release_directory("release-1") / "public/data/items" / f"{self.old['id']}.json"
+        self.assertEqual(path.read_bytes(), self.old_payload)
 
     def test_online_failure_cannot_promote_or_replace_current(self):
         self.prepare()
@@ -166,7 +256,7 @@ class ReleaseSnapshotTests(unittest.TestCase):
         accepted_md.write_bytes(Path(self.new["files"][0]["path"]).read_bytes())
         accepted_pdf = final / "NEW-Earning call-3Q69.pdf"
         accepted_pdf.write_bytes(b"%PDF-fixture")
-        scanned_pdf = self.source / "NEW.pdf"
+        scanned_pdf = self.source / "NEW-Earning call-3Q69.pdf"
         scanned_pdf.write_bytes(accepted_pdf.read_bytes())
         self.new["files"].append(server.file_payload(scanned_pdf))
         store.write_json_atomic(store.PROFILE, {"runRoot": str(run_root), "valuationMap": str(run_root / "config/map.csv")})

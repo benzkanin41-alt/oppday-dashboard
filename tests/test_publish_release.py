@@ -416,6 +416,35 @@ class PublishRecoveryTests(IsolatedPublisherTest):
         self.assertEqual(self.current, self.previous_pointer)
         self.assertEqual(self.remote_release, self.previous)
 
+    def qualified_manifest(self):
+        def read(path):
+            value = self.fake_read_json(path)
+            if Path(path) == self.releases / self.candidate / "manifest.json":
+                value["qualificationId"] = "current"
+            return value
+        self.patch(publisher.store, "read_json", side_effect=read)
+
+    def test_prepared_qualification_is_revalidated_before_any_public_write(self):
+        from scripts import requalification
+        self.qualified_manifest()
+        with mock.patch.object(requalification, "verify_prepared_release", side_effect=ValueError("authorization revoked")):
+            with self.assertRaisesRegex(ValueError, "authorization revoked"):
+                publisher.publish(self.candidate)
+        self.publish_files.assert_not_called()
+        self.promote.assert_not_called()
+        self.assertEqual(self.remote_release, self.previous)
+
+    def test_mid_publication_qualification_revocation_recovers_without_local_promotion(self):
+        from scripts import requalification
+        self.qualified_manifest()
+        with mock.patch.object(requalification, "verify_prepared_release", side_effect=[{"pass": True}, ValueError("authorization revoked after online")]):
+            with self.assertRaisesRegex(ValueError, "revoked after online"):
+                publisher.publish(self.candidate)
+        self.promote.assert_not_called()
+        self.assertEqual(self.current, self.previous_pointer)
+        self.assertEqual(self.remote_release, self.previous)
+        self.assertIn(("verify_online", self.previous), self.events)
+
 
 if __name__ == "__main__":
     unittest.main()
