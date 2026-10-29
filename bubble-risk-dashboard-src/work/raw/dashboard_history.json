@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "snapshot_generated_at": "2026-10-29 09:05:45 Bangkok",
+  "snapshot_generated_at": "2026-10-29 09:15:59 Bangkok",
   "prices": {
     "CIBR": {
       "label": "Nasdaq theme: Cybersecurity",
@@ -192770,7 +192770,7 @@
         },
         {
           "date": "2026-10-29",
-          "value": 5862.009766
+          "value": 5866.649902
         }
       ]
     },
@@ -266992,7 +266992,7 @@
       "chart_symbol": "^SET.BK",
       "source": "SET Index daily history: Yahoo Finance plus TradingView SET:SET; official quote separate",
       "source_url": "https://finance.yahoo.com/quote/%5ESET.BK/history",
-      "note": "Completed daily history through 2026-10-28; official SET quote retained separately at 2026-10-29 09:01:31 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-10-28; official SET quote retained separately at 2026-10-29 09:11:47 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "points": [
         {
           "date": "1996-12-11",
@@ -298195,12 +298195,12 @@
       "chart_symbol": "SET:MAI",
       "source": "TradingView chart history for SET:MAI",
       "source_url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "note": "Completed daily history through 2026-10-28; official SET quote retained separately at 2026-10-29 09:01:46 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-10-28; official SET quote retained separately at 2026-10-29 09:12:02 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "history_fetch_mode": "live",
       "history_fetch_status": {
         "mode": "live",
-        "fetched_at": "2026-10-29T02:05:28.801205+00:00",
-        "attempted_at": "2026-10-29T02:05:28.801205+00:00"
+        "fetched_at": "2026-10-29T02:15:40.119851+00:00",
+        "attempted_at": "2026-10-29T02:15:40.119851+00:00"
       },
       "market_session_date": "2026-10-28",
       "points": [
@@ -434398,7 +434398,7 @@
         },
         {
           "date": "2026-10-29",
-          "value": 63971.941406
+          "value": 64136.351562
         }
       ]
     },
@@ -462820,7 +462820,7 @@
         },
         {
           "date": "2026-10-29",
-          "value": 3649.606689
+          "value": 3655.994629
         }
       ]
     },
@@ -499182,7 +499182,7 @@
         },
         {
           "date": "2026-10-29",
-          "value": 23113.519531
+          "value": 23169.910156
         }
       ]
     },
