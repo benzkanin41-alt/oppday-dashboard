@@ -109,3 +109,7 @@ The tests cover multiple quarters/year boundaries, historical continuity,
 files-only isolation, snapshot integrity, failed-publication guards and private
 file copies. Browser and exact shortcut tests are also required before accepting
 a live release.
+
+Registered-launcher output is captured in private E: log files, not PIPEs that
+a descendant server can keep open on Windows. Readiness still requires the
+registered service fingerprint and exact previously accepted release.

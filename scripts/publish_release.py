@@ -185,9 +185,23 @@ def ensure_local_running(registered: dict) -> dict:
     try:
         return {"status": "already_running", **probe_local(registered)}
     except (urllib.error.URLError, TimeoutError, ConnectionError):
-        command(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
-                 registered["entry_point"]], timeout=90)
+        launch_registered_dashboard(registered)
         return {"status": "started", **probe_local(registered)}
+
+
+def launch_registered_dashboard(registered: dict) -> None:
+    logs = store.WORK / "launcher-logs"
+    logs.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%fZ") + f"-{os.getpid()}"
+    stdout_path, stderr_path = logs / (stamp + ".stdout.log"), logs / (stamp + ".stderr.log")
+    # Descendant server handles must not keep a captured PIPE's EOF open on Windows.
+    with stdout_path.open("wb") as stdout, stderr_path.open("wb") as stderr:
+        result = subprocess.run(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+                                 registered["entry_point"]], cwd=ROOT, stdin=subprocess.DEVNULL,
+                                stdout=stdout, stderr=stderr, timeout=90)
+    if result.returncode:
+        detail = stderr_path.read_text(encoding="utf-8", errors="replace").strip()
+        raise RuntimeError("Registered OPPDAY launcher failed: " + detail)
 
 
 def verify_local(release_id: str, registered: dict) -> dict:
