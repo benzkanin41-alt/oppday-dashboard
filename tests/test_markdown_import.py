@@ -125,6 +125,27 @@ class MarkdownImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "cohort changed"):
             importer.select_items(self.import_id)
 
+    def test_later_arrivals_do_not_invalidate_a_prepared_release_or_its_recovery(self):
+        self.prepare()
+        extra = self.make_item("LATER", "3Q69")
+        release.verify_release_admission("md-release")
+        manifest = store.read_json(store.release_directory("md-release") / "manifest.json")
+        self.assertNotIn(extra["id"], manifest["selectedItemIds"])
+        with self.assertRaisesRegex(ValueError, "cohort changed"):
+            importer.select_items(self.import_id)
+
+    def test_prepared_release_still_rejects_changed_or_missing_bound_sources(self):
+        self.prepare()
+        self.make_item("LATER", "3Q69")
+        path = Path(self.new["files"][0]["path"])
+        original = path.read_bytes()
+        path.write_bytes(original + b"changed")
+        with self.assertRaisesRegex(ValueError, "hash changed"):
+            release.verify_release_admission("md-release")
+        path.unlink()
+        with self.assertRaises(FileNotFoundError):
+            release.verify_release_admission("md-release")
+
     def test_transcripts_and_other_quarters_are_not_imported(self):
         path = Path(self.new["files"][0]["path"])
         path.with_name("NEW_transcript_3Q69.md").write_text("transcript", encoding="utf-8")

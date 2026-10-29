@@ -89,6 +89,11 @@ Requests and proofs stay in `.oppday-work/markdown-imports/IMPORT_ID`. This mode
 does not waive PDF or independent semantic/Q&A gates for creating new reports,
 does not invoke Intelligence, and never schedules a scan or publication.
 
+The complete quarter inventory is checked when selecting a new request. Later
+source arrivals never alter or invalidate an already prepared release or its
+rollback: only that release's bound sources are rechecked. Missing/changed bound
+sources, revoked authorization and changed evidence still block publication.
+
 GitHub Pages receives only the public output under `docs`. Preserve the co-hosted
 `docs/bubble-risk-dashboard`, reconcile remote changes, and never force-push.
 Internal handoff, glossary and runbooks are local Project documents excluded from

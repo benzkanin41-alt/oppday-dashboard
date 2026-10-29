@@ -117,7 +117,7 @@ def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
     return job
 
 
-def load_request(import_id: str) -> tuple[dict, dict, list[tuple[dict, str]]]:
+def load_request(import_id: str, *, require_complete_inventory: bool = True) -> tuple[dict, dict, list[tuple[dict, str]]]:
     directory = import_directory(import_id)
     job = store.read_json(directory / "import.json")
     require(job.get("schemaVersion") == 1 and job.get("kind") == "existing-earning-call-markdown-import"
@@ -134,9 +134,10 @@ def load_request(import_id: str) -> tuple[dict, dict, list[tuple[dict, str]]]:
     entries = job["entries"]
     require(bool(entries) and len({entry["itemId"] for entry in entries}) == len(entries),
             "Missing or duplicate Markdown import entries")
-    require({path.resolve() for path in discover(job["quarter"])}
-            == {Path(entry["originalPath"]).resolve() for entry in entries},
-            "Markdown cohort changed; prepare a new import request")
+    if require_complete_inventory:
+        require({path.resolve() for path in discover(job["quarter"])}
+                == {Path(entry["originalPath"]).resolve() for entry in entries},
+                "Markdown cohort changed; prepare a new import request")
     checked = []
     for entry in entries:
         ticker = entry["ticker"]
@@ -180,8 +181,8 @@ def select_items(import_id: str) -> list[dict]:
     return items
 
 
-def verify_import(import_id: str, items: list[dict]) -> dict:
-    job, _, checked = load_request(import_id)
+def verify_import(import_id: str, items: list[dict], *, require_complete_inventory: bool = True) -> dict:
+    job, _, checked = load_request(import_id, require_complete_inventory=require_complete_inventory)
     expected = {entry["itemId"]: entry for entry, _ in checked if entry["disposition"] == "add"}
     require(len(items) == len(expected) and {item["id"] for item in items} == set(expected),
             "Markdown import selection differs")
@@ -212,7 +213,8 @@ def verify_prepared_release(release_id: str, manifest: dict) -> dict:
     selected = manifest["selectedItemIds"]
     local = store.read_json(directory / "index.local.json")
     items = [item for item in local["items"] if item["id"] in selected]
-    current = verify_import(manifest["markdownImportId"], items)
+    # Later arrivals belong to another request, not this immutable release or rollback.
+    current = verify_import(manifest["markdownImportId"], items, require_complete_inventory=False)
     require(current == proof and current["selectedItemIds"] == sorted(selected)
             and current["baseReleaseId"] == manifest["previousReleaseId"],
             "Markdown import evidence changed; prepare a new release ID")
