@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "snapshot_generated_at": "2026-10-29 09:15:59 Bangkok",
+  "snapshot_generated_at": "2026-10-29 11:41:57 Bangkok",
   "prices": {
     "CIBR": {
       "label": "Nasdaq theme: Cybersecurity",
@@ -192770,7 +192770,7 @@
         },
         {
           "date": "2026-10-29",
-          "value": 5866.649902
+          "value": 5904.669922
         }
       ]
     },
@@ -229876,7 +229876,7 @@
         },
         {
           "date": "2026-10-28",
-          "value": 29813.15625
+          "value": 29813.160156
         }
       ]
     },
@@ -266992,7 +266992,7 @@
       "chart_symbol": "^SET.BK",
       "source": "SET Index daily history: Yahoo Finance plus TradingView SET:SET; official quote separate",
       "source_url": "https://finance.yahoo.com/quote/%5ESET.BK/history",
-      "note": "Completed daily history through 2026-10-28; official SET quote retained separately at 2026-10-29 09:11:47 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-10-29; official SET quote retained separately at 2026-10-29 11:37:04 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "points": [
         {
           "date": "1996-12-11",
@@ -298179,6 +298179,10 @@
           "value": 1566.1,
           "source_url": "https://www.tradingview.com/symbols/SET-SET/",
           "source_kind": "TradingView daily SET Index history"
+        },
+        {
+          "date": "2026-10-29",
+          "value": 1556.040039
         }
       ],
       "source_urls": [
@@ -298187,7 +298191,7 @@
         "https://www.set.or.th/en/market/index/set/overview"
       ],
       "history_fetch_mode": "live",
-      "market_session_date": "2026-10-28"
+      "market_session_date": "2026-10-29"
     },
     "mai": {
       "label": "mai Index",
@@ -298195,12 +298199,12 @@
       "chart_symbol": "SET:MAI",
       "source": "TradingView chart history for SET:MAI",
       "source_url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "note": "Completed daily history through 2026-10-28; official SET quote retained separately at 2026-10-29 09:12:02 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-10-28; official SET quote retained separately at 2026-10-29 11:37:19 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "history_fetch_mode": "live",
       "history_fetch_status": {
         "mode": "live",
-        "fetched_at": "2026-10-29T02:15:40.119851+00:00",
-        "attempted_at": "2026-10-29T02:15:40.119851+00:00"
+        "fetched_at": "2026-10-29T04:41:36.438825+00:00",
+        "attempted_at": "2026-10-29T04:41:36.438825+00:00"
       },
       "market_session_date": "2026-10-28",
       "points": [
@@ -356816,7 +356820,7 @@
         },
         {
           "date": "2026-10-28",
-          "value": 2830.509277
+          "value": 2830.51001
         }
       ]
     },
@@ -434398,7 +434402,7 @@
         },
         {
           "date": "2026-10-29",
-          "value": 64136.351562
+          "value": 64301.449219
         }
       ]
     },
@@ -462820,7 +462824,7 @@
         },
         {
           "date": "2026-10-29",
-          "value": 3655.994629
+          "value": 3647.117188
         }
       ]
     },
@@ -499182,7 +499186,7 @@
         },
         {
           "date": "2026-10-29",
-          "value": 23169.910156
+          "value": 23106.710938
         }
       ]
     },
@@ -517949,6 +517953,10 @@
         {
           "date": "2026-10-28",
           "value": 22698.849609
+        },
+        {
+          "date": "2026-10-29",
+          "value": 22782.699219
         }
       ]
     },
