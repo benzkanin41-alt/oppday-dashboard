@@ -6,6 +6,8 @@ import json
 import re
 from pathlib import Path
 
+from thai_market_sessions import apply_reconciliation
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "outputs" / "dashboard"
@@ -33,9 +35,11 @@ def merge_latest_snapshot(item: dict, history: dict) -> list[dict]:
     points.sort(key=lambda point: point["date"])
     metrics = item.get("metrics") or {}
     latest = metrics.get("latest")
-    as_of = str(item.get("market_session_date") or item.get("as_of") or metrics.get("as_of") or "")[:10]
+    as_of = str(item.get("quote_session_date") or "")[:10]
+    if not item.get("quote_is_final"):
+        as_of = ""
     if latest is not None and re.fullmatch(r"\d{4}-\d{2}-\d{2}", as_of):
-        current = {"date": as_of, "value": float(latest), "source_url": item.get("source_url"), "source_kind": "Official SET latest close"}
+        current = {"date": as_of, "value": float(latest), "source_url": item.get("source_url"), "source_kind": "Official SET verified completed-session close"}
         if points and points[-1]["date"] == as_of:
             points[-1] = current
         elif not points or points[-1]["date"] < as_of:
@@ -67,19 +71,16 @@ def enrich_thailand(payload: dict, thailand) -> dict:
             raise RuntimeError(f"{symbol} history has only {len(points)} points")
         computed = thailand.compute_price_metrics(points)
         metrics = item.setdefault("metrics", {})
-        for key in ("latest", "ret_1y", "dist_200dma", "drawdown_1y", "sparkline"):
+        for key in ("ret_1y", "dist_200dma", "drawdown_1y", "sparkline"):
             metrics[key] = computed.get(key)
+        metrics["history_latest"] = computed["latest"]
+        metrics["history_as_of"] = points[-1]["date"]
+        apply_reconciliation(item, points)
         history.pop("render_mode", None)
-        if symbol == "SET":
-            history["note"] = (
-                "Yahoo Finance ^SET.BK plus TradingView SET:SET daily history for the same SET Index; "
-                "the latest exchange-session close is cross-checked against the official SET overview."
-            )
-        else:
-            history["note"] = (
-                "TradingView SET:MAI daily history; the latest point is cross-checked against "
-                "the official SET mai overview snapshot."
-            )
+        state = item.get("quote_history_reconciliation", {}).get("state", "session_unresolved")
+        history["note"] = (f"Completed daily history through {points[-1]['date']}; official SET quote retained separately "
+                           f"at {item.get('as_of')}. Quote/history reconciliation: {state}. "
+                           "Price-return metrics use completed historical closes, not the page-update timestamp.")
         result[symbol] = {
             "points": len(points),
             "first": points[0]["date"],
@@ -107,7 +108,7 @@ def enrich_thailand(payload: dict, thailand) -> dict:
             gap["status"] = (
                 "Official SET historical downloads remained blocked; the dashboard uses "
                 "disclosed Yahoo Finance ^SET.BK and TradingView SET:MAI daily histories, "
-                "with current levels and trailing P/E cross-checked from official SET pages."
+                "with current quotes and trailing P/E sourced separately from official SET pages; quote-session comparability is explicitly disclosed."
             )
         elif gap.get("source") == "Earnings yield gap valuation inputs":
             gap["status"] = (

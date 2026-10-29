@@ -40,7 +40,7 @@ def write_archive(archive: dict) -> None:
     temp.replace(ARCHIVE)
 
 
-def correct_snapshot_date(symbol: str, point: dict, session_date: str, source_url: str) -> None:
+def correct_snapshot_date(symbol: str, point: dict, session_date: str | None, source_url: str) -> None:
     archive = load_archive()
     stored = archive.get("prices", {}).get(symbol, {})
     stored["points"] = [row for row in stored.get("points", []) if row.get("date") != point["date"]]
@@ -50,11 +50,16 @@ def correct_snapshot_date(symbol: str, point: dict, session_date: str, source_ur
         "original_point": point,
         "market_session_date": session_date,
         "source_url": source_url,
-        "reason": "Webpage update timestamp was incorrectly used as a daily trading date.",
+        "reason": "Webpage update timestamp was incorrectly used as a daily trading date; unverified snapshot quarantined, not promoted to daily history.",
     }
     if correction not in corrections:
         corrections.append(correction)
     write_archive(archive)
+
+
+def filter_quarantined(symbol: str, points: list[dict], archive: dict) -> list[dict]:
+    rejected = [row["original_point"] for row in archive.get("corrected_snapshots", []) if row.get("symbol") == symbol]
+    return [point for point in points if point not in rejected]
 
 
 def merge_history(payload: dict, archive: dict) -> dict:
@@ -67,6 +72,8 @@ def merge_history(payload: dict, archive: dict) -> dict:
             current["points"] = merge_points(old.get("points", []), current.get("points", []))
         else:
             raise RuntimeError(f"cannot merge different price instruments for {symbol}")
+    for symbol, history in prices.items():
+        history["points"] = filter_quarantined(symbol, history.get("points", []), archive)
 
     curves = {curve["country"]: curve for curve in payload.get("yield_curves", [])}
     for country, old in archive.get("curves", {}).items():

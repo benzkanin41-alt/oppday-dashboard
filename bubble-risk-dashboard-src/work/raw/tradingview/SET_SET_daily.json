@@ -1,35 +1,10 @@
 {
   "source": "TradingView chart websocket",
   "symbol": "SET:SET",
-  "fetched_at": "2026-10-25T03:29:48.610225+00:00",
+  "fetched_at": "2026-10-29T02:05:30.522647+00:00",
+  "schema_version": 2,
+  "completed_through": "2026-10-28",
   "points": [
-    {
-      "date": "2022-09-09",
-      "value": 1654.62,
-      "open": 1646.64,
-      "high": 1658.96,
-      "low": 1641.8199,
-      "close": 1654.62,
-      "volume": null
-    },
-    {
-      "date": "2022-09-12",
-      "value": 1665.74,
-      "open": 1661.39,
-      "high": 1672.64,
-      "low": 1660.83,
-      "close": 1665.74,
-      "volume": null
-    },
-    {
-      "date": "2022-09-13",
-      "value": 1661.09,
-      "open": 1669.58,
-      "high": 1671.1899,
-      "low": 1660.8101,
-      "close": 1661.09,
-      "volume": null
-    },
     {
       "date": "2022-09-14",
       "value": 1656.58,
@@ -9001,6 +8976,33 @@
       "high": 1565.36,
       "low": 1551.32,
       "close": 1562.67,
+      "volume": null
+    },
+    {
+      "date": "2026-10-26",
+      "value": 1579.03,
+      "open": 1560.85,
+      "high": 1581.48,
+      "low": 1560.85,
+      "close": 1579.03,
+      "volume": null
+    },
+    {
+      "date": "2026-10-27",
+      "value": 1575.02,
+      "open": 1585.14,
+      "high": 1586.61,
+      "low": 1572.19,
+      "close": 1575.02,
+      "volume": null
+    },
+    {
+      "date": "2026-10-28",
+      "value": 1566.1,
+      "open": 1572.97,
+      "high": 1576.55,
+      "low": 1565.52,
+      "close": 1566.1,
       "volume": null
     }
   ]

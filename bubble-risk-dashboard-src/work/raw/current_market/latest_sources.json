@@ -2,63 +2,63 @@
   "fetch_status": {
     "VIX_History.csv": {
       "url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
-      "attempted_at": "2026-10-25T03:28:50.814309+00:00",
-      "last_successful_fetch": "2026-10-25T03:28:50.814309+00:00",
+      "attempted_at": "2026-10-29T02:04:04.971013+00:00",
+      "last_successful_fetch": "2026-10-29T02:04:04.971013+00:00",
       "mode": "live"
     },
     "DGS10.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10",
-      "attempted_at": "2026-10-25T03:28:51.311019+00:00",
-      "last_successful_fetch": "2026-10-25T03:28:51.311019+00:00",
+      "attempted_at": "2026-10-29T02:04:05.307530+00:00",
+      "last_successful_fetch": "2026-10-29T02:04:05.307530+00:00",
       "mode": "live"
     },
     "DGS2.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2",
-      "attempted_at": "2026-10-25T03:28:51.444840+00:00",
-      "last_successful_fetch": "2026-10-25T03:28:51.444840+00:00",
+      "attempted_at": "2026-10-29T02:04:05.706398+00:00",
+      "last_successful_fetch": "2026-10-29T02:04:05.706398+00:00",
       "mode": "live"
     },
     "treasury_yield_curve_2026.xml": {
       "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-      "attempted_at": "2026-10-25T03:28:53.406558+00:00",
-      "last_successful_fetch": "2026-10-25T03:28:53.406558+00:00",
+      "attempted_at": "2026-10-29T02:04:08.043633+00:00",
+      "last_successful_fetch": "2026-10-29T02:04:08.043633+00:00",
       "mode": "live"
     },
     "EFFR.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=EFFR",
-      "attempted_at": "2026-10-25T03:29:13.953628+00:00",
-      "last_successful_fetch": "2026-10-25T03:29:13.953628+00:00",
+      "attempted_at": "2026-10-29T02:04:27.952700+00:00",
+      "last_successful_fetch": "2026-10-29T02:04:27.952700+00:00",
       "mode": "live"
     },
     "nyfed_effr_latest.json": {
-      "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-10&endDate=2026-10-25&type=rate",
-      "attempted_at": "2026-10-25T03:29:14.111143+00:00",
-      "last_successful_fetch": "2026-10-25T03:29:14.111143+00:00",
+      "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-14&endDate=2026-10-29&type=rate",
+      "attempted_at": "2026-10-29T02:04:28.341741+00:00",
+      "last_successful_fetch": "2026-10-29T02:04:28.341741+00:00",
       "mode": "live"
     },
     "T10YIE.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10YIE",
-      "attempted_at": "2026-10-25T03:29:14.637969+00:00",
-      "last_successful_fetch": "2026-10-25T03:29:14.637969+00:00",
+      "attempted_at": "2026-10-29T02:04:28.812662+00:00",
+      "last_successful_fetch": "2026-10-29T02:04:28.812662+00:00",
       "mode": "live"
     }
   },
   "cboe_vix": {
-    "date": "2026-10-23",
+    "date": "2026-10-28",
     "url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv"
   },
   "treasury_curve_10y2y": {
-    "date": "2026-10-23",
-    "feed_updated": "2026-10-24T02:01:29Z",
+    "date": "2026-10-28",
+    "feed_updated": "2026-10-28T15:47:16Z",
     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026"
   },
   "nyfed_effr": {
-    "date": "2026-10-22"
+    "date": "2026-10-27"
   },
   "fred_t10yie": {
-    "date": "2026-10-23"
+    "date": "2026-10-28"
   },
   "real_policy_proxy": {
-    "date": "2026-10-22"
+    "date": "2026-10-27"
   }
 }

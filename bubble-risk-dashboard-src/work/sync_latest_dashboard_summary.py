@@ -86,7 +86,7 @@ def indicator_map(payload: dict) -> dict[str, dict]:
 
 def latest_market_anchor(payload: dict) -> str:
     dates = [
-        str(item.get("market_session_date") or item.get("as_of") or "")[:10]
+        str(item.get("market_session_date") or item.get("history_as_of") or item.get("as_of") or "")[:10]
         for bucket in ("indices", "sectors", "themes")
         for item in payload.get(bucket, [])
     ]

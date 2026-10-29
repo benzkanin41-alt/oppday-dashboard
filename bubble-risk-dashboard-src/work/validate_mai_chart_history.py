@@ -17,11 +17,14 @@ def require(condition: bool, message: str) -> None:
 
 def verify_session(payload: dict, points: list[dict]) -> None:
     indices = {item.get("symbol"): item for item in payload.get("indices", [])}
-    session = indices.get("SET", {}).get("market_session_date")
-    require(bool(session), "Verified SET exchange session is missing")
-    require(bool(points) and points[-1]["date"] == session, f"mai history session differs from verified SET session {session}")
-    official = indices.get("mai", {}).get("metrics", {}).get("latest")
-    require(official is not None and abs(float(points[-1]["value"]) - float(official)) <= 0.011, "mai history and official latest close differ")
+    item = indices.get("mai", {})
+    state = item.get("quote_history_reconciliation", {})
+    require(state.get("state") in {"matched_completed", "official_completed_extension", "session_unresolved", "history_lag", "intraday_not_close_comparable"}, "mai quote/history reconciliation missing")
+    require(bool(points) and points[-1]["date"] == item.get("history_as_of"), "mai history date differs from disclosed history_as_of")
+    require(abs(float(points[-1]["value"]) - float(item["history_latest"])) <= 0.011, "mai historical close differs from disclosed history_latest")
+    if state["state"] == "matched_completed":
+        comparable = next((point for point in points if point["date"] == item.get("quote_session_date")), None)
+        require(comparable is not None and abs(float(comparable["value"]) - float(item["metrics"]["latest"])) <= 0.011, "mai verified completed-session close mismatch")
 
 
 def main() -> None:
@@ -39,7 +42,7 @@ def main() -> None:
     chart_data = json.loads(match.group(1))
     chart_mai = (chart_data.get("priceSeries") or {}).get("mai") or {}
     require(chart_mai.get("chart_symbol") == "SET:MAI", "v03-data mai chart_symbol not SET:MAI")
-    require(len(chart_mai.get("points") or []) == len(points), "v03-data mai point count does not match payload")
+    require(chart_mai.get("points") == points, "v03-data mai points do not exactly match payload")
     print(json.dumps({"status": "ok", "mai_points": len(points), "first": points[0]["date"], "last": points[-1]["date"]}, ensure_ascii=False, indent=2))
 
 

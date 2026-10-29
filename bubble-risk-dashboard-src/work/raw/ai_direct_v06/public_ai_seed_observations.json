@@ -10,6 +10,9 @@
       {"date": "2026-09-07", "value": 5.69, "source": "Silicon Data B200 spot benchmark; not the forward rate, published 2026-09-24", "source_url": "https://www.silicondata.com/blog/b200-rental-price-august-2026-update"}
     ]
   },
+  "hbm_observations": [
+    {"date": "2026-10-28", "metric": "SK hynix Q3 2026 HBM4 update", "value": "HBM4 sales expanded during Q3. HBM4 exceeding HBM3E volume/revenue in Q4 is management outlook, not a reported Q3 supply ratio. LTAs cover over 50% of TOTAL 2027-2028 production capacity, not HBM-only capacity. Context only; excluded from the numerical proxy and score.", "source": "SK hynix official Q3 2026 earnings release, published 2026-10-28", "source_url": "https://news.skhynix.com/en/q3-2026-business-results/"}
+  ],
   "vendor_events": [
     {"date": "2026-08-10", "metric": "CoreWeave DDTL 5.5 facility closed", "value": "$2.6B facility; not an assertion that the entire commitment was drawn", "source": "CoreWeave official announcement, 2026-08-10", "source_url": "https://investors.coreweave.com/news/news-details/2026/CoreWeave-Closes-2-6-Billion-Loan-Facility-Expanding-Financing-Flexibility-for-AI-Infrastructure/default.aspx"},
     {"date": "2026-09-18", "metric": "CoreWeave convertible notes priced", "value": "$3.7B offering priced; announcement event, not the June balance-sheet debt", "source": "CoreWeave official announcement, 2026-09-18", "source_url": "https://investors.coreweave.com/news/news-details/2026/CoreWeave-Prices-Upsized-3-7-Billion-Convertible-Senior-Notes-Offering/default.aspx"}
@@ -18,6 +21,7 @@
     {"date": "2026-10-15", "metric": "TSMC advanced-packaging technology update", "value": "5x reticle-size packaging in production; 9x and 14x in development. Package size, not capacity throughput; excluded from the capacity chart and risk score.", "source": "TSMC Q3 2026 official transcript, published 2026-10-15, p.12", "source_url": "https://investor.tsmc.com/english/encrypt/files/encrypt_file/reports/2026-10/eba4fac72873bf546b669bd2b5d973df5c93215d/TSMC%203Q26%20Transcript.pdf"}
   ],
   "sources": [
+    {"name": "SK hynix Q3 2026 HBM4 earnings update", "url": "https://news.skhynix.com/en/q3-2026-business-results/", "publication_date": "Published 2026-10-28; verified 2026-10-29", "used_for": "Dated HBM4 supply context; actual Q3 observations separated from Q4 outlook. Total-capacity LTA coverage is not an HBM-specific supply ratio and is excluded from the numeric chart and score."},
     {"name": "TSMC Q3 2026 advanced-packaging technology update", "url": "https://investor.tsmc.com/english/encrypt/files/encrypt_file/reports/2026-10/eba4fac72873bf546b669bd2b5d973df5c93215d/TSMC%203Q26%20Transcript.pdf", "publication_date": "Published 2026-10-15; verified 2026-10-17", "used_for": "Dated packaging-technology context only; reticle size is not CoWoS throughput or capacity growth and is not added to the numeric chart or score."},
     {"name": "Silicon Data H100 dated historical review", "url": "https://www.silicondata.com/blog/h200-vs-h100-rental-prices-may-july-2026", "publication_date": "Published 2026-08-04; historical reference verified 2026-10-03", "used_for": "Explicitly dated H100 observations, not inferred daily history."},
     {"name": "Silicon Data B200 dated historical review", "url": "https://www.silicondata.com/blog/b200-rental-price-august-2026-update", "publication_date": "Published 2026-09-24; observations 2026-09-01 and 2026-09-07", "used_for": "Historical B200 spot readings; excludes term/forward rates."},

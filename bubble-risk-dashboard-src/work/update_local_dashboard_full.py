@@ -39,6 +39,7 @@ STEPS = [
     "work/patch_meta_latest_release_capex.py",
     "work/fix_amzn_ai_direct.py",
     "work/refresh_ai_public_sources.py",
+    "work/refresh_alphabet_release_capex.py",
     "work/retain_dashboard_history.py",
     "work/rebuild_ai_direct_layout_v08.py",
     "work/fix_ai_spacing_and_manifest_order.py",

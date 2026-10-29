@@ -6,6 +6,9 @@ import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from thai_market_sessions import completed_daily_points, cached_completed_points, reconcile_quote, apply_reconciliation, QuoteMismatchError
+from retain_dashboard_history import load_archive, merge_points, filter_quarantined
+
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "outputs" / "dashboard"
@@ -55,20 +58,25 @@ def remove_stale_mai_failures(payload: dict) -> None:
         )
 
 
-def read_or_fetch_points() -> tuple[list[dict], dict]:
+def read_or_fetch_points(item: dict | None = None) -> tuple[list[dict], dict]:
     attempted = datetime.now(timezone.utc).isoformat()
     try:
         mod = load_tv_fetcher()
-        points = mod.fetch_history(SYMBOL, 10000)
+        points = completed_daily_points(mod.fetch_history(SYMBOL, 10000))
         if len(points) < 1000:
             raise RuntimeError(f"TradingView SET:MAI returned too few points: {len(points)}")
+        if item is not None:
+            reconcile_quote(item, points)
         RAW_TV.parent.mkdir(parents=True, exist_ok=True)
-        RAW_TV.write_text(
+        temp = RAW_TV.with_suffix(".json.tmp")
+        temp.write_text(
             json.dumps(
                 {
                     "source": "TradingView chart websocket",
                     "symbol": SYMBOL,
                     "fetched_at": attempted,
+                    "schema_version": 2,
+                    "completed_through": points[-1]["date"],
                     "points": points,
                 },
                 ensure_ascii=False,
@@ -76,22 +84,22 @@ def read_or_fetch_points() -> tuple[list[dict], dict]:
             ),
             encoding="utf-8",
         )
+        temp.replace(RAW_TV)
         return points, {"mode": "live", "fetched_at": attempted, "attempted_at": attempted}
+    except QuoteMismatchError:
+        raise
     except Exception as exc:
         if RAW_TV.exists() and RAW_TV.stat().st_size > 1000:
             payload = json.loads(RAW_TV.read_text(encoding="utf-8"))
-            return payload.get("points") or [], {"mode": "cache", "fetched_at": payload.get("fetched_at"), "attempted_at": attempted, "error": str(exc)}
+            points = cached_completed_points(payload)
+            if item is not None:
+                reconcile_quote(item, points)
+            return points, {"mode": "cache", "fetched_at": payload.get("fetched_at"), "attempted_at": attempted, "error": str(exc)}
         raise
 
 
 def verify_official_close(item: dict, points: list[dict]) -> None:
-    official = float(item["metrics"]["latest"])
-    if not points or abs(float(points[-1]["value"]) - official) > 0.011:
-        raise RuntimeError("mai daily last close disagrees with the official SET overview; official snapshot has not been overwritten")
-    item["page_updated_at"] = item.get("page_updated_at") or item.get("as_of")
-    item["market_session_date"] = points[-1]["date"]
-    item["as_of"] = points[-1]["date"]
-    item["metrics"]["as_of"] = points[-1]["date"]
+    apply_reconciliation(item, points)
 
 
 def compute_price_metrics(points: list[dict]) -> dict:
@@ -153,14 +161,18 @@ def update_chart_json(html_text: str, payload: dict) -> str:
 
 def main() -> None:
     payload = json.loads(DATA.read_text(encoding="utf-8"))
-    points, fetch_status = read_or_fetch_points()
+    item = next(item for item in payload["indices"] if item.get("symbol") == "mai")
+    points, fetch_status = read_or_fetch_points(item)
     if len(points) < 1000:
         raise RuntimeError(f"TradingView SET:MAI returned too few points: {len(points)}")
-    item = next(item for item in payload["indices"] if item.get("symbol") == "mai")
+    archive = load_archive()
+    old = archive.get("prices", {}).get("mai", {})
+    if old.get("chart_symbol") == SYMBOL:
+        points = filter_quarantined("mai", merge_points(old.get("points", []), points), archive)
     verify_official_close(item, points)
     snapshot = payload.get("price_histories_v03", {}).get("mai")
     if snapshot:
-        snapshot["points"] = [{"date": points[-1]["date"], "value": float(item["metrics"]["latest"])}]
+        snapshot["points"] = [{"date": points[-1]["date"], "value": float(points[-1]["value"])}]
 
     price_histories = payload.setdefault("price_histories_v04", {})
     price_histories["mai"] = {
@@ -169,7 +181,7 @@ def main() -> None:
         "chart_symbol": SYMBOL,
         "source": "TradingView chart history for SET:MAI",
         "source_url": TV_SOURCE_URL,
-        "note": f"TradingView SET:MAI daily history; official SET close cross-checked. Refresh mode: {fetch_status['mode']}; last successful retrieval: {fetch_status.get('fetched_at') or 'unknown'}.",
+        "note": f"TradingView SET:MAI completed daily history through {points[-1]['date']}; official quote displayed separately. Reconciliation: {item['quote_history_reconciliation']['state']}. Refresh mode: {fetch_status['mode']}; last successful retrieval: {fetch_status.get('fetched_at') or 'unknown'}.",
         "history_fetch_mode": fetch_status["mode"],
         "history_fetch_status": fetch_status,
         "market_session_date": points[-1]["date"],
@@ -179,15 +191,15 @@ def main() -> None:
     metrics = compute_price_metrics(price_histories["mai"]["points"])
     for item in payload.get("indices", []):
         if item.get("symbol") == "mai":
-            item.setdefault("metrics", {}).update(metrics)
-            item["as_of"] = points[-1]["date"]
-            item["source_note"] = f"Daily history from TradingView SET:MAI (refresh mode: {fetch_status['mode']}); current snapshot cross-checked with official SET overview."
+            item.setdefault("metrics", {}).update({key: value for key, value in metrics.items() if key != "latest"})
+            item["metrics"]["history_as_of"] = points[-1]["date"]
+            item["source_note"] = price_histories["mai"]["note"]
             item.pop("latest_only", None)
             break
 
     for row in payload.get("top_watchlist_v03", []):
         if row.get("symbol") == "mai":
-            row["as_of"] = points[-1]["date"]
+            row["as_of"] = item["as_of"]
             break
 
     add_source_once(

@@ -122,23 +122,32 @@ def parse_gpu_cards(raw: str, url: str) -> dict[str, list[dict]]:
     return result
 
 
-def fetch_document(url: str, path: Path) -> tuple[str, str]:
+def fetch_document(url: str, path: Path, validate) -> tuple[str, str]:
     try:
         request = Request(url, headers={"User-Agent": "Codex BubbleRiskDashboard user@example.com"})
         with urlopen(request, timeout=25) as response:
             raw = response.read().decode("utf-8")
+        validate(raw)
     except Exception as first_error:
         executable = shutil.which("curl.exe") or shutil.which("curl")
         proc = subprocess.run(
             [executable, "--fail", "--location", "--silent", "--show-error", "--max-time", "35", "--user-agent", "Codex BubbleRiskDashboard user@example.com", url],
             capture_output=True, text=True, encoding="utf-8", timeout=45,
         ) if executable else None
-        if not proc or proc.returncode:
+        try:
+            if not proc or proc.returncode:
+                raise RuntimeError(proc.stderr if proc else "curl unavailable")
+            raw = proc.stdout
+            validate(raw)
+        except Exception as second_error:
             if path.exists():
-                return path.read_text(encoding="utf-8"), "cache"
-            raise RuntimeError(f"public source fetch failed: {url}: {first_error}")
-        raw = proc.stdout
-    path.write_text(raw, encoding="utf-8")
+                cached = path.read_text(encoding="utf-8")
+                validate(cached)
+                return cached, "cache"
+            raise RuntimeError(f"public source fetch failed: {url}: {first_error}; {second_error}") from second_error
+    temp = path.with_suffix(path.suffix + ".tmp")
+    temp.write_text(raw, encoding="utf-8")
+    temp.replace(path)
     return raw, "live"
 
 
@@ -190,7 +199,7 @@ def main() -> None:
     for gpu in ("h100", "b200"):
         url = f"https://www.silicondata.com/products/silicon-index/{gpu}"
         try:
-            raw, mode = fetch_document(url, RAW / f"silicon_{gpu}.html")
+            raw, mode = fetch_document(url, RAW / f"silicon_{gpu}.html", lambda text: parse_gpu_cards(text, url))
             series = parse_gpu_cards(raw, url)
             for name, points in series.items():
                 ledger[name] = merge_points(ledger.get(name, []), points)
@@ -206,7 +215,7 @@ def main() -> None:
     LEDGER.write_text(json.dumps(ledger, indent=2), encoding="utf-8")
 
     try:
-        raw, mode = fetch_document(MICRON_URL, RAW / "micron_q4_2026.html")
+        raw, mode = fetch_document(MICRON_URL, RAW / "micron_q4_2026.html", micron_release_points)
         release = micron_release_points(raw)
         for name, point in release.items():
             existing = next((item for item in ai["micron"][name] if item["date"] == point["date"]), None)
@@ -223,7 +232,7 @@ def main() -> None:
         additions = json.loads(seeds.read_text(encoding="utf-8"))
         for name, points in additions.get("gpu_rental", {}).items():
             ai["gpu_rental"][name] = merge_points(points, ai["gpu_rental"].get(name, []))
-        for key in ("vendor_events", "cowos_observations"):
+        for key in ("vendor_events", "cowos_observations", "hbm_observations"):
             ai[key] = merge_rows(ai.get(key, []), additions.get(key, []))
         for entry in additions.get("sources", []):
             upsert_source(payload, entry)

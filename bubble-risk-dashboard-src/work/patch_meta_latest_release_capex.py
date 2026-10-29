@@ -71,7 +71,7 @@ def upsert_source(sources: list[dict], fetch_status: dict) -> None:
         "publication_date": f"Published 2026-07-29; refresh mode: {fetch_status['mode']}; last successful retrieval: {fetch_status.get('fetched_at') or 'unknown'}",
         "refresh_mode": fetch_status["mode"],
         "last_successful_fetch": fetch_status.get("fetched_at"),
-        "used_for": "META Q2 2026 purchases of property and equipment ($30.116B) until SEC Company Facts includes the new quarter.",
+        "used_for": "Historical META Q2 2026 cash PP&E cross-check ($30.116B). Newer quarters come from freshly fetched SEC Company Facts; this historical release never replaces them.",
     }
     for source in sources:
         if source.get("name") == entry["name"]:

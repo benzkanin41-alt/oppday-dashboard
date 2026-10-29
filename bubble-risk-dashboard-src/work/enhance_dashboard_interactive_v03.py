@@ -368,7 +368,7 @@ def build_price_histories(rows: list[dict], payload: dict) -> dict:
         if sym in ('SET', 'mai'):
             latest = (item.get('metrics') or {}).get('latest')
             as_of = str(item.get('as_of') or RUN_DATE.isoformat())[:10]
-            histories[sym] = {'label': item.get('name'), 'symbol': sym, 'source': 'SET current snapshot; historical Excel download blocked by Incapsula in this run.', 'source_url': item.get('source_url'), 'points': [{'date': as_of, 'value': latest}] if latest else []}
+            histories[sym] = {'label': item.get('name'), 'symbol': sym, 'source': 'Official SET quote is separate from dated history; daily history is populated by the later source adapters.', 'source_url': item.get('source_url'), 'points': []}
             continue
         points = []
         try:
