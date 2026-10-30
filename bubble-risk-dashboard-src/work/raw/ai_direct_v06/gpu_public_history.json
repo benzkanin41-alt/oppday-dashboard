@@ -293,6 +293,13 @@
       "source": "Silicon Data official public index reading",
       "source_url": "https://www.silicondata.com/products/silicon-index/h100",
       "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-29",
+      "value": 2.9,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
     }
   ],
   "Hyperscaler H100": [
@@ -589,6 +596,13 @@
       "source": "Silicon Data official public index reading",
       "source_url": "https://www.silicondata.com/products/silicon-index/h100",
       "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-29",
+      "value": 7.14,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
     }
   ],
   "NeoCloud B200": [
@@ -881,6 +895,13 @@
     },
     {
       "date": "2026-10-28",
+      "value": 6.47,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-10-29",
       "value": 6.47,
       "source": "Silicon Data official public index reading",
       "source_url": "https://www.silicondata.com/products/silicon-index/b200",

@@ -80,7 +80,7 @@
   {
     "name": "SET Market Overview statistics",
     "url": "https://www.set.or.th/en/market/product/stock/overview",
-    "publication_date": "SET market statistics as of 2026-10-28",
+    "publication_date": "SET market statistics as of 2026-10-29",
     "used_for": "SET and mai trailing P/E, P/BV, market yield, index EPS, and current market statistics."
   },
   {
@@ -128,43 +128,43 @@
   {
     "name": "Cboe VIX historical price data",
     "url": "https://www.cboe.com/tradable-products/vix/vix-historical-data",
-    "publication_date": "updated daily; latest observation 2026-10-28; refresh mode: live; last successful retrieval: 2026-10-29T04:40:37.061490+00:00",
+    "publication_date": "updated daily; latest observation 2026-10-29; refresh mode: live; last successful retrieval: 2026-10-30T04:40:07.874915+00:00",
     "used_for": "VIX complacency row and 5-year sparkline in Froth Components.",
     "refresh_mode": "live",
-    "last_successful_fetch": "2026-10-29T04:40:37.061490+00:00"
+    "last_successful_fetch": "2026-10-30T04:40:07.874915+00:00"
   },
   {
     "name": "U.S. Treasury Daily Treasury Rates XML",
     "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-    "publication_date": "feed updated 2026-10-28T15:47:16Z; latest observation 2026-10-28",
+    "publication_date": "feed updated 2026-10-29T19:07:06Z; latest observation 2026-10-29",
     "used_for": "U.S. 2Y, 5Y, 10Y, and 30Y yield curve current-year observations and latest dashboard point.",
     "refresh_mode": "live",
-    "last_successful_fetch": "2026-10-29T04:40:41.078696+00:00"
+    "last_successful_fetch": "2026-10-30T04:40:12.716180+00:00"
   },
   {
     "name": "New York Fed EFFR API",
-    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-14&endDate=2026-10-29&type=rate",
-    "publication_date": "latest EFFR observation 2026-10-27; refresh mode: live; last successful retrieval: 2026-10-29T04:41:01.739472+00:00",
+    "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-15&endDate=2026-10-30&type=rate",
+    "publication_date": "latest EFFR observation 2026-10-28; refresh mode: live; last successful retrieval: 2026-10-30T04:40:30.461165+00:00",
     "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS.",
     "refresh_mode": "live",
-    "last_successful_fetch": "2026-10-29T04:41:01.739472+00:00"
+    "last_successful_fetch": "2026-10-30T04:40:30.461165+00:00"
   },
   {
     "name": "TradingView SET:MAI daily history",
     "url": "https://www.tradingview.com/symbols/SET-MAI/",
-    "publication_date": "Refresh mode: live; last successful retrieval 2026-10-29T04:41:36.438825+00:00; latest observation 2026-10-28",
+    "publication_date": "Refresh mode: live; last successful retrieval 2026-10-30T04:41:05.856739+00:00; latest observation 2026-10-29",
     "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
   },
   {
     "name": "TradingView SET:SET daily history",
     "url": "https://www.tradingview.com/symbols/SET-SET/",
-    "publication_date": "Refresh 2026-10-29 (live); latest exchange session 2026-10-29",
+    "publication_date": "Refresh 2026-10-30 (live); latest exchange session 2026-10-30",
     "used_for": "Completed SET daily observations; official quote kept separate. Reconciliation: session_unresolved."
   },
   {
     "name": "SEC Company Facts API",
     "url": "https://data.sec.gov/api/xbrl/companyfacts/",
-    "publication_date": "Data fetched 2026-10-29",
+    "publication_date": "Data fetched 2026-10-30",
     "used_for": "Quarterly hyperscaler capex, Micron revenue/inventory/capex, and CoreWeave debt/PPE/capex/debt issuance."
   },
   {
@@ -200,21 +200,21 @@
   {
     "name": "Meta Q2 2026 earnings release",
     "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx",
-    "publication_date": "Published 2026-07-29; refresh mode: live; last successful retrieval: 2026-10-29T04:41:45.865883+00:00",
+    "publication_date": "Published 2026-07-29; refresh mode: live; last successful retrieval: 2026-10-30T04:41:16.151204+00:00",
     "refresh_mode": "live",
-    "last_successful_fetch": "2026-10-29T04:41:45.865883+00:00",
+    "last_successful_fetch": "2026-10-30T04:41:16.151204+00:00",
     "used_for": "Historical META Q2 2026 cash PP&E cross-check ($30.116B). Newer quarters come from freshly fetched SEC Company Facts; this historical release never replaces them."
   },
   {
     "name": "Silicon Data official H100 rental index",
     "url": "https://www.silicondata.com/products/silicon-index/h100",
-    "publication_date": "Observations through 2026-10-28; refresh mode: live",
+    "publication_date": "Observations through 2026-10-29; refresh mode: live",
     "used_for": "Published dated GPU rental readings, accumulated without deleting prior observations; not licensed full history."
   },
   {
     "name": "Silicon Data official B200 rental index",
     "url": "https://www.silicondata.com/products/silicon-index/b200",
-    "publication_date": "Observations through 2026-10-28; refresh mode: live",
+    "publication_date": "Observations through 2026-10-29; refresh mode: live",
     "used_for": "Published dated GPU rental readings, accumulated without deleting prior observations; not licensed full history."
   },
   {
