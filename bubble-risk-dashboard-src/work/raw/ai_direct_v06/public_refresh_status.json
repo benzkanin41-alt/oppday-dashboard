@@ -1,15 +1,15 @@
 {
-  "attempted_at": "2026-11-01T04:44:16.244309",
+  "attempted_at": "2026-11-02T04:46:42.916836",
   "sources": [
     {
       "name": "h100",
       "mode": "live",
-      "latest": "2026-10-31"
+      "latest": "2026-11-01"
     },
     {
       "name": "b200",
       "mode": "live",
-      "latest": "2026-10-31"
+      "latest": "2026-11-01"
     },
     {
       "name": "micron_q4_2026",
