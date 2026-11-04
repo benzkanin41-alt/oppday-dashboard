@@ -1,19 +1,10 @@
 {
   "source": "TradingView chart websocket",
   "symbol": "SET:SET",
-  "fetched_at": "2026-11-03T05:36:48.418556+00:00",
+  "fetched_at": "2026-11-04T05:05:09.851504+00:00",
   "schema_version": 2,
-  "completed_through": "2026-11-02",
+  "completed_through": "2026-11-03",
   "points": [
-    {
-      "date": "2022-09-20",
-      "value": 1638.59,
-      "open": 1640.62,
-      "high": 1645.15,
-      "low": 1636.2,
-      "close": 1638.59,
-      "volume": null
-    },
     {
       "date": "2022-09-21",
       "value": 1633.45,
@@ -8994,6 +8985,15 @@
       "high": 1522.3,
       "low": 1506.54,
       "close": 1507.2,
+      "volume": null
+    },
+    {
+      "date": "2026-11-03",
+      "value": 1491.01,
+      "open": 1504.27,
+      "high": 1507.4,
+      "low": 1489.36,
+      "close": 1491.01,
       "volume": null
     }
   ]
