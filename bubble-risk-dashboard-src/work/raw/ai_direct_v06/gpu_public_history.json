@@ -335,6 +335,13 @@
       "source": "Silicon Data official public index reading",
       "source_url": "https://www.silicondata.com/products/silicon-index/h100",
       "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-11-04",
+      "value": 2.96,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
     }
   ],
   "Hyperscaler H100": [
@@ -669,6 +676,13 @@
     },
     {
       "date": "2026-11-03",
+      "value": 7.12,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-11-04",
       "value": 7.12,
       "source": "Silicon Data official public index reading",
       "source_url": "https://www.silicondata.com/products/silicon-index/h100",
@@ -1008,6 +1022,13 @@
     {
       "date": "2026-11-03",
       "value": 6.54,
+      "source": "Silicon Data official public index reading",
+      "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+      "basis": "Published dated observation; no interpolation"
+    },
+    {
+      "date": "2026-11-04",
+      "value": 6.53,
       "source": "Silicon Data official public index reading",
       "source_url": "https://www.silicondata.com/products/silicon-index/b200",
       "basis": "Published dated observation; no interpolation"
