@@ -13,12 +13,14 @@ from add_ai_semiconductor_direct_data import quarterly_cashflow, patch_source_ma
 from refresh_ai_public_sources import PublicHTML, micron_release_points, parse_gpu_cards
 from retain_dashboard_history import merge_history, merge_points
 from patch_set_session_history import normalize_snapshot, verified_session
+from patch_set_session_history import partition_completed_history
 from patch_thailand_heat_mai_treasury import synchronize_curve_indicator
 from sync_latest_dashboard_summary import latest_market_anchor
 import update_current_market_indicators as market_refresh
 import patch_mai_tradingview_history as mai_refresh
 import patch_meta_latest_release_capex as meta_refresh
 import refresh_ai_public_sources as public_refresh
+import build_bubble_dashboard as base_refresh
 from validate_mai_chart_history import verify_session
 from thai_market_sessions import completed_daily_points, cached_completed_points, reconcile_quote, apply_reconciliation
 from finalize_requested_dashboard_metrics import merge_latest_snapshot, enrich_thailand
@@ -52,6 +54,113 @@ def alphabet_document(years="2025</td><td>2026</td><td>2025</td><td>2026"):
 
 
 class RefreshAdapterTests(unittest.TestCase):
+    def test_malformed_nasdaq_rows_use_valid_cache(self):
+        for bad in (None, {"close": "123.45"}, {"date": 123, "close": "123.45"}):
+            with self.subTest(row=bad), self.temporary_cache() as folder:
+                root = Path(folder)
+                cache = root / "nasdaq/XLK.json"
+                cache.parent.mkdir()
+                valid = self.nasdaq_document()
+                cache.write_text(valid, encoding="utf-8")
+                raw = json.dumps({"data": {"tradesTable": {"rows": [bad]}}})
+                with patch.object(base_refresh, "RAW", root), patch.object(base_refresh, "request_text", return_value=raw):
+                    result = base_refresh.fetch_nasdaq_history("XLK")
+                self.assertEqual(result["mode"], "cache")
+                self.assertEqual(cache.read_text(encoding="utf-8"), valid)
+
+    def test_nonfinite_nasdaq_volume_is_rejected(self):
+        data = json.loads(self.nasdaq_document())
+        data["data"]["tradesTable"]["rows"][0]["volume"] = "NaN"
+        with self.assertRaises(ValueError):
+            base_refresh.parse_nasdaq_history(json.dumps(data))
+
+    def test_archive_cannot_reinsert_different_intraday_value(self):
+        old = {"date": "2026-11-05", "value": 1551.0}
+        newer = {"date": "2026-11-05", "value": 1552.0}
+        closed = {"date": "2026-11-04", "value": 1550.0, "completed_session": True}
+        archive = {"prices": {"SET": {"chart_symbol": "^SET.BK", "points": [closed, old]}}, "corrected_snapshots": [{"symbol": "SET", "original_point": newer}]}
+        payload = {"price_histories_v04": {"SET": {"chart_symbol": "^SET.BK", "completed_through": "2026-11-04", "points": [closed]}}}
+        result = merge_history(payload, archive)["price_histories_v04"]["SET"]
+        self.assertEqual(result["points"], [closed])
+        self.assertIn(old, result["provisional_points"])
+        self.assertTrue(any(entry["original_point"] == old for entry in archive["corrected_snapshots"]))
+
+    def test_full_universe_gate_rejects_silent_card_loss(self):
+        buckets = {"Index Proxy": "indices", "S&P 500 Sector": "sectors", "Nasdaq Theme Proxy": "themes"}
+        payload = {key: [] for key in buckets.values()}
+        for item in base_refresh.ETF_UNIVERSE:
+            payload[buckets[item["bucket"]]].append({"symbol": item["symbol"]})
+        base_refresh.assert_complete_market_universe(payload)
+        payload["sectors"].pop()
+        with self.assertRaises(RuntimeError):
+            base_refresh.assert_complete_market_universe(payload)
+
+    def test_windows_curl_transport_requires_http_success(self):
+        if base_refresh.os.name != "nt":
+            self.skipTest("Windows transport regression")
+        with patch.object(base_refresh.shutil, "which", return_value="curl.exe"), patch.object(base_refresh.subprocess, "run", return_value=SimpleNamespace(returncode=0, stdout=b"validated transport response")) as run, patch.object(base_refresh, "urlopen", side_effect=OSError("offline")):
+            self.assertEqual(base_refresh.request_text("https://example.test", accept="text/csv"), "validated transport response")
+            self.assertIn("--fail", run.call_args.args[0])
+            self.assertIn("--ipv4", run.call_args.args[0])
+
+    def nasdaq_document(self):
+        return json.dumps({"data": {"tradesTable": {"rows": [{"date": (date(2025, 1, 1) + timedelta(days=i)).strftime("%m/%d/%Y"), "close": "123.45", "volume": "1000"} for i in range(300)]}}})
+
+    def test_nasdaq_invalid_response_keeps_valid_cache_and_card(self):
+        with self.temporary_cache() as folder:
+            root = Path(folder)
+            cache = root / "nasdaq" / "XLK.json"
+            cache.parent.mkdir()
+            raw = self.nasdaq_document()
+            cache.write_text(raw, encoding="utf-8")
+            with patch.object(base_refresh, "RAW", root), patch.object(base_refresh, "request_text", return_value='{"error":"temporarily unavailable"}'):
+                result = base_refresh.fetch_nasdaq_history("XLK")
+            self.assertTrue(result["ok"])
+            self.assertEqual(result["mode"], "cache")
+            self.assertEqual(len(result["points"]), 300)
+            self.assertEqual(cache.read_text(encoding="utf-8"), raw)
+
+    def test_nasdaq_valid_response_replaces_cache_atomically(self):
+        with self.temporary_cache() as folder:
+            root = Path(folder)
+            raw = self.nasdaq_document()
+            with patch.object(base_refresh, "RAW", root), patch.object(base_refresh, "request_text", return_value=raw):
+                result = base_refresh.fetch_nasdaq_history("XLK")
+            self.assertEqual(result["mode"], "live")
+            self.assertFalse((root / "nasdaq/XLK.json.tmp").exists())
+
+    def test_nasdaq_incomplete_or_invalid_cache_not_promoted(self):
+        with self.temporary_cache() as folder:
+            root = Path(folder)
+            cache = root / "nasdaq/XLK.json"
+            cache.parent.mkdir()
+            cache.write_text('{"data":{}}', encoding="utf-8")
+            with patch.object(base_refresh, "RAW", root), patch.object(base_refresh, "request_text", side_effect=TimeoutError("offline")):
+                self.assertFalse(base_refresh.fetch_nasdaq_history("XLK")["ok"])
+
+    def test_set_yahoo_intraday_bar_remains_provisional(self):
+        old = {"date": "2026-11-04", "value": 1550.0}
+        intraday = {"date": "2026-11-05", "value": 1555.0}
+        valid, provisional = partition_completed_history([old, intraday], [old], "2026-11-05")
+        self.assertEqual([point["date"] for point in valid], ["2026-11-04"])
+        self.assertEqual(provisional, [intraday])
+
+    def test_set_stale_provider_keeps_verified_newer_close_only(self):
+        provider = [{"date": "2026-11-03", "value": 1550.0}]
+        verified = {"date": "2026-11-04", "value": 1551.0, "source_kind": "TradingView daily SET Index history"}
+        unknown = {"date": "2026-11-05", "value": 1555.0}
+        valid, provisional = partition_completed_history([verified, unknown], provider, "2026-11-06")
+        self.assertEqual(valid[-1]["date"], "2026-11-04")
+        self.assertEqual(provisional, [unknown])
+
+    def test_set_completed_replacement_supersedes_intraday_value(self):
+        intraday = {"date": "2026-11-05", "value": 1555.0}
+        close = {"date": "2026-11-05", "value": 1560.0}
+        valid, provisional = partition_completed_history([intraday], [close], "2026-11-06")
+        self.assertEqual(valid[-1]["value"], 1560.0)
+        self.assertTrue(valid[-1]["completed_session"])
+        self.assertEqual(provisional, [])
+
     def test_alphabet_quarter_not_ytd_or_prior_year(self):
         point = parse_release(alphabet_document())
         self.assertEqual(point["value"], 51.355)

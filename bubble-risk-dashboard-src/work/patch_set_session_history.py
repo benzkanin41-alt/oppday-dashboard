@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from patch_mai_tradingview_history import add_source_once
@@ -57,6 +57,23 @@ def read_or_fetch(item: dict | None = None) -> tuple[list[dict], str]:
         return points, f"cached; last successful retrieval {cached.get('fetched_at', 'unknown')}; refresh failed: {exc}"
 
 
+def partition_completed_history(stored: list[dict], provider: list[dict], today: str | None = None) -> tuple[list[dict], list[dict]]:
+    today = today or (datetime.now(timezone.utc) + timedelta(hours=7)).date().isoformat()
+    provider = completed_daily_points(provider, today)
+    if not provider:
+        raise RuntimeError("No completed SET provider observations")
+    through = provider[-1]["date"]
+    accepted, provisional = [], []
+    for point in stored:
+        known_completed = point.get("completed_session") is True or point.get("source_kind") == "TradingView daily SET Index history"
+        if point["date"] < today and (point["date"] <= through or known_completed):
+            accepted.append(point)
+        else:
+            provisional.append(point)
+    return merge_points(accepted, [{**point, "source_url": SOURCE_URL,
+        "source_kind": "TradingView daily SET Index history", "completed_session": True} for point in provider]), provisional
+
+
 def main() -> None:
     payload = json.loads(DATA.read_text(encoding="utf-8"))
     item = next(row for row in payload["indices"] if row["symbol"] == "SET")
@@ -64,21 +81,14 @@ def main() -> None:
     session = normalize_snapshot(item, points)
     history = payload["price_histories_v04"]["SET"]
     stored = history.get("points", [])
-    valid = []
-    for point in stored:
-        unverified = point.get("source_kind") in {"Unverified official SET overview snapshot", "Official SET latest close"}
-        if point["date"] > session and unverified:
-            # An overview snapshot appended upstream is not a dated daily close.
-            correct_snapshot_date("SET", point, None, SOURCE_URL)
-        else:
-            valid.append(point)
-    current = [{
-        "date": point["date"], "value": point["value"],
-        "source_url": SOURCE_URL, "source_kind": "TradingView daily SET Index history",
-    } for point in points]
-    history["points"] = merge_points(valid, current)
+    history["points"], provisional = partition_completed_history(stored, points)
+    for point in provisional:
+        correct_snapshot_date("SET", point, None, SOURCE_URL,
+            reason="Unverified or intraday daily bar retained separately; requires a completed-session source replacement.")
+    history["provisional_points"] = merge_points(history.get("provisional_points", []), provisional)
     apply_reconciliation(item, history["points"])
     session = history["points"][-1]["date"]
+    history["completed_through"] = session
     history["source"] = "SET Index daily history: Yahoo Finance plus TradingView SET:SET; official quote separate"
     history["source_urls"] = [history["source_url"], SOURCE_URL, item["source_url"]]
     history["history_fetch_mode"] = mode

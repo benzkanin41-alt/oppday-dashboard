@@ -75,7 +75,7 @@ def parse_float(text: str | None) -> float | None:
 
 def run_curl(url: str, timeout: int = 60) -> str:
     proc = subprocess.run(
-        ["curl.exe", "-L", "--silent", "--show-error", "--max-time", str(timeout), url],
+        ["curl.exe", "--ipv4", "--fail", "-L", "--silent", "--show-error", "--connect-timeout", "5", "--max-time", str(timeout), url],
         cwd=ROOT,
         text=True,
         encoding="utf-8",

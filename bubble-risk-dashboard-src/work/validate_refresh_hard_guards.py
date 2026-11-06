@@ -9,6 +9,7 @@ from urllib.request import Request, urlopen
 
 from retain_dashboard_history import assert_history_preserved
 from refresh_ai_public_sources import PublicHTML
+from build_bubble_dashboard import assert_complete_market_universe
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +29,7 @@ for path in (DATA, HTML, MANIFEST, UPDATE_LOG):
         fail(f"missing or empty required artifact: {path}")
 
 payload = json.loads(DATA.read_text(encoding="utf-8"))
+assert_complete_market_universe(payload)
 assert_history_preserved(payload)
 html = HTML.read_text(encoding="utf-8")
 manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
@@ -123,6 +125,9 @@ treasury_url = (
 proc = subprocess.run(
     [
         "curl.exe",
+        "--ipv4",
+        "--connect-timeout",
+        "5",
         "--fail",
         "--location",
         "--silent",

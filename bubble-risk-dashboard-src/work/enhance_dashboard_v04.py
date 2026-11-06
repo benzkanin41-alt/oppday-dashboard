@@ -109,7 +109,7 @@ def fred_series(series_id: str, start: date = START_1990) -> list[dict]:
     cache = out_dir / f"{series_id}.csv"
     try:
         proc = subprocess.run(
-            ["curl.exe", "-L", "--silent", "--show-error", "--max-time", "45", url],
+            ["curl.exe", "--ipv4", "--fail", "-L", "--silent", "--show-error", "--connect-timeout", "5", "--max-time", "45", url],
             check=True,
             capture_output=True,
             text=True,

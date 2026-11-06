@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 
@@ -40,17 +41,17 @@ def write_archive(archive: dict) -> None:
     temp.replace(ARCHIVE)
 
 
-def correct_snapshot_date(symbol: str, point: dict, session_date: str | None, source_url: str) -> None:
+def correct_snapshot_date(symbol: str, point: dict, session_date: str | None, source_url: str, *, reason: str | None = None) -> None:
     archive = load_archive()
     stored = archive.get("prices", {}).get(symbol, {})
-    stored["points"] = [row for row in stored.get("points", []) if row.get("date") != point["date"]]
+    stored["points"] = [row for row in stored.get("points", []) if row != point]
     corrections = archive.setdefault("corrected_snapshots", [])
     correction = {
         "symbol": symbol,
         "original_point": point,
         "market_session_date": session_date,
         "source_url": source_url,
-        "reason": "Webpage update timestamp was incorrectly used as a daily trading date; unverified snapshot quarantined, not promoted to daily history.",
+        "reason": reason or "Webpage update timestamp was incorrectly used as a daily trading date; unverified snapshot quarantined, not promoted to daily history.",
     }
     if correction not in corrections:
         corrections.append(correction)
@@ -70,9 +71,29 @@ def merge_history(payload: dict, archive: dict) -> dict:
             prices[symbol] = old
         elif current.get("chart_symbol") == old.get("chart_symbol"):
             current["points"] = merge_points(old.get("points", []), current.get("points", []))
+            if old.get("provisional_points"):
+                current["provisional_points"] = merge_points(old["provisional_points"], current.get("provisional_points", []))
         else:
             raise RuntimeError(f"cannot merge different price instruments for {symbol}")
     for symbol, history in prices.items():
+        through = history.get("completed_through")
+        if symbol == "SET" and through:
+            today = (datetime.now(timezone.utc) + timedelta(hours=7)).date().isoformat()
+            keep, pending = [], []
+            for point in history.get("points", []):
+                proven = point.get("completed_session") is True or point.get("source_kind") == "TradingView daily SET Index history"
+                if point["date"] < today and (point["date"] <= through or proven):
+                    keep.append(point)
+                else:
+                    pending.append(point)
+            history["points"] = keep
+            history["provisional_points"] = merge_points(history.get("provisional_points", []), pending)
+            corrections = archive.setdefault("corrected_snapshots", [])
+            for point in pending:
+                entry = {"symbol": symbol, "original_point": point, "market_session_date": None,
+                    "source_url": history.get("source_url"), "reason": "Archived observation lacks completed-session evidence; retained separately."}
+                if entry not in corrections:
+                    corrections.append(entry)
         history["points"] = filter_quarantined(symbol, history.get("points", []), archive)
 
     curves = {curve["country"]: curve for curve in payload.get("yield_curves", [])}
@@ -116,7 +137,7 @@ def assert_history_preserved(payload: dict) -> None:
     archive = load_archive()
     pairs = []
     for symbol, old in archive.get("prices", {}).items():
-        pairs.append((symbol, old.get("points", []), payload.get("price_histories_v04", {}).get(symbol, {}).get("points", [])))
+        pairs.append((symbol, filter_quarantined(symbol, old.get("points", []), archive), payload.get("price_histories_v04", {}).get(symbol, {}).get("points", [])))
     curves = {curve["country"]: curve for curve in payload.get("yield_curves", [])}
     for country, old in archive.get("curves", {}).items():
         pairs.append((country, old.get("history", []), curves.get(country, {}).get("history", [])))
@@ -137,7 +158,9 @@ def main() -> None:
     if args.capture:
         capture_history(args.capture)
         return
-    payload = merge_history(json.loads(DATA.read_text(encoding="utf-8")), load_archive())
+    archive = load_archive()
+    payload = merge_history(json.loads(DATA.read_text(encoding="utf-8")), archive)
+    write_archive(archive)
     assert_history_preserved(payload)
     payload["history_retention"] = {
         "status": "preserved",

@@ -7,6 +7,8 @@ import json
 import math
 import os
 import statistics
+import shutil
+import subprocess
 import time
 from dataclasses import dataclass
 from datetime import date, datetime
@@ -184,8 +186,17 @@ def request_text(url: str, *, accept: str = "*/*") -> str:
         "Accept-Language": "en-US,en;q=0.9",
     }
     req = Request(url, headers=headers)
-    with urlopen(req, timeout=35) as response:
-        return response.read().decode("utf-8", errors="replace")
+    try:
+        with urlopen(req, timeout=12 if os.name == "nt" else 35) as response:
+            return response.read().decode("utf-8", errors="replace")
+    except OSError:
+        executable = shutil.which("curl.exe") or shutil.which("curl")
+        if not executable:
+            raise
+        proc = subprocess.run([executable, "--ipv4", "--fail", "--location", "--silent", "--show-error", "--connect-timeout", "5", "--max-time", "12", url], capture_output=True, timeout=18)
+        if proc.returncode != 0 or not proc.stdout:
+            raise RuntimeError(f"Public-source transport unavailable: {proc.stderr.decode('utf-8', errors='replace')[:200]}")
+        return proc.stdout.decode("utf-8", errors="replace")
 
 
 def parse_float(value: object) -> float | None:
@@ -219,6 +230,33 @@ def fetch_fred_series(series_id: str) -> dict:
     return {"ok": bool(points), "points": points, "error": None, "url": url}
 
 
+def parse_nasdaq_history(raw: str) -> list[Point]:
+    payload = json.loads(raw)
+    data = payload.get("data") if isinstance(payload, dict) else None
+    table = data.get("tradesTable") if isinstance(data, dict) else None
+    rows = table.get("rows") if isinstance(table, dict) else None
+    if not isinstance(rows, list):
+        raise ValueError("Nasdaq historical rows are missing or malformed")
+    by_date = {}
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("date"), str) or not row["date"]:
+            raise ValueError("Nasdaq historical row lacks its date")
+        val = parse_float(row.get("close"))
+        if val is None or not math.isfinite(val) or val <= 0:
+            continue
+        day = safe_date(row["date"], "%m/%d/%Y")
+        if day > RUN_DATE:
+            raise ValueError("Nasdaq returned a future observation")
+        volume = parse_float(row.get("volume"))
+        if volume is not None and (not math.isfinite(volume) or volume < 0):
+            raise ValueError("Nasdaq volume is non-finite or negative")
+        by_date[day] = Point(day, val, volume)
+    points = [by_date[day] for day in sorted(by_date)]
+    if len(points) < 253:
+        raise ValueError("Nasdaq history lacks enough validated rows for 1Y/200DMA metrics")
+    return points
+
+
 def fetch_nasdaq_history(symbol: str, assetclass: str = "etf") -> dict:
     params = urlencode(
         {
@@ -229,23 +267,32 @@ def fetch_nasdaq_history(symbol: str, assetclass: str = "etf") -> dict:
         }
     )
     url = f"https://api.nasdaq.com/api/quote/{symbol}/historical?{params}"
+    cache = RAW / "nasdaq" / f"{symbol}.json"
     try:
         raw = request_text(url, accept="application/json")
-        (RAW / "nasdaq").mkdir(parents=True, exist_ok=True)
-        (RAW / "nasdaq" / f"{symbol}.json").write_text(raw, encoding="utf-8")
-        payload = json.loads(raw)
-        rows = (((payload.get("data") or {}).get("tradesTable") or {}).get("rows") or [])
-        points: list[Point] = []
-        for row in rows:
-            val = parse_float(row.get("close"))
-            if val is None:
-                continue
-            vol = parse_float(row.get("volume"))
-            points.append(Point(safe_date(row["date"], "%m/%d/%Y"), val, vol))
-        points.sort(key=lambda p: p.d)
-        return {"ok": bool(points), "points": points, "error": None, "url": url}
-    except (HTTPError, URLError, TimeoutError, json.JSONDecodeError, RuntimeError) as exc:
+        points = parse_nasdaq_history(raw)
+        cache.parent.mkdir(parents=True, exist_ok=True)
+        temp = cache.with_suffix(".json.tmp")
+        temp.write_text(raw, encoding="utf-8")
+        temp.replace(cache)
+        return {"ok": True, "points": points, "error": None, "url": url, "mode": "live"}
+    except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as exc:
+        if cache.exists():
+            try:
+                points = parse_nasdaq_history(cache.read_text(encoding="utf-8"))
+                return {"ok": True, "points": points, "error": repr(exc), "url": url, "mode": "cache"}
+            except (OSError, ValueError, RuntimeError):
+                pass
         return {"ok": False, "points": [], "error": repr(exc), "url": url}
+
+
+def assert_complete_market_universe(payload: dict) -> None:
+    for bucket, label in (("indices", "Index Proxy"), ("sectors", "S&P 500 Sector"), ("themes", "Nasdaq Theme Proxy")):
+        expected = {item["symbol"] for item in ETF_UNIVERSE if item["bucket"] == label}
+        actual = [item["symbol"] for item in payload.get(bucket, [])]
+        missing = expected - set(actual)
+        if missing or len(actual) != len(set(actual)):
+            raise RuntimeError(f"Incomplete or duplicated {bucket} universe; missing: {sorted(missing)}")
 
 
 def pct_return(points: list[Point], periods: int) -> float | None:
@@ -747,9 +794,11 @@ def main() -> int:
         if not result["ok"]:
             source_failures.append({"source": f"Nasdaq {item['symbol']}", "status": result["error"] or "No rows returned"})
             continue
+        if result.get("mode") == "cache":
+            source_failures.append({"source": f"Nasdaq {item['symbol']}", "status": f"Live refresh failed; retained validated cached history through {result['points'][-1].d.isoformat()}. {result['error']}"})
         metrics = summarize_price(result["points"])
         score = clamp(metrics["price_heat_score"] * 0.78 + metrics["volume_heat_score"] * 0.12 + 50 * 0.10)
-        market_items.append({**item, "as_of": metrics["as_of"], "score": score, "metrics": metrics, "source_url": result["url"]})
+        market_items.append({**item, "as_of": metrics["as_of"], "score": score, "metrics": metrics, "source_url": result["url"], "fetch_mode": result.get("mode", "live")})
         time.sleep(0.05)
 
     macro = build_macro_scores(fred)
@@ -832,7 +881,7 @@ def main() -> int:
                 "definition": "High-yield spreads, yield curve, real policy proxy, and Fed balance-sheet change.",
             },
         ],
-        "sources": SOURCE_NOTES,
+        "sources": [dict(source) for source in SOURCE_NOTES],
         "source_failures": source_failures
         + [
             {"source": "TradingView Remix MCP integration", "status": "The standalone Python updater cannot invoke the user's MCP tools directly; TradingView SET:MAI chart history is a separate web adapter."},
@@ -841,6 +890,13 @@ def main() -> int:
         ],
     }
 
+    assert_complete_market_universe(payload)
+    cached = [item for item in market_items if item["fetch_mode"] == "cache"]
+    if cached:
+        payload["sources"].append({"name": "Nasdaq validated cache fallback status",
+            "url": "https://api.nasdaq.com/api/quote/{symbol}/historical",
+            "publication_date": f"Refresh attempted {RUN_DATE.isoformat()}; cached observations: " + ", ".join(f"{item['symbol']} through {item['as_of']}" for item in cached),
+            "used_for": "Preserves complete market/sector/theme coverage when live retrieval fails. These observations are cached, not newly published or real-time quotes."})
     (OUT / "data.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     (OUT / "source-manifest.json").write_text(json.dumps(payload["sources"], ensure_ascii=False, indent=2), encoding="utf-8")
     (OUT / "index.html").write_text(render_dashboard(payload), encoding="utf-8")

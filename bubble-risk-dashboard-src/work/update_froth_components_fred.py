@@ -47,7 +47,7 @@ def fetch_fred_csv(series_id: str) -> str:
     url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
     try:
         proc = subprocess.run(
-            ["curl.exe", "-L", "--silent", "--show-error", "--max-time", "45", url],
+            ["curl.exe", "--ipv4", "--fail", "-L", "--silent", "--show-error", "--connect-timeout", "5", "--max-time", "45", url],
             check=True,
             capture_output=True,
             text=True,

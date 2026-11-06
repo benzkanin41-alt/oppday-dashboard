@@ -65,6 +65,7 @@ STEPS = [
 
 
 STEP_TIMEOUTS = {
+    "work/build_bubble_dashboard.py": 420,
     "work/enhance_dashboard_v04.py": 720,
     "work/update_froth_components_fred.py": 180,
     "work/update_current_market_indicators.py": 180,
