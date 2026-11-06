@@ -271,6 +271,16 @@ def fetch_nasdaq_history(symbol: str, assetclass: str = "etf") -> dict:
     try:
         raw = request_text(url, accept="application/json")
         points = parse_nasdaq_history(raw)
+        if cache.exists():
+            try:
+                cached_points = parse_nasdaq_history(cache.read_text(encoding="utf-8"))
+            except (OSError, ValueError, RuntimeError):
+                cached_points = []
+            if cached_points and points[-1].d < cached_points[-1].d:
+                raise ValueError(
+                    f"Nasdaq response ends {points[-1].d.isoformat()}, older than "
+                    f"validated cache through {cached_points[-1].d.isoformat()}"
+                )
         cache.parent.mkdir(parents=True, exist_ok=True)
         temp = cache.with_suffix(".json.tmp")
         temp.write_text(raw, encoding="utf-8")

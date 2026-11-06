@@ -129,6 +129,37 @@ class RefreshAdapterTests(unittest.TestCase):
             self.assertEqual(result["mode"], "live")
             self.assertFalse((root / "nasdaq/XLK.json.tmp").exists())
 
+    def test_nasdaq_stale_live_response_cannot_replace_newer_cache(self):
+        with self.temporary_cache() as folder:
+            root = Path(folder)
+            cache = root / "nasdaq/XLK.json"
+            cache.parent.mkdir()
+            current = self.nasdaq_document()
+            stale = json.loads(current)
+            stale["data"]["tradesTable"]["rows"].pop()
+            cache.write_text(current, encoding="utf-8")
+            with patch.object(base_refresh, "RAW", root), patch.object(base_refresh, "request_text", return_value=json.dumps(stale)):
+                result = base_refresh.fetch_nasdaq_history("XLK")
+            self.assertEqual(result["mode"], "cache")
+            self.assertIn("older than validated cache", result["error"])
+            self.assertEqual(len(result["points"]), 300)
+            self.assertEqual(cache.read_text(encoding="utf-8"), current)
+
+    def test_nasdaq_same_session_revision_can_replace_cache(self):
+        with self.temporary_cache() as folder:
+            root = Path(folder)
+            cache = root / "nasdaq/XLK.json"
+            cache.parent.mkdir()
+            cache.write_text(self.nasdaq_document(), encoding="utf-8")
+            revised = json.loads(self.nasdaq_document())
+            revised["data"]["tradesTable"]["rows"][-1]["close"] = "124.00"
+            raw = json.dumps(revised)
+            with patch.object(base_refresh, "RAW", root), patch.object(base_refresh, "request_text", return_value=raw):
+                result = base_refresh.fetch_nasdaq_history("XLK")
+            self.assertEqual(result["mode"], "live")
+            self.assertEqual(result["points"][-1].v, 124.0)
+            self.assertEqual(cache.read_text(encoding="utf-8"), raw)
+
     def test_nasdaq_incomplete_or_invalid_cache_not_promoted(self):
         with self.temporary_cache() as folder:
             root = Path(folder)

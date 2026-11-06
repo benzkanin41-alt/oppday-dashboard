@@ -1,7 +1,7 @@
 {
   "source": "TradingView chart websocket",
   "symbol": "SET:SET",
-  "fetched_at": "2026-11-06T02:32:08.786794+00:00",
+  "fetched_at": "2026-11-06T02:41:27.186676+00:00",
   "schema_version": 2,
   "completed_through": "2026-11-05",
   "points": [
