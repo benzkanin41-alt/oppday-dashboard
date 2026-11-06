@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-06 09:41:40 Bangkok",
+  "generated_at": "2026-11-06 12:27:20 Bangkok",
   "data_anchor": "2026-11-05",
   "overall": {
     "score": 56.20855492895361,
@@ -8268,13 +8268,13 @@
       "name": "SET Index",
       "region": "Thailand",
       "bucket": "Index Proxy",
-      "as_of": "2026-11-06 09:37:33 Bangkok",
+      "as_of": "2026-11-06 12:22:51 Bangkok",
       "score": 50.0,
       "metrics": {
-        "as_of": "2026-11-06 09:37:33 Bangkok",
-        "latest": 1497.99,
-        "day_change": null,
-        "day_change_pct": null,
+        "as_of": "2026-11-06 12:22:51 Bangkok",
+        "latest": 1474.49,
+        "day_change": -23.5,
+        "day_change_pct": -1.57,
         "ret_1y": 16.6231986733828,
         "dist_200dma": -1.2842068075405777,
         "drawdown_1y": -9.375850741392766,
@@ -10468,13 +10468,13 @@
       "name": "mai Index",
       "region": "Thailand",
       "bucket": "Index Proxy",
-      "as_of": "2026-11-06 09:37:48 Bangkok",
+      "as_of": "2026-11-06 12:23:06 Bangkok",
       "score": 50.0,
       "metrics": {
-        "as_of": "2026-11-06 09:37:48 Bangkok",
-        "latest": 213.6,
-        "day_change": null,
-        "day_change_pct": null,
+        "as_of": "2026-11-06 12:23:06 Bangkok",
+        "latest": 213.43,
+        "day_change": -0.17,
+        "day_change_pct": -0.08,
         "ret_1y": -7.891332470892632,
         "dist_200dma": -2.7688570834207726,
         "drawdown_1y": -8.420511061567492,
@@ -11204,7 +11204,7 @@
         "history_latest": 213.6
       },
       "source_url": "https://www.set.or.th/en/market/index/mai/overview",
-      "source_note": "TradingView SET:MAI completed daily history through 2026-11-05; official quote displayed separately. Reconciliation: session_unresolved. Refresh mode: live; last successful retrieval: 2026-11-06T02:41:24.245574+00:00.",
+      "source_note": "TradingView SET:MAI completed daily history through 2026-11-05; official quote displayed separately. Reconciliation: session_unresolved. Refresh mode: live; last successful retrieval: 2026-11-06T05:26:54.623162+00:00.",
       "valuation": {
         "trailing_pe": 88.33,
         "forward_pe": null,
@@ -24183,10 +24183,10 @@
     {
       "name": "Cboe VIX historical price data",
       "url": "https://www.cboe.com/tradable-products/vix/vix-historical-data",
-      "publication_date": "updated daily; latest observation 2026-11-05; refresh mode: live; last successful retrieval: 2026-11-06T02:40:14.054615+00:00",
+      "publication_date": "updated daily; latest observation 2026-11-05; refresh mode: live; last successful retrieval: 2026-11-06T05:25:57.197691+00:00",
       "used_for": "VIX complacency row and 5-year sparkline in Froth Components.",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-11-06T02:40:14.054615+00:00"
+      "last_successful_fetch": "2026-11-06T05:25:57.197691+00:00"
     },
     {
       "name": "U.S. Treasury Daily Treasury Rates XML",
@@ -24194,20 +24194,20 @@
       "publication_date": "feed updated 2026-11-05T15:46:47Z; latest observation 2026-11-05",
       "used_for": "U.S. 2Y, 5Y, 10Y, and 30Y yield curve current-year observations and latest dashboard point.",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-11-06T02:40:17.438735+00:00"
+      "last_successful_fetch": "2026-11-06T05:26:01.908947+00:00"
     },
     {
       "name": "New York Fed EFFR API",
       "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-22&endDate=2026-11-06&type=rate",
-      "publication_date": "latest EFFR observation 2026-11-04; refresh mode: live; last successful retrieval: 2026-11-06T02:40:36.903374+00:00",
+      "publication_date": "latest EFFR observation 2026-11-04; refresh mode: live; last successful retrieval: 2026-11-06T05:26:19.354383+00:00",
       "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS.",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-11-06T02:40:36.903374+00:00"
+      "last_successful_fetch": "2026-11-06T05:26:19.354383+00:00"
     },
     {
       "name": "TradingView SET:MAI daily history",
       "url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "publication_date": "Refresh mode: live; last successful retrieval 2026-11-06T02:41:24.245574+00:00; latest observation 2026-11-05",
+      "publication_date": "Refresh mode: live; last successful retrieval 2026-11-06T05:26:54.623162+00:00; latest observation 2026-11-05",
       "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
     },
     {
@@ -24255,9 +24255,9 @@
     {
       "name": "Meta Q2 2026 earnings release",
       "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx",
-      "publication_date": "Published 2026-07-29; refresh mode: live; last successful retrieval: 2026-11-06T02:41:33.447087+00:00",
+      "publication_date": "Published 2026-07-29; refresh mode: live; last successful retrieval: 2026-11-06T05:27:06.323476+00:00",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-11-06T02:41:33.447087+00:00",
+      "last_successful_fetch": "2026-11-06T05:27:06.323476+00:00",
       "used_for": "Historical META Q2 2026 cash PP&E cross-check ($30.116B). Newer quarters come from freshly fetched SEC Company Facts; this historical release never replaces them."
     },
     {
@@ -123420,7 +123420,7 @@
       "earnings_yield": 6.7704807041299935,
       "ten_year_yield": 2.083288,
       "gap_pp": 4.687192704129993,
-      "as_of": "2026-11-06 09:37:33 Bangkok",
+      "as_of": "2026-11-06 12:22:51 Bangkok",
       "source": "SET Market Overview, as of 2026-11-05",
       "source_url": "https://www.set.or.th/en/market/product/stock/overview",
       "status": "Computed from Trailing P/E minus local 10Y yield",
@@ -123437,7 +123437,7 @@
       "earnings_yield": 1.1321181931393638,
       "ten_year_yield": 2.083288,
       "gap_pp": -0.9511698068606362,
-      "as_of": "2026-11-06 09:37:48 Bangkok",
+      "as_of": "2026-11-06 12:23:06 Bangkok",
       "source": "SET Market Overview, as of 2026-11-05",
       "source_url": "https://www.set.or.th/en/market/product/stock/overview",
       "status": "Computed from Trailing P/E minus local 10Y yield",
@@ -130902,12 +130902,12 @@
       "region": "Thailand",
       "bucket": "Index Proxy",
       "score": 50.0,
-      "as_of": "2026-11-06 09:37:33 Bangkok",
+      "as_of": "2026-11-06 12:22:51 Bangkok",
       "metrics": {
-        "as_of": "2026-11-06 09:37:33 Bangkok",
-        "latest": 1497.99,
-        "day_change": null,
-        "day_change_pct": null,
+        "as_of": "2026-11-06 12:22:51 Bangkok",
+        "latest": 1474.49,
+        "day_change": -23.5,
+        "day_change_pct": -1.57,
         "ret_1y": 16.6231986733828,
         "dist_200dma": -1.2842068075405777,
         "drawdown_1y": -9.375850741392766,
@@ -133083,12 +133083,12 @@
       "region": "Thailand",
       "bucket": "Index Proxy",
       "score": 50.0,
-      "as_of": "2026-11-06 09:37:48 Bangkok",
+      "as_of": "2026-11-06 12:23:06 Bangkok",
       "metrics": {
-        "as_of": "2026-11-06 09:37:48 Bangkok",
-        "latest": 213.6,
-        "day_change": null,
-        "day_change_pct": null,
+        "as_of": "2026-11-06 12:23:06 Bangkok",
+        "latest": 213.43,
+        "day_change": -0.17,
+        "day_change_pct": -0.08,
         "ret_1y": -7.891332470892632,
         "dist_200dma": -2.7688570834207726,
         "drawdown_1y": -8.420511061567492,
@@ -489740,7 +489740,7 @@
       "chart_symbol": "^SET.BK",
       "source": "SET Index daily history: Yahoo Finance plus TradingView SET:SET; official quote separate",
       "source_url": "https://finance.yahoo.com/quote/%5ESET.BK/history",
-      "note": "Completed daily history through 2026-11-05; official SET quote retained separately at 2026-11-06 09:37:33 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-11-05; official SET quote retained separately at 2026-11-06 12:22:51 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "points": [
         {
           "date": "1996-12-11",
@@ -526965,7 +526965,12 @@
           "completed_session": true
         }
       ],
-      "provisional_points": [],
+      "provisional_points": [
+        {
+          "date": "2026-11-06",
+          "value": 1476.079956
+        }
+      ],
       "completed_through": "2026-11-05",
       "source_urls": [
         "https://finance.yahoo.com/quote/%5ESET.BK/history",
@@ -526981,12 +526986,12 @@
       "chart_symbol": "SET:MAI",
       "source": "TradingView chart history for SET:MAI",
       "source_url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "note": "Completed daily history through 2026-11-05; official SET quote retained separately at 2026-11-06 09:37:48 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-11-05; official SET quote retained separately at 2026-11-06 12:23:06 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "history_fetch_mode": "live",
       "history_fetch_status": {
         "mode": "live",
-        "fetched_at": "2026-11-06T02:41:24.245574+00:00",
-        "attempted_at": "2026-11-06T02:41:24.245574+00:00"
+        "fetched_at": "2026-11-06T05:26:54.623162+00:00",
+        "attempted_at": "2026-11-06T05:26:54.623162+00:00"
       },
       "market_session_date": "2026-11-05",
       "points": [
@@ -585650,7 +585655,7 @@
         },
         {
           "date": "2026-11-05",
-          "value": 26629.808594
+          "value": 26629.810547
         }
       ]
     },
@@ -622780,7 +622785,7 @@
         },
         {
           "date": "2026-11-05",
-          "value": 2729.886719
+          "value": 2729.889893
         }
       ]
     },
@@ -678620,7 +678625,7 @@
         },
         {
           "date": "2026-11-06",
-          "value": 57742.441406
+          "value": 57408.53125
         }
       ]
     },
@@ -707066,7 +707071,7 @@
         },
         {
           "date": "2026-11-06",
-          "value": 3651.012939
+          "value": 3651.401855
         }
       ]
     },
@@ -743452,7 +743457,7 @@
         },
         {
           "date": "2026-11-06",
-          "value": 24650.720703
+          "value": 24495.0
         }
       ]
     },
@@ -762243,6 +762248,10 @@
         {
           "date": "2026-11-05",
           "value": 24536.599609
+        },
+        {
+          "date": "2026-11-06",
+          "value": 24608.800781
         }
       ]
     },
@@ -791692,7 +791701,7 @@
         },
         {
           "date": "2026-11-06",
-          "value": 5142.339844
+          "value": 5116.430176
         }
       ]
     },
@@ -920100,50 +920109,50 @@
   "current_market_fetch_status": {
     "VIX_History.csv": {
       "url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
-      "attempted_at": "2026-11-06T02:40:14.054615+00:00",
-      "last_successful_fetch": "2026-11-06T02:40:14.054615+00:00",
+      "attempted_at": "2026-11-06T05:25:57.197691+00:00",
+      "last_successful_fetch": "2026-11-06T05:25:57.197691+00:00",
       "mode": "live"
     },
     "DGS10.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10",
-      "attempted_at": "2026-11-06T02:40:14.471270+00:00",
-      "last_successful_fetch": "2026-11-06T02:40:14.471270+00:00",
+      "attempted_at": "2026-11-06T05:25:57.565017+00:00",
+      "last_successful_fetch": "2026-11-06T05:25:57.565017+00:00",
       "mode": "live"
     },
     "DGS2.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2",
-      "attempted_at": "2026-11-06T02:40:15.026430+00:00",
-      "last_successful_fetch": "2026-11-06T02:40:15.026430+00:00",
+      "attempted_at": "2026-11-06T05:25:57.804022+00:00",
+      "last_successful_fetch": "2026-11-06T05:25:57.804022+00:00",
       "mode": "live"
     },
     "treasury_yield_curve_2026.xml": {
       "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-      "attempted_at": "2026-11-06T02:40:17.438735+00:00",
-      "last_successful_fetch": "2026-11-06T02:40:17.438735+00:00",
+      "attempted_at": "2026-11-06T05:26:01.908947+00:00",
+      "last_successful_fetch": "2026-11-06T05:26:01.908947+00:00",
       "mode": "live"
     },
     "EFFR.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=EFFR",
-      "attempted_at": "2026-11-06T02:40:36.426363+00:00",
-      "last_successful_fetch": "2026-11-06T02:40:36.426363+00:00",
+      "attempted_at": "2026-11-06T05:26:19.211762+00:00",
+      "last_successful_fetch": "2026-11-06T05:26:19.211762+00:00",
       "mode": "live"
     },
     "nyfed_effr_latest.json": {
       "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-22&endDate=2026-11-06&type=rate",
-      "attempted_at": "2026-11-06T02:40:36.903374+00:00",
-      "last_successful_fetch": "2026-11-06T02:40:36.903374+00:00",
+      "attempted_at": "2026-11-06T05:26:19.354383+00:00",
+      "last_successful_fetch": "2026-11-06T05:26:19.354383+00:00",
       "mode": "live"
     },
     "T10YIE.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10YIE",
-      "attempted_at": "2026-11-06T02:40:37.446694+00:00",
-      "last_successful_fetch": "2026-11-06T02:40:37.446694+00:00",
+      "attempted_at": "2026-11-06T05:26:19.648864+00:00",
+      "last_successful_fetch": "2026-11-06T05:26:19.648864+00:00",
       "mode": "live"
     }
   },
-  "dashboard_refreshed_at": "2026-11-06 09:41:40 Bangkok",
+  "dashboard_refreshed_at": "2026-11-06 12:27:20 Bangkok",
   "ai_semiconductor_direct_v06": {
-    "generated_at": "2026-11-06 09:41:32 Bangkok",
+    "generated_at": "2026-11-06 05:27:03 Bangkok",
     "lookback_start": "2024-07-01",
     "capex": {
       "MSFT": [
@@ -923450,11 +923459,11 @@
   "source_refresh_status": {
     "meta_q2_release": {
       "mode": "live",
-      "fetched_at": "2026-11-06T02:41:33.447087+00:00",
-      "attempted_at": "2026-11-06T02:41:33.447087+00:00"
+      "fetched_at": "2026-11-06T05:27:06.323476+00:00",
+      "attempted_at": "2026-11-06T05:27:06.323476+00:00"
     },
     "alphabet_q3_release": {
-      "attempted_at": "2026-11-06T02:41:37.356508+00:00",
+      "attempted_at": "2026-11-06T05:27:12.259500+00:00",
       "mode": "live",
       "period_end": "2026-09-30",
       "value": 51.355
@@ -923466,8 +923475,8 @@
     "archive": "work/raw/dashboard_history.json"
   },
   "ai_semiconductor_direct_v08": {
-    "generated_at": "2026-11-06 09:41:39 Bangkok",
-    "data_source_generated_at": "2026-11-06 09:41:32 Bangkok",
+    "generated_at": "2026-11-06 12:27:17 Bangkok",
+    "data_source_generated_at": "2026-11-06 05:27:03 Bangkok",
     "window_start": "2024-11-06",
     "window_end": "2026-11-06",
     "groups": [

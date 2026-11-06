@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "snapshot_generated_at": "2026-11-06 09:41:40 Bangkok",
+  "snapshot_generated_at": "2026-11-06 12:27:20 Bangkok",
   "prices": {
     "IBB": {
       "label": "Nasdaq theme: Biotechnology",
@@ -255276,7 +255276,7 @@
       "chart_symbol": "^SET.BK",
       "source": "SET Index daily history: Yahoo Finance plus TradingView SET:SET; official quote separate",
       "source_url": "https://finance.yahoo.com/quote/%5ESET.BK/history",
-      "note": "Completed daily history through 2026-11-05; official SET quote retained separately at 2026-11-06 09:37:33 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-11-05; official SET quote retained separately at 2026-11-06 12:22:51 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "points": [
         {
           "date": "1996-12-11",
@@ -292501,7 +292501,12 @@
           "completed_session": true
         }
       ],
-      "provisional_points": [],
+      "provisional_points": [
+        {
+          "date": "2026-11-06",
+          "value": 1476.079956
+        }
+      ],
       "completed_through": "2026-11-05",
       "source_urls": [
         "https://finance.yahoo.com/quote/%5ESET.BK/history",
@@ -292517,12 +292522,12 @@
       "chart_symbol": "SET:MAI",
       "source": "TradingView chart history for SET:MAI",
       "source_url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "note": "Completed daily history through 2026-11-05; official SET quote retained separately at 2026-11-06 09:37:48 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-11-05; official SET quote retained separately at 2026-11-06 12:23:06 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "history_fetch_mode": "live",
       "history_fetch_status": {
         "mode": "live",
-        "fetched_at": "2026-11-06T02:41:24.245574+00:00",
-        "attempted_at": "2026-11-06T02:41:24.245574+00:00"
+        "fetched_at": "2026-11-06T05:26:54.623162+00:00",
+        "attempted_at": "2026-11-06T05:26:54.623162+00:00"
       },
       "market_session_date": "2026-11-05",
       "points": [
@@ -351186,7 +351191,7 @@
         },
         {
           "date": "2026-11-05",
-          "value": 26629.808594
+          "value": 26629.810547
         }
       ]
     },
@@ -388316,7 +388321,7 @@
         },
         {
           "date": "2026-11-05",
-          "value": 2729.886719
+          "value": 2729.889893
         }
       ]
     },
@@ -444156,7 +444161,7 @@
         },
         {
           "date": "2026-11-06",
-          "value": 57742.441406
+          "value": 57408.53125
         }
       ]
     },
@@ -472602,7 +472607,7 @@
         },
         {
           "date": "2026-11-06",
-          "value": 3651.012939
+          "value": 3651.401855
         }
       ]
     },
@@ -508988,7 +508993,7 @@
         },
         {
           "date": "2026-11-06",
-          "value": 24650.720703
+          "value": 24495.0
         }
       ]
     },
@@ -527779,6 +527784,10 @@
         {
           "date": "2026-11-05",
           "value": 24536.599609
+        },
+        {
+          "date": "2026-11-06",
+          "value": 24608.800781
         }
       ]
     },
@@ -557228,7 +557237,7 @@
         },
         {
           "date": "2026-11-06",
-          "value": 5142.339844
+          "value": 5116.430176
         }
       ]
     },
@@ -780761,6 +780770,16 @@
       "market_session_date": "2026-10-02",
       "source_url": "https://www.tradingview.com/symbols/SET-SET/",
       "reason": "Webpage update timestamp was incorrectly used as a daily trading date."
+    },
+    {
+      "symbol": "SET",
+      "original_point": {
+        "date": "2026-11-06",
+        "value": 1476.079956
+      },
+      "market_session_date": null,
+      "source_url": "https://www.tradingview.com/symbols/SET-SET/",
+      "reason": "Unverified or intraday daily bar retained separately; requires a completed-session source replacement."
     }
   ]
 }
