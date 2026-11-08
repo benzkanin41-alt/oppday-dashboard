@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "snapshot_generated_at": "2026-11-07 11:56:08 Bangkok",
+  "snapshot_generated_at": "2026-11-08 11:47:30 Bangkok",
   "prices": {
     "IBB": {
       "label": "Nasdaq theme: Biotechnology",
@@ -298822,8 +298822,8 @@
       "history_fetch_mode": "live",
       "history_fetch_status": {
         "mode": "live",
-        "fetched_at": "2026-11-07T04:55:41.809058+00:00",
-        "attempted_at": "2026-11-07T04:55:41.809058+00:00"
+        "fetched_at": "2026-11-08T04:47:07.638586+00:00",
+        "attempted_at": "2026-11-08T04:47:07.638586+00:00"
       },
       "market_session_date": "2026-11-06",
       "points": [
@@ -357495,7 +357495,7 @@
         },
         {
           "date": "2026-11-06",
-          "value": 26989.992188
+          "value": 26989.990234
         }
       ]
     },
@@ -394629,7 +394629,7 @@
         },
         {
           "date": "2026-11-06",
-          "value": 2754.105469
+          "value": 2754.110107
         }
       ]
     },
@@ -780037,6 +780037,13 @@
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/h100",
           "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-07",
+          "value": 3.04,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+          "basis": "Published dated observation; no interpolation"
         }
       ],
       "NeoCloud B200": [
@@ -780418,6 +780425,13 @@
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/b200",
           "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-07",
+          "value": 6.8,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+          "basis": "Published dated observation; no interpolation"
         }
       ],
       "Hyperscaler H100": [
@@ -780788,6 +780802,13 @@
         },
         {
           "date": "2026-11-06",
+          "value": 7.12,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+          "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-07",
           "value": 7.12,
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/h100",
