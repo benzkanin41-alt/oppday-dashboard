@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-08 11:47:30 Bangkok",
+  "generated_at": "2026-11-09 11:57:39 Bangkok",
   "data_anchor": "2026-11-06",
   "overall": {
     "score": 54.88452708277523,
@@ -777,7 +777,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/SPY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/SPY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live",
       "valuation": {
         "forward_pe": 20.59
@@ -1528,7 +1528,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/QQQ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/QQQ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -2276,7 +2276,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/IWM/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/IWM/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -3024,7 +3024,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/FEZ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/FEZ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -3772,7 +3772,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/VGK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/VGK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -4520,7 +4520,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/EWJ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/EWJ/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -5268,7 +5268,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/MCHI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/MCHI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -6016,7 +6016,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/FXI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/FXI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -6764,7 +6764,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/INDA/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/INDA/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -7512,7 +7512,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/EWY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/EWY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -8260,7 +8260,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/ACWI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/ACWI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -8268,13 +8268,13 @@
       "name": "SET Index",
       "region": "Thailand",
       "bucket": "Index Proxy",
-      "as_of": "2026-11-07 03:20:08 Bangkok",
+      "as_of": "2026-11-09 11:53:09 Bangkok",
       "score": 50.0,
       "metrics": {
-        "as_of": "2026-11-07 03:20:08 Bangkok",
-        "latest": 1465.7,
-        "day_change": -32.29,
-        "day_change_pct": -2.16,
+        "as_of": "2026-11-09 11:53:09 Bangkok",
+        "latest": 1478.52,
+        "day_change": 12.82,
+        "day_change_pct": 0.87,
         "ret_1y": 13.556774513449854,
         "dist_200dma": -3.4793784222114987,
         "drawdown_1y": -11.329304222097193,
@@ -10468,13 +10468,13 @@
       "name": "mai Index",
       "region": "Thailand",
       "bucket": "Index Proxy",
-      "as_of": "2026-11-07 03:20:08 Bangkok",
+      "as_of": "2026-11-09 11:53:39 Bangkok",
       "score": 50.0,
       "metrics": {
-        "as_of": "2026-11-07 03:20:08 Bangkok",
-        "latest": 212.15,
-        "day_change": -1.45,
-        "day_change_pct": -0.68,
+        "as_of": "2026-11-09 11:53:39 Bangkok",
+        "latest": 212.88,
+        "day_change": 0.73,
+        "day_change_pct": 0.34,
         "ret_1y": -8.791917454858122,
         "dist_200dma": -3.42287714698023,
         "drawdown_1y": -9.042188303892985,
@@ -11204,7 +11204,7 @@
         "history_latest": 212.15
       },
       "source_url": "https://www.set.or.th/en/market/index/mai/overview",
-      "source_note": "TradingView SET:MAI completed daily history through 2026-11-06; official quote displayed separately. Reconciliation: session_unresolved. Refresh mode: live; last successful retrieval: 2026-11-08T04:47:07.638586+00:00.",
+      "source_note": "TradingView SET:MAI completed daily history through 2026-11-06; official quote displayed separately. Reconciliation: session_unresolved. Refresh mode: live; last successful retrieval: 2026-11-09T04:57:23.254146+00:00.",
       "valuation": {
         "trailing_pe": 86.6,
         "forward_pe": null,
@@ -11969,7 +11969,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -12717,7 +12717,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLC/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLC/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -13465,7 +13465,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -14213,7 +14213,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLP/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLP/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -14961,7 +14961,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLV/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLV/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -15709,7 +15709,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLF/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLF/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -16457,7 +16457,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -17205,7 +17205,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -17953,7 +17953,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -18701,7 +18701,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLU/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLU/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -19449,7 +19449,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/XLRE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLRE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     }
   ],
@@ -20199,7 +20199,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/SMH/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/SMH/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -20947,7 +20947,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/IGV/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/IGV/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -21695,7 +21695,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/SKYY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/SKYY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -22443,7 +22443,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/CIBR/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/CIBR/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -23191,7 +23191,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/IBB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/IBB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     },
     {
@@ -23939,7 +23939,7 @@
           }
         ]
       },
-      "source_url": "https://api.nasdaq.com/api/quote/ARKK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/ARKK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "fetch_mode": "live"
     }
   ],
@@ -24183,43 +24183,43 @@
     {
       "name": "Cboe VIX historical price data",
       "url": "https://www.cboe.com/tradable-products/vix/vix-historical-data",
-      "publication_date": "updated daily; latest observation 2026-11-06; refresh mode: live; last successful retrieval: 2026-11-08T04:46:08.628052+00:00",
+      "publication_date": "updated daily; latest observation 2026-11-06; refresh mode: live; last successful retrieval: 2026-11-09T04:56:25.101306+00:00",
       "used_for": "VIX complacency row and 5-year sparkline in Froth Components.",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-11-08T04:46:08.628052+00:00"
+      "last_successful_fetch": "2026-11-09T04:56:25.101306+00:00"
     },
     {
       "name": "U.S. Treasury Daily Treasury Rates XML",
       "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-      "publication_date": "feed updated 2026-11-07T01:01:18Z; latest observation 2026-11-06",
+      "publication_date": "feed updated 2026-11-08T01:03:20Z; latest observation 2026-11-06",
       "used_for": "U.S. 2Y, 5Y, 10Y, and 30Y yield curve current-year observations and latest dashboard point.",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-11-08T04:46:12.597866+00:00"
+      "last_successful_fetch": "2026-11-09T04:56:27.891579+00:00"
     },
     {
       "name": "New York Fed EFFR API",
-      "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-24&endDate=2026-11-08&type=rate",
-      "publication_date": "latest EFFR observation 2026-11-05; refresh mode: live; last successful retrieval: 2026-11-08T04:46:31.333526+00:00",
+      "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-25&endDate=2026-11-09&type=rate",
+      "publication_date": "latest EFFR observation 2026-11-05; refresh mode: live; last successful retrieval: 2026-11-09T04:56:47.461751+00:00",
       "used_for": "Real Policy Proxy using Effective Fed Funds Rate instead of monthly FEDFUNDS.",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-11-08T04:46:31.333526+00:00"
+      "last_successful_fetch": "2026-11-09T04:56:47.461751+00:00"
     },
     {
       "name": "TradingView SET:MAI daily history",
       "url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "publication_date": "Refresh mode: live; last successful retrieval 2026-11-08T04:47:07.638586+00:00; latest observation 2026-11-06",
+      "publication_date": "Refresh mode: live; last successful retrieval 2026-11-09T04:57:23.254146+00:00; latest observation 2026-11-06",
       "used_for": "mai Index daily price-history chart in Top Watchlist Price Charts."
     },
     {
       "name": "TradingView SET:SET daily history",
       "url": "https://www.tradingview.com/symbols/SET-SET/",
-      "publication_date": "Refresh 2026-11-08 (live); latest exchange session 2026-11-06",
+      "publication_date": "Refresh 2026-11-09 (live); latest exchange session 2026-11-06",
       "used_for": "Completed SET daily observations; official quote kept separate. Reconciliation: session_unresolved."
     },
     {
       "name": "SEC Company Facts API",
       "url": "https://data.sec.gov/api/xbrl/companyfacts/",
-      "publication_date": "Data fetched 2026-11-08",
+      "publication_date": "Data fetched 2026-11-09",
       "used_for": "Quarterly hyperscaler capex, Micron revenue/inventory/capex, and CoreWeave debt/PPE/capex/debt issuance."
     },
     {
@@ -24255,21 +24255,21 @@
     {
       "name": "Meta Q2 2026 earnings release",
       "url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Reports-Second-Quarter-2026-Results/default.aspx",
-      "publication_date": "Published 2026-07-29; refresh mode: live; last successful retrieval: 2026-11-08T04:47:17.262229+00:00",
+      "publication_date": "Published 2026-07-29; refresh mode: live; last successful retrieval: 2026-11-09T04:57:31.335089+00:00",
       "refresh_mode": "live",
-      "last_successful_fetch": "2026-11-08T04:47:17.262229+00:00",
+      "last_successful_fetch": "2026-11-09T04:57:31.335089+00:00",
       "used_for": "Historical META Q2 2026 cash PP&E cross-check ($30.116B). Newer quarters come from freshly fetched SEC Company Facts; this historical release never replaces them."
     },
     {
       "name": "Silicon Data official H100 rental index",
       "url": "https://www.silicondata.com/products/silicon-index/h100",
-      "publication_date": "Observations through 2026-11-07; refresh mode: live",
+      "publication_date": "Observations through 2026-11-08; refresh mode: live",
       "used_for": "Published dated GPU rental readings, accumulated without deleting prior observations; not licensed full history."
     },
     {
       "name": "Silicon Data official B200 rental index",
       "url": "https://www.silicondata.com/products/silicon-index/b200",
-      "publication_date": "Observations through 2026-11-07; refresh mode: live",
+      "publication_date": "Observations through 2026-11-08; refresh mode: live",
       "used_for": "Published dated GPU rental readings, accumulated without deleting prior observations; not licensed full history."
     },
     {
@@ -123434,7 +123434,7 @@
       "earnings_yield": 6.896551724137931,
       "ten_year_yield": 2.063523,
       "gap_pp": 4.833028724137931,
-      "as_of": "2026-11-07 03:20:08 Bangkok",
+      "as_of": "2026-11-09 11:53:09 Bangkok",
       "source": "SET Market Overview, as of 2026-11-06",
       "source_url": "https://www.set.or.th/en/market/product/stock/overview",
       "status": "Computed from Trailing P/E minus local 10Y yield",
@@ -123451,7 +123451,7 @@
       "earnings_yield": 1.1547344110854505,
       "ten_year_yield": 2.063523,
       "gap_pp": -0.9087885889145495,
-      "as_of": "2026-11-07 03:20:08 Bangkok",
+      "as_of": "2026-11-09 11:53:39 Bangkok",
       "source": "SET Market Overview, as of 2026-11-06",
       "source_url": "https://www.set.or.th/en/market/product/stock/overview",
       "status": "Computed from Trailing P/E minus local 10Y yield",
@@ -130916,12 +130916,12 @@
       "region": "Thailand",
       "bucket": "Index Proxy",
       "score": 50.0,
-      "as_of": "2026-11-07 03:20:08 Bangkok",
+      "as_of": "2026-11-09 11:53:09 Bangkok",
       "metrics": {
-        "as_of": "2026-11-07 03:20:08 Bangkok",
-        "latest": 1465.7,
-        "day_change": -32.29,
-        "day_change_pct": -2.16,
+        "as_of": "2026-11-09 11:53:09 Bangkok",
+        "latest": 1478.52,
+        "day_change": 12.82,
+        "day_change_pct": 0.87,
         "ret_1y": 13.556774513449854,
         "dist_200dma": -3.4793784222114987,
         "drawdown_1y": -11.329304222097193,
@@ -133097,12 +133097,12 @@
       "region": "Thailand",
       "bucket": "Index Proxy",
       "score": 50.0,
-      "as_of": "2026-11-07 03:20:08 Bangkok",
+      "as_of": "2026-11-09 11:53:39 Bangkok",
       "metrics": {
-        "as_of": "2026-11-07 03:20:08 Bangkok",
-        "latest": 212.15,
-        "day_change": -1.45,
-        "day_change_pct": -0.68,
+        "as_of": "2026-11-09 11:53:39 Bangkok",
+        "latest": 212.88,
+        "day_change": 0.73,
+        "day_change_pct": 0.34,
         "ret_1y": -8.791917454858122,
         "dist_200dma": -3.42287714698023,
         "drawdown_1y": -9.042188303892985,
@@ -133838,7 +133838,7 @@
       "label": "Nasdaq theme: Biotechnology",
       "symbol": "IBB",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/IBB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/IBB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "points": [
         {
           "date": "2016-11-07",
@@ -143903,7 +143903,7 @@
       "label": "S&P 500 Health Care",
       "symbol": "XLV",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/XLV/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLV/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "points": [
         {
           "date": "2016-11-07",
@@ -153968,7 +153968,7 @@
       "label": "S&P 500 Consumer Staples",
       "symbol": "XLP",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/XLP/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLP/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "points": [
         {
           "date": "2016-11-07",
@@ -164033,7 +164033,7 @@
       "label": "Nasdaq theme: Cybersecurity",
       "symbol": "CIBR",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/CIBR/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/CIBR/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "points": [
         {
           "date": "2016-11-07",
@@ -174098,7 +174098,7 @@
       "label": "S&P 500 Financials",
       "symbol": "XLF",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/XLF/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLF/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "points": [
         {
           "date": "2016-11-07",
@@ -184163,7 +184163,7 @@
       "label": "S&P 500 Energy",
       "symbol": "XLE",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/XLE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLE/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "points": [
         {
           "date": "2016-11-07",
@@ -194228,7 +194228,7 @@
       "label": "S&P 500 Materials",
       "symbol": "XLB",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/XLB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLB/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "points": [
         {
           "date": "2016-11-07",
@@ -204293,7 +204293,7 @@
       "label": "S&P 500 proxy",
       "symbol": "SPY",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/SPY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/SPY/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "points": [
         {
           "date": "2016-11-07",
@@ -214358,7 +214358,7 @@
       "label": "MSCI ACWI proxy",
       "symbol": "ACWI",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/ACWI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/ACWI/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "points": [
         {
           "date": "2016-11-07",
@@ -224423,7 +224423,7 @@
       "label": "S&P 500 Information Technology",
       "symbol": "XLK",
       "source": "Nasdaq historical quote API",
-      "source_url": "https://api.nasdaq.com/api/quote/XLK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-08&limit=9999",
+      "source_url": "https://api.nasdaq.com/api/quote/XLK/historical?assetclass=etf&fromdate=2021-01-01&todate=2026-11-09&limit=9999",
       "points": [
         {
           "date": "2016-11-07",
@@ -496078,7 +496078,7 @@
       "chart_symbol": "^SET.BK",
       "source": "SET Index daily history: Yahoo Finance plus TradingView SET:SET; official quote separate",
       "source_url": "https://finance.yahoo.com/quote/%5ESET.BK/history",
-      "note": "Completed daily history through 2026-11-06; official SET quote retained separately at 2026-11-07 03:20:08 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-11-06; official SET quote retained separately at 2026-11-09 11:53:09 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "points": [
         {
           "date": "1996-12-11",
@@ -533319,6 +533319,10 @@
         {
           "date": "2026-11-06",
           "value": 1476.079956
+        },
+        {
+          "date": "2026-11-09",
+          "value": 1478.420044
         }
       ],
       "completed_through": "2026-11-06",
@@ -533336,12 +533340,12 @@
       "chart_symbol": "SET:MAI",
       "source": "TradingView chart history for SET:MAI",
       "source_url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "note": "Completed daily history through 2026-11-06; official SET quote retained separately at 2026-11-07 03:20:08 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-11-06; official SET quote retained separately at 2026-11-09 11:53:39 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "history_fetch_mode": "live",
       "history_fetch_status": {
         "mode": "live",
-        "fetched_at": "2026-11-08T04:47:07.638586+00:00",
-        "attempted_at": "2026-11-08T04:47:07.638586+00:00"
+        "fetched_at": "2026-11-09T04:57:23.254146+00:00",
+        "attempted_at": "2026-11-09T04:57:23.254146+00:00"
       },
       "market_session_date": "2026-11-06",
       "points": [
@@ -706806,6 +706810,10 @@
         {
           "date": "2026-11-06",
           "value": 57434.769531
+        },
+        {
+          "date": "2026-11-09",
+          "value": 59126.921875
         }
       ]
     },
@@ -735252,6 +735260,10 @@
         {
           "date": "2026-11-06",
           "value": 3649.177002
+        },
+        {
+          "date": "2026-11-09",
+          "value": 3665.944824
         }
       ]
     },
@@ -771638,6 +771650,10 @@
         {
           "date": "2026-11-06",
           "value": 24481.859375
+        },
+        {
+          "date": "2026-11-09",
+          "value": 24531.150391
         }
       ]
     },
@@ -790432,6 +790448,10 @@
         {
           "date": "2026-11-06",
           "value": 25030.349609
+        },
+        {
+          "date": "2026-11-09",
+          "value": 24909.300781
         }
       ]
     },
@@ -819882,6 +819902,10 @@
         {
           "date": "2026-11-06",
           "value": 5059.689941
+        },
+        {
+          "date": "2026-11-09",
+          "value": 5116.060059
         }
       ]
     },
@@ -920255,50 +920279,50 @@
   "current_market_fetch_status": {
     "VIX_History.csv": {
       "url": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
-      "attempted_at": "2026-11-08T04:46:08.628052+00:00",
-      "last_successful_fetch": "2026-11-08T04:46:08.628052+00:00",
+      "attempted_at": "2026-11-09T04:56:25.101306+00:00",
+      "last_successful_fetch": "2026-11-09T04:56:25.101306+00:00",
       "mode": "live"
     },
     "DGS10.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS10",
-      "attempted_at": "2026-11-08T04:46:09.146248+00:00",
-      "last_successful_fetch": "2026-11-08T04:46:09.146248+00:00",
+      "attempted_at": "2026-11-09T04:56:25.555721+00:00",
+      "last_successful_fetch": "2026-11-09T04:56:25.555721+00:00",
       "mode": "live"
     },
     "DGS2.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2",
-      "attempted_at": "2026-11-08T04:46:09.317585+00:00",
-      "last_successful_fetch": "2026-11-08T04:46:09.317585+00:00",
+      "attempted_at": "2026-11-09T04:56:25.739055+00:00",
+      "last_successful_fetch": "2026-11-09T04:56:25.739055+00:00",
       "mode": "live"
     },
     "treasury_yield_curve_2026.xml": {
       "url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-      "attempted_at": "2026-11-08T04:46:12.597866+00:00",
-      "last_successful_fetch": "2026-11-08T04:46:12.597866+00:00",
+      "attempted_at": "2026-11-09T04:56:27.891579+00:00",
+      "last_successful_fetch": "2026-11-09T04:56:27.891579+00:00",
       "mode": "live"
     },
     "EFFR.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=EFFR",
-      "attempted_at": "2026-11-08T04:46:31.185091+00:00",
-      "last_successful_fetch": "2026-11-08T04:46:31.185091+00:00",
+      "attempted_at": "2026-11-09T04:56:47.244389+00:00",
+      "last_successful_fetch": "2026-11-09T04:56:47.244389+00:00",
       "mode": "live"
     },
     "nyfed_effr_latest.json": {
-      "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-24&endDate=2026-11-08&type=rate",
-      "attempted_at": "2026-11-08T04:46:31.333526+00:00",
-      "last_successful_fetch": "2026-11-08T04:46:31.333526+00:00",
+      "url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2026-09-25&endDate=2026-11-09&type=rate",
+      "attempted_at": "2026-11-09T04:56:47.461751+00:00",
+      "last_successful_fetch": "2026-11-09T04:56:47.461751+00:00",
       "mode": "live"
     },
     "T10YIE.csv": {
       "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10YIE",
-      "attempted_at": "2026-11-08T04:46:31.704730+00:00",
-      "last_successful_fetch": "2026-11-08T04:46:31.704730+00:00",
+      "attempted_at": "2026-11-09T04:56:47.854866+00:00",
+      "last_successful_fetch": "2026-11-09T04:56:47.854866+00:00",
       "mode": "live"
     }
   },
-  "dashboard_refreshed_at": "2026-11-08 11:47:30 Bangkok",
+  "dashboard_refreshed_at": "2026-11-09 11:57:39 Bangkok",
   "ai_semiconductor_direct_v06": {
-    "generated_at": "2026-11-08 04:47:14 Bangkok",
+    "generated_at": "2026-11-09 04:57:29 Bangkok",
     "lookback_start": "2024-07-01",
     "capex": {
       "MSFT": [
@@ -922780,6 +922804,13 @@
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/h100",
           "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-08",
+          "value": 3.0,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+          "basis": "Published dated observation; no interpolation"
         }
       ],
       "NeoCloud B200": [
@@ -923168,6 +923199,13 @@
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/b200",
           "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-08",
+          "value": 6.81,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+          "basis": "Published dated observation; no interpolation"
         }
       ],
       "Hyperscaler H100": [
@@ -923549,6 +923587,13 @@
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/h100",
           "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-08",
+          "value": 7.12,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+          "basis": "Published dated observation; no interpolation"
         }
       ]
     },
@@ -923647,11 +923692,11 @@
   "source_refresh_status": {
     "meta_q2_release": {
       "mode": "live",
-      "fetched_at": "2026-11-08T04:47:17.262229+00:00",
-      "attempted_at": "2026-11-08T04:47:17.262229+00:00"
+      "fetched_at": "2026-11-09T04:57:31.335089+00:00",
+      "attempted_at": "2026-11-09T04:57:31.335089+00:00"
     },
     "alphabet_q3_release": {
-      "attempted_at": "2026-11-08T04:47:22.578875+00:00",
+      "attempted_at": "2026-11-09T04:57:35.222105+00:00",
       "mode": "live",
       "period_end": "2026-09-30",
       "value": 51.355
@@ -923663,10 +923708,10 @@
     "archive": "work/raw/dashboard_history.json"
   },
   "ai_semiconductor_direct_v08": {
-    "generated_at": "2026-11-08 11:47:27 Bangkok",
-    "data_source_generated_at": "2026-11-08 04:47:14 Bangkok",
-    "window_start": "2024-11-08",
-    "window_end": "2026-11-08",
+    "generated_at": "2026-11-09 11:57:37 Bangkok",
+    "data_source_generated_at": "2026-11-09 04:57:29 Bangkok",
+    "window_start": "2024-11-09",
+    "window_end": "2026-11-09",
     "groups": [
       {
         "id": "gpu-rental",
@@ -923676,7 +923721,7 @@
         "badge": "Sparse public observations",
         "badge_class": "ai-badge-warn",
         "coverage": "Published dated readings are refreshed from Silicon Data and accumulated with historical observations. The full 2-year chart window is shown, but missing dates are not interpolated; full older daily history remains a licensed-data gap.",
-        "latest": "NeoCloud H100 3.04 (2026-11-07) | NeoCloud B200 6.80 (2026-11-07) | Hyperscaler H100 7.12 (2026-11-07)",
+        "latest": "NeoCloud H100 3.00 (2026-11-08) | NeoCloud B200 6.81 (2026-11-08) | Hyperscaler H100 7.12 (2026-11-08)",
         "series": [
           {
             "name": "NeoCloud H100",
@@ -924130,6 +924175,14 @@
                 "source": "Silicon Data official public index reading",
                 "source_url": "https://www.silicondata.com/products/silicon-index/h100",
                 "basis": "Published dated observation; no interpolation"
+              },
+              {
+                "date": "2026-11-08",
+                "value": 3.0,
+                "source_kind": "GPU rental observation",
+                "source": "Silicon Data official public index reading",
+                "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+                "basis": "Published dated observation; no interpolation"
               }
             ]
           },
@@ -924578,6 +924631,14 @@
                 "source": "Silicon Data official public index reading",
                 "source_url": "https://www.silicondata.com/products/silicon-index/b200",
                 "basis": "Published dated observation; no interpolation"
+              },
+              {
+                "date": "2026-11-08",
+                "value": 6.81,
+                "source_kind": "GPU rental observation",
+                "source": "Silicon Data official public index reading",
+                "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+                "basis": "Published dated observation; no interpolation"
               }
             ]
           },
@@ -925013,6 +925074,14 @@
               },
               {
                 "date": "2026-11-07",
+                "value": 7.12,
+                "source_kind": "GPU rental observation",
+                "source": "Silicon Data official public index reading",
+                "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+                "basis": "Published dated observation; no interpolation"
+              },
+              {
+                "date": "2026-11-08",
                 "value": 7.12,
                 "source_kind": "GPU rental observation",
                 "source": "Silicon Data official public index reading",
@@ -926196,6 +926265,27 @@
             "date": "2026-11-07",
             "metric": "NeoCloud H100",
             "value": 3.04,
+            "source": "Silicon Data official public index reading",
+            "source_url": "https://www.silicondata.com/products/silicon-index/h100"
+          },
+          {
+            "date": "2026-11-08",
+            "metric": "Hyperscaler H100",
+            "value": 7.12,
+            "source": "Silicon Data official public index reading",
+            "source_url": "https://www.silicondata.com/products/silicon-index/h100"
+          },
+          {
+            "date": "2026-11-08",
+            "metric": "NeoCloud B200",
+            "value": 6.81,
+            "source": "Silicon Data official public index reading",
+            "source_url": "https://www.silicondata.com/products/silicon-index/b200"
+          },
+          {
+            "date": "2026-11-08",
+            "metric": "NeoCloud H100",
+            "value": 3.0,
             "source": "Silicon Data official public index reading",
             "source_url": "https://www.silicondata.com/products/silicon-index/h100"
           }
