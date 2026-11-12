@@ -370,6 +370,16 @@ async function loadItem(id) {
   renderDetail();
 }
 
+function readerFileName(item, file) {
+  // Preserve the accepted payload and original source name; this reader-only
+  // label follows the explicit KISS filename-normalization approval.
+  if (item.id === "a32358798754ee956a2e725b59acd8822ad2e5f8"
+      && file.id === item.primaryMarkdownId && file.extension === ".md") {
+    return "KISS-Earning call-3Q69.md";
+  }
+  return file.name;
+}
+
 function renderDetail() {
   const item = state.selectedItem;
   if (!item) return;
@@ -381,7 +391,7 @@ function renderDetail() {
   els.detailPath.textContent = item.sourceFolder;
 
   els.fileList.innerHTML = item.files
-    .map((file) => `<span class="file-pill">${escapeHtml(file.extension.toUpperCase())} ${escapeHtml(file.name)} · ${formatBytes(file.size)}</span>`)
+    .map((file) => `<span class="file-pill" title="${escapeHtml(file.name)}">${escapeHtml(file.extension.toUpperCase())} ${escapeHtml(readerFileName(item, file))} · ${formatBytes(file.size)}</span>`)
     .join("");
 
   els.markdownView.innerHTML = renderMarkdown(item.markdown);
