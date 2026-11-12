@@ -214,7 +214,9 @@ def prepare_release(
     actual = sorted(str(item.get("registrationId")) for item in incoming)
     if actual != expected:
         raise ValueError(f"Release selection mismatch: expected={expected}, actual={actual}")
-    for item in incoming:
+    # Explicit MD imports validate source identity, heading and approved filename
+    # exceptions in verify_import below, including frozen-source revalidation.
+    for item in ([] if markdown_import_id else incoming):
         require_earning_call_summary(item)
     source_digests = {entry["id"]: store.sha256(Path(entry["path"]))
                       for item in incoming for entry in item["files"]}

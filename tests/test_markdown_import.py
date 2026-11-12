@@ -91,6 +91,65 @@ class MarkdownImportTests(unittest.TestCase):
             self.request()
         self.assertFalse(importer.import_directory(self.import_id).exists())
 
+    def make_alias(self):
+        source = Path(self.new['files'][0]['path'])
+        alias = source.with_name('NEW custom summary.md')
+        source.rename(alias)
+        primary = alias.parent.parent.parent / alias.parent.name / 'NEW' / alias.name
+        primary.parent.mkdir(parents=True)
+        primary.write_bytes(alias.read_bytes())
+        entry = {'ticker': 'NEW', 'eventDate': alias.parent.name,
+                 'filename': alias.name, 'sha256': store.sha256(alias)}
+        self.authorization['sourceAliases'] = [entry]
+        return alias, primary, entry
+
+    def test_explicit_alias_preserves_original_name_bytes_and_standard_stable_id(self):
+        alias, _, _ = self.make_alias()
+        result = self.prepare()
+        self.assertEqual(result['items'], 3)
+        manifest = store.read_json(store.release_directory('md-release') / 'manifest.json')
+        self.assertEqual(manifest['selectedItemIds'], [self.new['id']])
+        item = store.read_json(store.release_directory('md-release') / 'public/data/items' / f"{self.new['id']}.json")['item']
+        self.assertEqual(item['files'][0]['name'], alias.name)
+        self.assertEqual(item['markdown'], alias.read_text(encoding='utf-8'))
+        release.verify_release_admission('md-release')
+
+    def test_alias_is_not_discovered_without_explicit_approval(self):
+        self.make_alias()
+        self.authorization.pop('sourceAliases')
+        self.request()
+        self.assertEqual(importer.select_items(self.import_id), [])
+
+    def test_alias_rejects_changed_primary_even_during_rollback_admission(self):
+        _, primary, _ = self.make_alias()
+        self.prepare()
+        primary.write_bytes(primary.read_bytes() + b'changed')
+        with self.assertRaisesRegex(ValueError, 'copies differ'):
+            release.verify_release_admission('md-release')
+
+    def test_alias_rejects_standard_collision_or_escaping_path(self):
+        alias, _, entry = self.make_alias()
+        standard = alias.with_name('NEW-Earning call-3Q69.md')
+        standard.write_bytes(alias.read_bytes())
+        with self.assertRaisesRegex(ValueError, 'collides'):
+            self.request()
+        standard.unlink()
+        entry['filename'] = '../outside.md'
+        with self.assertRaisesRegex(ValueError, 'identity'):
+            self.request()
+
+    def test_accepted_alias_is_inherited_for_later_refresh_without_duplicate(self):
+        _, _, entry = self.make_alias()
+        self.prepare()
+        store.write_json_atomic(store.CURRENT, {'releaseId': 'md-release',
+            'indexSha256': store.sha256(store.release_directory('md-release') / 'public/data/index.json')})
+        self.assertEqual(importer.source_aliases('3Q69'), [entry])
+        auth = {**self.authorization, 'importId': 'next'}
+        auth.pop('sourceAliases')
+        job = importer.create_request('next', '3Q69', auth)
+        self.assertEqual(job['sourceAliases'], [entry])
+        self.assertEqual(importer.select_items('next'), [])
+
     def test_changed_original_hash_blocks_import(self):
         self.request()
         path = Path(self.new["files"][0]["path"])

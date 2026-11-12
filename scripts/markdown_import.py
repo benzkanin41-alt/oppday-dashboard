@@ -63,11 +63,68 @@ def read_markdown(path: Path, ticker: str, quarter: str) -> tuple[str, str]:
     return hashlib.sha256(data).hexdigest(), text
 
 
-def discover(quarter: str) -> list[Path]:
+def source_aliases(quarter: str, authorization: dict | None = None) -> list[dict]:
+    """Inherit only hash-bound accepted aliases, plus explicit current exceptions."""
+    inherited = []
+    if store.CURRENT.exists():
+        release = store.release_directory(store.current_pointer()["releaseId"])
+        manifest_path = release / "manifest.json"
+        if manifest_path.exists():
+            manifest = store.read_json(manifest_path)
+            import_id = manifest.get("markdownImportId")
+            if import_id:
+                directory = import_directory(import_id)
+                job = store.read_json(directory / "import.json")
+                proof = manifest["markdownImportVerification"]
+                require(store.sha256(directory / "import.json") == proof["requestSha256"]
+                        and store.sha256(directory / "authorization.json") == proof["authorizationSha256"],
+                        "Accepted source alias evidence changed")
+                if job["quarter"] == quarter:
+                    inherited = job.get("sourceAliases", [])
+    result = {}
+    for alias in inherited + (authorization or {}).get("sourceAliases", []):
+        require(set(alias) == {"ticker", "eventDate", "filename", "sha256"}, "Invalid source alias fields")
+        ticker, name = alias["ticker"], alias["filename"]
+        require(bool(re.fullmatch(r"[A-Z0-9&.\-]+", ticker))
+                and Path(name).name == name and "/" not in name and "\\" not in name
+                and Path(name).suffix == ".md" and bool(re.fullmatch(r"[a-f0-9]{64}", alias["sha256"])),
+                "Invalid source alias identity")
+        date.fromisoformat(alias["eventDate"])
+        key = (ticker, alias["eventDate"])
+        require(key not in result or result[key] == alias, "Conflicting source alias")
+        result[key] = alias
+    return sorted(result.values(), key=lambda alias: (alias["eventDate"], alias["ticker"]))
+
+
+def alias_for(path: Path, quarter: str, aliases: list[dict]) -> dict | None:
+    root = summary_root(quarter)
+    return next((alias for alias in aliases
+                 if path.resolve() == (root / alias["eventDate"] / alias["filename"]).resolve()), None)
+
+
+def source_metadata(path: Path, quarter: str, aliases: list[dict], status_row=None) -> dict:
+    alias = alias_for(path, quarter, aliases)
+    identity = path.with_name(f"{alias['ticker']}-Earning call-{quarter}.md") if alias else path
+    meta = server.detect_current_file(identity, quarter, summary_root(quarter), status_row)
+    require(meta is not None, "Unapproved Markdown filename")
+    return meta
+
+
+def discover(quarter: str, aliases: list[dict] | None = None) -> list[Path]:
     root = summary_root(quarter)
     paths = sorted(root.rglob(f"*-Earning call-{quarter}.md"))
+    for alias in source_aliases(quarter) if aliases is None else aliases:
+        path = root / alias["eventDate"] / alias["filename"]
+        canonical = path.with_name(f"{alias['ticker']}-Earning call-{quarter}.md")
+        require(path != canonical and not canonical.exists(), "Source alias collides with standard source")
+        primary = root.parent / alias["eventDate"] / alias["ticker"] / alias["filename"]
+        for source in (path, primary):
+            require(source.resolve().is_relative_to(root.parent.resolve()), "Source alias escapes source root")
+            digest, _ = read_markdown(source, alias["ticker"], quarter)
+            require(digest == alias["sha256"], "Source alias hash changed or copies differ")
+        paths.append(path)
     require(bool(paths), "No Earning call Markdown files found")
-    return paths
+    return sorted(paths)
 
 
 def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
@@ -81,16 +138,18 @@ def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
     baseline = store.read_json(index_path)
     baseline_by_id = {item["id"]: item for item in baseline["items"]}
     status = server.read_workflow_status(root.parent / f"workflow_status_{quarter}.csv")
+    aliases = source_aliases(quarter, authorization)
     entries = []
-    for path in discover(quarter):
+    for path in discover(quarter, aliases):
         require(len(path.relative_to(root).parts) == 2, "Markdown must be in its canonical event-date folder")
         date.fromisoformat(path.parent.name)
         match = re.fullmatch(rf"([A-Z0-9&.\-]+)-Earning call-{quarter}", path.stem)
-        require(match is not None, "Invalid Earning call Markdown filename")
-        ticker = match[1]
+        alias = alias_for(path, quarter, aliases)
+        require(match is not None or alias is not None, "Invalid Earning call Markdown filename")
+        ticker = alias["ticker"] if alias else match[1]
         digest, text = read_markdown(path, ticker, quarter)
         row = server.find_workflow_row(status, ticker, path.parent.name)
-        meta = server.detect_current_file(path, quarter, root, row)
+        meta = source_metadata(path, quarter, aliases, row)
         groups = {}
         server.add_group(groups, meta, path)
         item = next(iter(groups.values()))
@@ -111,6 +170,8 @@ def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
            "importId": import_id, "quarter": quarter, "createdAt": datetime.now(timezone.utc).isoformat(),
            "baseReleaseId": previous_id, "baseIndexSha256": store.sha256(index_path), "entries": entries,
            "pdfValidation": "not_requested", "semanticValidation": "not_recertified_existing_source"}
+    if aliases:
+        job["sourceAliases"] = aliases
     directory.mkdir(parents=True)
     store.write_json_atomic(directory / "authorization.json", authorization)
     store.write_json_atomic(directory / "import.json", job)
@@ -132,10 +193,19 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
     baseline_by_id = {item["id"]: item for item in baseline["items"]}
     root = summary_root(job["quarter"])
     entries = job["entries"]
+    aliases = job.get("sourceAliases", [])
+    # Each exception must be explicitly approved or inherited from this request's baseline.
+    approved = store.read_json(directory / "authorization.json").get("sourceAliases", [])
+    base_manifest = base / "manifest.json"
+    if base_manifest.exists():
+        prior_import = store.read_json(base_manifest).get("markdownImportId")
+        if prior_import:
+            approved += store.read_json(import_directory(prior_import) / "import.json").get("sourceAliases", [])
+    require(all(alias in approved for alias in aliases), "Unapproved source alias")
     require(bool(entries) and len({entry["itemId"] for entry in entries}) == len(entries),
             "Missing or duplicate Markdown import entries")
     if require_complete_inventory:
-        require({path.resolve() for path in discover(job["quarter"])}
+        require({path.resolve() for path in discover(job["quarter"], aliases)}
                 == {Path(entry["originalPath"]).resolve() for entry in entries},
                 "Markdown cohort changed; prepare a new import request")
     checked = []
@@ -145,11 +215,18 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
                 "Markdown ticker/quarter differs")
         date.fromisoformat(entry["eventDate"])
         canonical = root / entry["eventDate"] / f"{ticker}-Earning call-{job['quarter']}.md"
+        alias = next((a for a in aliases if a["ticker"] == ticker and a["eventDate"] == entry["eventDate"]), None)
+        source = canonical.with_name(alias["filename"]) if alias else canonical
         canonical.resolve().relative_to(root.resolve())
-        require(Path(entry["originalPath"]).resolve() == canonical.resolve(), "Noncanonical Markdown source")
+        require(Path(entry["originalPath"]).resolve() == source.resolve(), "Noncanonical Markdown source")
         expected_id = server.item_id([job["quarter"], job["quarter"], ticker, entry["eventDate"], canonical.stem])
         require(entry["itemId"] == expected_id, "Markdown record ID differs")
-        digest, text = read_markdown(canonical, ticker, job["quarter"])
+        digest, text = read_markdown(source, ticker, job["quarter"])
+        if alias:
+            primary = root.parent / entry["eventDate"] / ticker / alias["filename"]
+            require(source.resolve().is_relative_to(root.parent.resolve())
+                    and primary.resolve().is_relative_to(root.parent.resolve())
+                    and digest == alias["sha256"] == store.sha256(primary), "Source alias hash changed or copies differ")
         require(digest == entry["sha256"], "Original Markdown hash changed")
         if entry["disposition"] == "preserve_existing":
             require(entry["itemId"] in baseline_by_id, "Preserved record is absent from the baseline")
@@ -165,13 +242,13 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
 
 
 def select_items(import_id: str) -> list[dict]:
-    _, _, checked = load_request(import_id)
+    job, _, checked = load_request(import_id)
     items = []
     for entry, _ in checked:
         if entry["disposition"] != "add":
             continue
         path = Path(entry["originalPath"])
-        meta = server.detect_current_file(path, entry["quarter"], summary_root(entry["quarter"]))
+        meta = source_metadata(path, entry["quarter"], job.get("sourceAliases", []))
         meta.update({key: entry[key] for key in ("runId", "registrationId", "workflowStatus")})
         groups = {}
         server.add_group(groups, meta, path)
