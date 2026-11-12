@@ -422,6 +422,7 @@ select {
 .markdown-view {
   padding: 30px;
   line-height: 1.75;
+  overflow-wrap: anywhere;
 }
 
 .markdown-view h1,
