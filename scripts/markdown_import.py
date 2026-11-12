@@ -110,18 +110,31 @@ def source_metadata(path: Path, quarter: str, aliases: list[dict], status_row=No
     return meta
 
 
+def verify_alias_sources(quarter: str, alias: dict) -> None:
+    root = summary_root(quarter)
+    primary = root.parent / alias['eventDate'] / alias['ticker'] / alias['filename']
+    summary = root / alias['eventDate'] / alias['filename']
+    standard = f"{alias['ticker']}-Earning call-{quarter}.md"
+    sources = [summary, primary]
+    sources += [p for p in (summary.with_name(standard), primary.with_name(standard)) if p.exists()]
+    for source in sources:
+        require(source.resolve().is_relative_to(root.parent.resolve()), 'Source alias escapes source root')
+        require(store.sha256(source) == alias['sha256'], 'Source alias hash changed or copies differ')
+        read_markdown(source, alias['ticker'], quarter)
+
+
 def discover(quarter: str, aliases: list[dict] | None = None) -> list[Path]:
     root = summary_root(quarter)
     paths = sorted(root.rglob(f"*-Earning call-{quarter}.md"))
     for alias in source_aliases(quarter) if aliases is None else aliases:
         path = root / alias["eventDate"] / alias["filename"]
         canonical = path.with_name(f"{alias['ticker']}-Earning call-{quarter}.md")
-        require(path != canonical and not canonical.exists(), "Source alias collides with standard source")
-        primary = root.parent / alias["eventDate"] / alias["ticker"] / alias["filename"]
-        for source in (path, primary):
-            require(source.resolve().is_relative_to(root.parent.resolve()), "Source alias escapes source root")
-            digest, _ = read_markdown(source, alias["ticker"], quarter)
-            require(digest == alias["sha256"], "Source alias hash changed or copies differ")
+        require(path != canonical, "Source alias must use a nonstandard filename")
+        verify_alias_sources(quarter, alias)
+        # A later standard-named copy may coexist only with the exact approved
+        # bytes. Keep the bound original and its one stable reader identity.
+        if canonical in paths:
+            paths.remove(canonical)
         paths.append(path)
     require(bool(paths), "No Earning call Markdown files found")
     return sorted(paths)
@@ -223,10 +236,7 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
         require(entry["itemId"] == expected_id, "Markdown record ID differs")
         digest, text = read_markdown(source, ticker, job["quarter"])
         if alias:
-            primary = root.parent / entry["eventDate"] / ticker / alias["filename"]
-            require(source.resolve().is_relative_to(root.parent.resolve())
-                    and primary.resolve().is_relative_to(root.parent.resolve())
-                    and digest == alias["sha256"] == store.sha256(primary), "Source alias hash changed or copies differ")
+            verify_alias_sources(job['quarter'], alias)
         require(digest == entry["sha256"], "Original Markdown hash changed")
         if entry["disposition"] == "preserve_existing":
             require(entry["itemId"] in baseline_by_id, "Preserved record is absent from the baseline")

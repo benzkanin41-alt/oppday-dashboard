@@ -130,13 +130,22 @@ class MarkdownImportTests(unittest.TestCase):
     def test_alias_rejects_standard_collision_or_escaping_path(self):
         alias, _, entry = self.make_alias()
         standard = alias.with_name('NEW-Earning call-3Q69.md')
-        standard.write_bytes(alias.read_bytes())
-        with self.assertRaisesRegex(ValueError, 'collides'):
+        standard.write_bytes(alias.read_bytes() + b'changed')
+        with self.assertRaisesRegex(ValueError, 'copies differ'):
             self.request()
         standard.unlink()
         entry['filename'] = '../outside.md'
         with self.assertRaisesRegex(ValueError, 'identity'):
             self.request()
+
+    def test_identical_standard_copy_and_approved_alias_create_one_record(self):
+        alias, primary, _ = self.make_alias()
+        for path in (alias, primary):
+            path.with_name('NEW-Earning call-3Q69.md').write_bytes(alias.read_bytes())
+        self.prepare()
+        manifest = store.read_json(store.release_directory('md-release') / 'manifest.json')
+        self.assertEqual(manifest['selectedItemIds'], [self.new['id']])
+        release.verify_release_admission('md-release')
 
     def test_accepted_alias_is_inherited_for_later_refresh_without_duplicate(self):
         _, _, entry = self.make_alias()
