@@ -69,6 +69,28 @@ class MarkdownImportTests(unittest.TestCase):
         self.request()
         return release.prepare_release("md-release", markdown_import_id=self.import_id)
 
+    def test_nested_event_is_distinct_and_bound_to_registration(self):
+        root = importer.summary_root('3Q69')
+        path = root / '2026-11-16' / 'KEEP' / '2026-11-16-11984-C-Sign' / 'KEEP-Earning call-3Q69.md'
+        path.parent.mkdir(parents=True)
+        path.write_text('# KEEP Earning call 3Q69\nSET registration 11984\n', encoding='utf-8')
+        job = self.request()
+        event = next(e for e in job['entries'] if e['originalPath'] == str(path))
+        self.assertEqual(event['eventDate'], '2026-11-16')
+        self.assertNotEqual(event['itemId'], self.kept['id'])
+        self.assertEqual(event['disposition'], 'add')
+        importer.load_request(self.import_id)
+        path.write_text('# KEEP Earning call 3Q69\nSET registration 999\n', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'registration differs'):
+            importer.load_request(self.import_id)
+
+    def test_same_ticker_and_date_collision_is_blocked(self):
+        path = importer.summary_root('3Q69') / '2026-10-27' / 'NEW' / '2026-10-27-123-C-Sign' / 'NEW-Earning call-3Q69.md'
+        path.parent.mkdir(parents=True)
+        path.write_text('# NEW Earning call 3Q69\nSET registration 123\n', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'distinct identity required'):
+            self.request()
+
     def test_md_import_needs_no_pdf_producer_manifest_or_status_qa(self):
         Path(self.new["files"][0]["path"]).with_suffix(".pdf").write_bytes(b"not a PDF")
         old_bytes = (self.baseline / "public/data/items" / f"{self.kept['id']}.json").read_bytes()

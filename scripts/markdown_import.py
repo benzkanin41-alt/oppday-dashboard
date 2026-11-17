@@ -140,6 +140,22 @@ def discover(quarter: str, aliases: list[dict] | None = None) -> list[Path]:
     return sorted(paths)
 
 
+def source_event(path: Path, quarter: str, ticker: str) -> str:
+    """Accept the standard dated path or an explicitly identified nested event."""
+    parts = path.relative_to(summary_root(quarter)).parts
+    require(len(parts) in (2, 4), "Markdown must be in a dated event folder")
+    event = parts[0]
+    date.fromisoformat(event)
+    if len(parts) == 4:
+        require(parts[1] == ticker, "Nested event ticker folder differs")
+        match = re.fullmatch(r"(\d{4}-\d{2}-\d{2})-(\d+)-([A-Za-z0-9-]+)", parts[2])
+        require(match is not None and match[1] == event, "Nested event identity differs")
+        _, text = read_markdown(path, ticker, quarter)
+        require(bool(re.search(rf"\bSET registration\s+{re.escape(match[2])}\b", text, re.I)),
+                "Nested event registration differs from Markdown")
+    return event
+
+
 def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
     directory = import_directory(import_id)
     require(not directory.exists(), "Use a new immutable Markdown import ID")
@@ -154,14 +170,13 @@ def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
     aliases = source_aliases(quarter, authorization)
     entries = []
     for path in discover(quarter, aliases):
-        require(len(path.relative_to(root).parts) == 2, "Markdown must be in its canonical event-date folder")
-        date.fromisoformat(path.parent.name)
         match = re.fullmatch(rf"([A-Z0-9&.\-]+)-Earning call-{quarter}", path.stem)
         alias = alias_for(path, quarter, aliases)
         require(match is not None or alias is not None, "Invalid Earning call Markdown filename")
         ticker = alias["ticker"] if alias else match[1]
+        event_date = source_event(path, quarter, ticker)
         digest, text = read_markdown(path, ticker, quarter)
-        row = server.find_workflow_row(status, ticker, path.parent.name)
+        row = server.find_workflow_row(status, ticker, event_date)
         meta = source_metadata(path, quarter, aliases, row)
         groups = {}
         server.add_group(groups, meta, path)
@@ -179,6 +194,8 @@ def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
                         "registrationId": item["registrationId"], "workflowStatus": item["workflowStatus"],
                         "originalPath": str(path), "sha256": digest, "disposition": disposition,
                         "baselinePayloadSha256": payload_sha})
+    require(len({entry['itemId'] for entry in entries}) == len(entries),
+            "Multiple events share a ticker and date; distinct identity required")
     job = {"schemaVersion": 1, "kind": "existing-earning-call-markdown-import",
            "importId": import_id, "quarter": quarter, "createdAt": datetime.now(timezone.utc).isoformat(),
            "baseReleaseId": previous_id, "baseIndexSha256": store.sha256(index_path), "entries": entries,
@@ -229,9 +246,14 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
         date.fromisoformat(entry["eventDate"])
         canonical = root / entry["eventDate"] / f"{ticker}-Earning call-{job['quarter']}.md"
         alias = next((a for a in aliases if a["ticker"] == ticker and a["eventDate"] == entry["eventDate"]), None)
-        source = canonical.with_name(alias["filename"]) if alias else canonical
+        source = Path(entry["originalPath"])
         canonical.resolve().relative_to(root.resolve())
-        require(Path(entry["originalPath"]).resolve() == source.resolve(), "Noncanonical Markdown source")
+        require(source.resolve().is_relative_to(root.resolve()), "Markdown source escapes summary root")
+        require(source_event(source, job["quarter"], ticker) == entry["eventDate"], "Event date differs")
+        expected_name = alias["filename"] if alias else canonical.name
+        require(source.name == expected_name, "Noncanonical Markdown filename")
+        if alias:
+            require(source.resolve() == canonical.with_name(alias['filename']).resolve(), "Noncanonical alias source")
         expected_id = server.item_id([job["quarter"], job["quarter"], ticker, entry["eventDate"], canonical.stem])
         require(entry["itemId"] == expected_id, "Markdown record ID differs")
         digest, text = read_markdown(source, ticker, job["quarter"])
