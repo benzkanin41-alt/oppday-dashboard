@@ -145,10 +145,12 @@ def verify_alias_sources(quarter: str, alias: dict) -> None:
             and stock_root.resolve().is_relative_to(event_root.resolve())
             and primary.resolve().is_relative_to(stock_root.resolve()), 'Primary alias escapes stock root')
     standard = f"{alias['ticker']}-Earning call-{quarter}.md"
-    sources = [summary, primary]
-    sources += [p for p in (summary.with_name(standard), primary.with_name(standard)) if p.exists()]
-    for source in sources:
-        require(source.resolve().is_relative_to(root.parent.resolve()), 'Source alias escapes source root')
+    summary_event = root / alias['eventDate']
+    sources = [(summary, summary_event), (primary, stock_root)]
+    sources += [(p, allowed) for p, allowed in ((summary.with_name(standard), summary_event),
+                                                  (primary.with_name(standard), stock_root)) if p.exists()]
+    for source, allowed in sources:
+        require(source.resolve().is_relative_to(allowed.resolve()), 'Source alias escapes its event or stock root')
         require(store.sha256(source) == alias['sha256'], 'Source alias hash changed or copies differ')
         read_markdown(source, alias['ticker'], quarter)
 

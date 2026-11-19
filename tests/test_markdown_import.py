@@ -202,6 +202,45 @@ class MarkdownImportTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, message):
                     importer.verify_alias_sources('3Q69', entry)
 
+    def test_standard_duplicate_alias_cannot_escape_its_event_or_stock(self):
+        summary, primary, entry = self.make_alias()
+        summary_standard = summary.with_name('NEW-Earning call-3Q69.md')
+        primary_standard = primary.with_name('NEW-Earning call-3Q69.md')
+        for path in (summary_standard, primary_standard):
+            path.write_bytes(summary.read_bytes())
+        original_resolve = Path.resolve
+        outside = self.root / 'outside' / 'escaped.md'
+        for target in (summary_standard, primary_standard):
+            def resolve(path, *args, **kwargs):
+                if path == target:
+                    return outside
+                return original_resolve(path, *args, **kwargs)
+            with self.subTest(target=target), mock.patch.object(Path, 'resolve', resolve):
+                with self.assertRaisesRegex(ValueError, 'escapes its event or stock root'):
+                    importer.verify_alias_sources('3Q69', entry)
+
+    def test_nested_alias_is_inherited_after_release(self):
+        root = importer.summary_root('3Q69')
+        event = '2026-11-18-12009-C-Sign'
+        summary = root / '2026-11-18' / 'NEST' / event / 'NEST-Earning call-3Q69-YouTube-autocaption.md'
+        primary = root.parent / summary.relative_to(root)
+        for path in (summary, primary):
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('# NEST Earning call 3Q69\nทะเบียน SET 12009\n', encoding='utf-8')
+        entry = {'ticker': 'NEST', 'eventDate': '2026-11-18', 'nestedEvent': event,
+                 'filename': summary.name, 'sha256': store.sha256(summary)}
+        self.authorization['sourceAliases'] = [entry]
+        self.prepare()
+        release_path = store.release_directory('md-release')
+        store.write_json_atomic(store.CURRENT, {'releaseId': 'md-release',
+            'indexSha256': store.sha256(release_path / 'public/data/index.json')})
+        self.assertEqual(importer.source_aliases('3Q69'), [entry])
+        auth = {**self.authorization, 'importId': 'next-nested'}
+        auth.pop('sourceAliases')
+        job = importer.create_request('next-nested', '3Q69', auth)
+        self.assertEqual(job['sourceAliases'], [entry])
+        self.assertEqual(importer.select_items('next-nested'), [])
+
     def test_alias_rejects_changed_primary_even_during_rollback_admission(self):
         _, primary, _ = self.make_alias()
         self.prepare()
