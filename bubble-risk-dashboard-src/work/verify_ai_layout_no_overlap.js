@@ -1,10 +1,10 @@
 const path = require("path");
-const { chromium } = require("playwright");
+const { chromium } = require("playwright-core");
 
 (async () => {
-  const htmlPath = path.resolve("outputs", "dashboard", "index.html");
+  const htmlPath = path.resolve(__dirname, "..", "outputs", "dashboard", "index.html");
   const fileUrl = "file:///" + htmlPath.replace(/\\/g, "/");
-  const executablePath = process.env.CHROME_PATH || undefined;
+  const executablePath = process.env.CHROME_PATH || "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
   const browser = await chromium.launch({ headless: true, executablePath });
   try {
     const page = await browser.newPage({ viewport: { width: 1820, height: 980 } });

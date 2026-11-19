@@ -1,0 +1,12 @@
+{
+  "name": "bubble-dashboard-browser-qa",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Browser smoke tests for the Bubble Risk Dashboard",
+  "scripts": {
+    "smoke": "node verify_ai_layout_no_overlap_v09.js && node verify_ai_chart_interaction.js"
+  },
+  "devDependencies": {
+    "playwright-core": "1.65.1"
+  }
+}

@@ -61,6 +61,7 @@ STEPS = [
     "work/validate_layout_manifest_order.py",
     "work/validate_final_dashboard.py",
     "work/validate_refresh_hard_guards.py",
+    "work/run_browser_smoke.py",
 ]
 
 

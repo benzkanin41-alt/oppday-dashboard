@@ -1,10 +1,10 @@
 ﻿const path = require("path");
-const { chromium } = require("playwright");
+const { chromium } = require("playwright-core");
 
 (async () => {
-  const htmlPath = path.resolve("outputs", "dashboard", "index.html");
+  const htmlPath = path.resolve(__dirname, "..", "outputs", "dashboard", "index.html");
   const fileUrl = "file:///" + htmlPath.replace(/\\/g, "/");
-  const executablePath = process.env.CHROME_PATH || undefined;
+  const executablePath = process.env.CHROME_PATH || "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
   const browser = await chromium.launch({ headless: true, executablePath });
   try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 1100 } });
@@ -12,7 +12,8 @@ const { chromium } = require("playwright");
     await page.locator("#ai-semiconductor-direct").scrollIntoViewIfNeeded();
     await page.waitForSelector(".ai-point", { timeout: 10000 });
     const totalPoints = await page.locator(".ai-point").count();
-    const capexPoint = page.locator('[data-ai-chart="hyperscaler-capex"] .ai-point').first();
+    // The final SVG point is painted on top, so nearby series cannot intercept it.
+    const capexPoint = page.locator('[data-ai-chart="hyperscaler-capex"] .ai-point').last();
     await capexPoint.click();
     const detail = await page.locator('[data-ai-detail="hyperscaler-capex"]').innerText();
     console.log("ai_points", totalPoints);
