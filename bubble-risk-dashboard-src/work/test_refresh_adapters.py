@@ -527,8 +527,9 @@ class RefreshAdapterTests(unittest.TestCase):
         data = json.loads((RAW / "sec_companyfacts_CRWV.json").read_text(encoding="utf-8"))
         points = quarterly_cashflow(data, ["ProceedsFromIssuanceOfLongTermDebt"])
         q3 = next(point for point in points if point["date"] == "2025-09-30")
-        self.assertEqual(q3["value"], 3.13)
-        self.assertEqual(q3["derived_from"][1]["val"], 4432723000)
+        self.assertEqual(q3["value"], 3.121)
+        self.assertEqual(q3["derived_from"][0]["val"], 7517000000)
+        self.assertEqual(q3["derived_from"][1]["val"], 4396000000)
         self.assertLessEqual(q3["derived_from"][1]["filed"], q3["filed"])
 
 
