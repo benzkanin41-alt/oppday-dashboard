@@ -83,23 +83,48 @@ def source_aliases(quarter: str, authorization: dict | None = None) -> list[dict
                     inherited = job.get("sourceAliases", [])
     result = {}
     for alias in inherited + (authorization or {}).get("sourceAliases", []):
-        require(set(alias) == {"ticker", "eventDate", "filename", "sha256"}, "Invalid source alias fields")
+        require(set(alias) in ({"ticker", "eventDate", "filename", "sha256"},
+                               {"ticker", "eventDate", "filename", "sha256", "nestedEvent"}), "Invalid source alias fields")
         ticker, name = alias["ticker"], alias["filename"]
         require(bool(re.fullmatch(r"[A-Z0-9&.\-]+", ticker))
+                and ticker not in ('.', '..')
                 and Path(name).name == name and "/" not in name and "\\" not in name
                 and Path(name).suffix == ".md" and bool(re.fullmatch(r"[a-f0-9]{64}", alias["sha256"])),
                 "Invalid source alias identity")
         date.fromisoformat(alias["eventDate"])
+        if "nestedEvent" in alias:
+            event = alias["nestedEvent"]
+            match = re.fullmatch(r"(\d{4}-\d{2}-\d{2})-(\d+)-([A-Za-z0-9-]+)", event)
+            require(match is not None and match[1] == alias["eventDate"], "Invalid nested alias event")
         key = (ticker, alias["eventDate"])
         require(key not in result or result[key] == alias, "Conflicting source alias")
         result[key] = alias
     return sorted(result.values(), key=lambda alias: (alias["eventDate"], alias["ticker"]))
 
 
+def alias_summary_path(quarter: str, alias: dict) -> Path:
+    root = summary_root(quarter)
+    ticker, name = alias['ticker'], alias['filename']
+    require(bool(re.fullmatch(r'[A-Z0-9&.\-]+', ticker)) and ticker not in ('.', '..')
+            and Path(name).name == name and '/' not in name and '\\' not in name,
+            'Invalid source alias identity')
+    date.fromisoformat(alias['eventDate'])
+    event_root = root / alias['eventDate']
+    require(event_root.resolve().is_relative_to(root.resolve()), 'Summary event escapes summary root')
+    if "nestedEvent" in alias:
+        match = re.fullmatch(r'(\d{4}-\d{2}-\d{2})-(\d+)-([A-Za-z0-9-]+)', alias['nestedEvent'])
+        require(match is not None and match[1] == alias['eventDate'], 'Invalid nested alias event')
+        path = event_root / ticker / alias['nestedEvent'] / name
+    else:
+        path = event_root / name
+    require(path.resolve().is_relative_to(event_root.resolve()), 'Summary alias escapes event root')
+    return path
+
+
 def alias_for(path: Path, quarter: str, aliases: list[dict]) -> dict | None:
     root = summary_root(quarter)
     return next((alias for alias in aliases
-                 if path.resolve() == (root / alias["eventDate"] / alias["filename"]).resolve()), None)
+                 if path.resolve() == alias_summary_path(quarter, alias).resolve()), None)
 
 
 def source_metadata(path: Path, quarter: str, aliases: list[dict], status_row=None) -> dict:
@@ -112,8 +137,13 @@ def source_metadata(path: Path, quarter: str, aliases: list[dict], status_row=No
 
 def verify_alias_sources(quarter: str, alias: dict) -> None:
     root = summary_root(quarter)
-    primary = root.parent / alias['eventDate'] / alias['ticker'] / alias['filename']
-    summary = root / alias['eventDate'] / alias['filename']
+    summary = alias_summary_path(quarter, alias)
+    primary = (root.parent / summary.relative_to(root)) if 'nestedEvent' in alias else root.parent / alias['eventDate'] / alias['ticker'] / alias['filename']
+    event_root = root.parent / alias['eventDate']
+    stock_root = event_root / alias['ticker']
+    require(event_root.resolve().is_relative_to(root.parent.resolve())
+            and stock_root.resolve().is_relative_to(event_root.resolve())
+            and primary.resolve().is_relative_to(stock_root.resolve()), 'Primary alias escapes stock root')
     standard = f"{alias['ticker']}-Earning call-{quarter}.md"
     sources = [summary, primary]
     sources += [p for p in (summary.with_name(standard), primary.with_name(standard)) if p.exists()]
@@ -126,8 +156,14 @@ def verify_alias_sources(quarter: str, alias: dict) -> None:
 def discover(quarter: str, aliases: list[dict] | None = None) -> list[Path]:
     root = summary_root(quarter)
     paths = sorted(root.rglob(f"*-Earning call-{quarter}.md"))
-    for alias in source_aliases(quarter) if aliases is None else aliases:
-        path = root / alias["eventDate"] / alias["filename"]
+    aliases = source_aliases(quarter) if aliases is None else aliases
+    approved_paths = {alias_summary_path(quarter, alias).resolve() for alias in aliases}
+    unexpected = sorted(path for path in root.rglob(f"*-Earning call-{quarter}*.md")
+                        if not path.name.endswith(f"-Earning call-{quarter}.md")
+                        and path.resolve() not in approved_paths)
+    require(not unexpected, "Unapproved Earning call filenames: " + "; ".join(map(str, unexpected)))
+    for alias in aliases:
+        path = alias_summary_path(quarter, alias)
         canonical = path.with_name(f"{alias['ticker']}-Earning call-{quarter}.md")
         require(path != canonical, "Source alias must use a nonstandard filename")
         verify_alias_sources(quarter, alias)
@@ -151,7 +187,7 @@ def source_event(path: Path, quarter: str, ticker: str) -> str:
         match = re.fullmatch(r"(\d{4}-\d{2}-\d{2})-(\d+)-([A-Za-z0-9-]+)", parts[2])
         require(match is not None and match[1] == event, "Nested event identity differs")
         _, text = read_markdown(path, ticker, quarter)
-        require(bool(re.search(rf"\bSET registration\s+{re.escape(match[2])}\b", text, re.I)),
+        require(bool(re.search(rf"(?:\bSET registration|ทะเบียน\s+SET)\s+{re.escape(match[2])}\b", text, re.I)),
                 "Nested event registration differs from Markdown")
     return event
 
@@ -253,7 +289,7 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
         expected_name = alias["filename"] if alias else canonical.name
         require(source.name == expected_name, "Noncanonical Markdown filename")
         if alias:
-            require(source.resolve() == canonical.with_name(alias['filename']).resolve(), "Noncanonical alias source")
+            require(source.resolve() == alias_summary_path(job['quarter'], alias).resolve(), "Noncanonical alias source")
         expected_id = server.item_id([job["quarter"], job["quarter"], ticker, entry["eventDate"], canonical.stem])
         require(entry["itemId"] == expected_id, "Markdown record ID differs")
         digest, text = read_markdown(source, ticker, job["quarter"])

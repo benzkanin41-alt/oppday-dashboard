@@ -142,6 +142,66 @@ class MarkdownImportTests(unittest.TestCase):
         self.request()
         self.assertEqual(importer.select_items(self.import_id), [])
 
+    def test_unapproved_earning_call_variant_fails_closed_with_filename(self):
+        alias, primary, entry = self.make_alias()
+        renamed = alias.with_name('NEW-Earning call-3Q69-YouTube-autocaption.md')
+        alias.rename(renamed)
+        primary.rename(primary.with_name(renamed.name))
+        self.authorization.pop('sourceAliases')
+        with self.assertRaisesRegex(ValueError, 'Unapproved Earning call filenames:.*NEW-Earning call-3Q69-YouTube-autocaption'):
+            self.request()
+
+    def test_nested_hash_bound_alias_checks_registration_and_pair(self):
+        root = importer.summary_root('3Q69')
+        event = '2026-11-18-12009-C-Sign'
+        summary = root / '2026-11-18' / 'NEST' / event / 'NEST-Earning call-3Q69-YouTube-autocaption.md'
+        primary = root.parent / summary.relative_to(root)
+        for path in (summary, primary):
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('# NEST Earning call 3Q69\nทะเบียน SET 12009\n', encoding='utf-8')
+        alias = {'ticker': 'NEST', 'eventDate': '2026-11-18', 'nestedEvent': event,
+                 'filename': summary.name, 'sha256': store.sha256(summary)}
+        self.authorization['sourceAliases'] = [alias]
+        job = self.request()
+        entry = next(e for e in job['entries'] if e['ticker'] == 'NEST')
+        self.assertEqual(entry['originalPath'], str(summary))
+        importer.load_request(self.import_id)
+        with self.assertRaisesRegex(ValueError, 'registration differs'):
+            wrong = root / '2026-11-18' / 'NEST' / '2026-11-18-999-C-Sign' / summary.name
+            wrong.parent.mkdir(parents=True)
+            wrong.write_bytes(summary.read_bytes())
+            importer.source_event(wrong, '3Q69', 'NEST')
+        wrong.unlink()
+        primary.write_text('changed', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'copies differ'):
+            importer.load_request(self.import_id)
+
+    def test_nested_alias_rejects_traversal(self):
+        _, _, entry = self.make_alias()
+        entry['nestedEvent'] = '../outside'
+        with self.assertRaisesRegex(ValueError, 'nested alias event'):
+            self.request()
+
+    def test_alias_rejects_dot_tickers(self):
+        _, _, entry = self.make_alias()
+        for ticker in ('.', '..'):
+            entry['ticker'] = ticker
+            with self.subTest(ticker=ticker), self.assertRaisesRegex(ValueError, 'identity'):
+                self.request()
+
+    def test_alias_rejects_resolved_summary_and_primary_escapes(self):
+        summary, primary, entry = self.make_alias()
+        original_resolve = Path.resolve
+        outside = self.root / 'outside' / 'escaped.md'
+        for target, message in ((summary, 'Summary alias escapes'), (primary, 'Primary alias escapes')):
+            def resolve(path, *args, **kwargs):
+                if path == target:
+                    return outside
+                return original_resolve(path, *args, **kwargs)
+            with self.subTest(target=target), mock.patch.object(Path, 'resolve', resolve):
+                with self.assertRaisesRegex(ValueError, message):
+                    importer.verify_alias_sources('3Q69', entry)
+
     def test_alias_rejects_changed_primary_even_during_rollback_admission(self):
         _, primary, _ = self.make_alias()
         self.prepare()
