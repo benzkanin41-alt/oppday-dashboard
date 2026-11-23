@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "snapshot_generated_at": "2026-11-22 12:30:30 Bangkok",
+  "snapshot_generated_at": "2026-11-23 13:07:38 Bangkok",
   "prices": {
     "IBB": {
       "label": "Nasdaq theme: Biotechnology",
@@ -249348,7 +249348,7 @@
       "chart_symbol": "^SET.BK",
       "source": "SET Index daily history: Yahoo Finance plus TradingView SET:SET; official quote separate",
       "source_url": "https://finance.yahoo.com/quote/%5ESET.BK/history",
-      "note": "Completed daily history through 2026-11-20; official SET quote retained separately at 2026-11-21 03:20:03 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-11-20; official SET quote retained separately at 2026-11-23 13:04:50 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "points": [
         {
           "date": "1996-12-11",
@@ -286725,6 +286725,10 @@
         {
           "date": "2026-11-19",
           "value": 1461.810059
+        },
+        {
+          "date": "2026-11-23",
+          "value": 1452.75
         }
       ],
       "completed_through": "2026-11-20",
@@ -286742,12 +286746,12 @@
       "chart_symbol": "SET:MAI",
       "source": "TradingView chart history for SET:MAI",
       "source_url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "note": "Completed daily history through 2026-11-20; official SET quote retained separately at 2026-11-21 03:20:03 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-11-20; official SET quote retained separately at 2026-11-23 13:05:05 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "history_fetch_mode": "live",
       "history_fetch_status": {
         "mode": "live",
-        "fetched_at": "2026-11-22T05:30:04.379872+00:00",
-        "attempted_at": "2026-11-22T05:30:04.379872+00:00"
+        "fetched_at": "2026-11-23T06:07:12.335285+00:00",
+        "attempted_at": "2026-11-23T06:07:12.335285+00:00"
       },
       "market_session_date": "2026-11-20",
       "points": [
@@ -488938,6 +488942,10 @@
         {
           "date": "2026-11-20",
           "value": 3533.792969
+        },
+        {
+          "date": "2026-11-23",
+          "value": 3540.11792
         }
       ]
     },
@@ -525364,6 +525372,10 @@
         {
           "date": "2026-11-20",
           "value": 22410.800781
+        },
+        {
+          "date": "2026-11-23",
+          "value": 22385.859375
         }
       ]
     },
@@ -544194,6 +544206,10 @@
         {
           "date": "2026-11-20",
           "value": 25800.599609
+        },
+        {
+          "date": "2026-11-23",
+          "value": 25602.0
         }
       ]
     },
@@ -573684,6 +573700,10 @@
         {
           "date": "2026-11-20",
           "value": 4869.959961
+        },
+        {
+          "date": "2026-11-23",
+          "value": 4759.029785
         }
       ]
     },
@@ -781461,6 +781481,13 @@
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/h100",
           "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-22",
+          "value": 3.1,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+          "basis": "Published dated observation; no interpolation"
         }
       ],
       "NeoCloud B200": [
@@ -781947,6 +781974,13 @@
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/b200",
           "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-22",
+          "value": 6.94,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+          "basis": "Published dated observation; no interpolation"
         }
       ],
       "Hyperscaler H100": [
@@ -782426,6 +782460,13 @@
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/h100",
           "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-22",
+          "value": 7.08,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+          "basis": "Published dated observation; no interpolation"
         }
       ]
     },
@@ -782577,6 +782618,16 @@
       "original_point": {
         "date": "2026-11-19",
         "value": 1461.810059
+      },
+      "market_session_date": null,
+      "source_url": "https://www.tradingview.com/symbols/SET-SET/",
+      "reason": "Unverified or intraday daily bar retained separately; requires a completed-session source replacement."
+    },
+    {
+      "symbol": "SET",
+      "original_point": {
+        "date": "2026-11-23",
+        "value": 1452.75
       },
       "market_session_date": null,
       "source_url": "https://www.tradingview.com/symbols/SET-SET/",
