@@ -345,6 +345,7 @@ function renderResults() {
         <div class="chips">
           <span class="chip">${escapeHtml(item.source)}</span>
           ${item.eventDate ? `<span class="chip">${escapeHtml(item.eventDate)}</span>` : ""}
+          ${item.registrationId ? `<span class="chip">ทะเบียน SET ${escapeHtml(item.registrationId)}</span>` : ""}
           ${kinds.map((kind) => `<span class="chip">${kind}</span>`).join("")}
         </div>
       </button>`;
@@ -386,7 +387,7 @@ function renderDetail() {
 
   els.emptyState.classList.add("hidden");
   els.detailPanel.classList.remove("hidden");
-  els.detailMeta.textContent = `${item.source} | ${item.quarter}${item.eventDate ? ` | ${item.eventDate}` : ""}`;
+  els.detailMeta.textContent = `${item.source} | ${item.quarter}${item.eventDate ? ` | ${item.eventDate}` : ""}${item.registrationId ? ` | ทะเบียน SET ${item.registrationId}` : ""}`;
   els.detailTitle.textContent = `${item.symbol} - ${item.period}`;
   els.detailPath.textContent = item.sourceFolder;
 
