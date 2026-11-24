@@ -84,12 +84,76 @@ class MarkdownImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'registration differs'):
             importer.load_request(self.import_id)
 
-    def test_same_ticker_and_date_collision_is_blocked(self):
+    def test_same_ticker_and_date_events_have_distinct_bound_ids(self):
         path = importer.summary_root('3Q69') / '2026-10-27' / 'NEW' / '2026-10-27-123-C-Sign' / 'NEW-Earning call-3Q69.md'
         path.parent.mkdir(parents=True)
         path.write_text('# NEW Earning call 3Q69\nSET registration 123\n', encoding='utf-8')
-        with self.assertRaisesRegex(ValueError, 'distinct identity required'):
+        standard = Path(self.new['files'][0]['path'])
+        standard.write_text('# NEW Earning call 3Q69\nSET registration 122\n', encoding='utf-8')
+        status = importer.summary_root('3Q69').parent / 'workflow_status_3Q69.csv'
+        status.write_text('ticker,event_date,registration_id,run_id,conclusion_status\n'
+                          'NEW,2026-10-27,122,run-a,done\nNEW,2026-10-27,123,run-b,done\n', encoding='utf-8')
+        job = self.request()
+        entries = [e for e in job['entries'] if e['ticker'] == 'NEW']
+        self.assertEqual(len(entries), 2)
+        plain = next(e for e in entries if e['originalPath'] == str(standard))
+        nested = next(e for e in entries if e['originalPath'] == str(path))
+        self.assertEqual(plain['itemId'], self.new['id'])
+        self.assertEqual((plain['registrationId'], plain['runId']), ('122', 'run-a'))
+        self.assertEqual((nested['registrationId'], nested['runId']), ('123', 'run-b'))
+        self.assertNotEqual(plain['itemId'], nested['itemId'])
+        self.assertEqual(nested['identityScheme'], 'event-registration-v1')
+        selected = importer.select_items(self.import_id)
+        self.assertEqual({i['id'] for i in selected}, {e['itemId'] for e in entries})
+        importer.verify_import(self.import_id, selected)
+        job_path = importer.import_directory(self.import_id) / 'import.json'
+        original = job_path.read_bytes()
+        for field, value in [('registrationId', '999'), ('runId', 'wrong'), ('workflowStatus', 'wrong')]:
+            changed = store.read_json(job_path)
+            legacy = next(e for e in changed['entries'] if e['itemId'] == plain['itemId'])
+            legacy[field] = value
+            store.write_json_atomic(job_path, changed)
+            with self.subTest(field=field), self.assertRaisesRegex(ValueError, 'workflow evidence differs'):
+                importer.load_request(self.import_id)
+            job_path.write_bytes(original)
+        status.write_text(status.read_text(encoding='utf-8') + 'NEW,2026-10-27,122,run-a,done\n', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'workflow status differs or is ambiguous'):
+            importer.load_request(self.import_id)
+        # A previously verified immutable release can still be checked after CSV drift.
+        importer.verify_import(self.import_id, selected, require_complete_inventory=False)
+
+    def test_same_day_events_with_missing_workflow_registration_block(self):
+        path = importer.summary_root('3Q69') / '2026-10-27' / 'NEW' / '2026-10-27-123-C-Sign' / 'NEW-Earning call-3Q69.md'
+        path.parent.mkdir(parents=True)
+        path.write_text('# NEW Earning call 3Q69\nSET registration 123\n', encoding='utf-8')
+        Path(self.new['files'][0]['path']).write_text('# NEW Earning call 3Q69\nSET registration 122\n', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'missing or ambiguous workflow status'):
             self.request()
+
+    def test_previously_accepted_nested_event_keeps_its_id_when_standard_arrives(self):
+        root = importer.summary_root('3Q69')
+        standard = Path(self.new['files'][0]['path'])
+        standard.unlink()
+        nested = root / '2026-10-27' / 'NEW' / '2026-10-27-123-C-Sign' / 'NEW-Earning call-3Q69.md'
+        nested.parent.mkdir(parents=True)
+        nested.write_text('# NEW Earning call 3Q69\nSET registration 123\n', encoding='utf-8')
+        self.prepare()
+        release_path = store.release_directory('md-release')
+        store.write_json_atomic(store.CURRENT, {'releaseId': 'md-release',
+            'indexSha256': store.sha256(release_path / 'public/data/index.json')})
+        standard.write_text('# NEW Earning call 3Q69\nSET registration 122\n', encoding='utf-8')
+        status = root.parent / 'workflow_status_3Q69.csv'
+        status.write_text('ticker,event_date,registration_id,run_id,conclusion_status\n'
+                          'NEW,2026-10-27,122,run-a,done\nNEW,2026-10-27,123,run-b,done\n', encoding='utf-8')
+        next_id = 'next-same-day'
+        job = importer.create_request(next_id, '3Q69', {**self.authorization, 'importId': next_id})
+        old = next(e for e in job['entries'] if e['originalPath'] == str(nested))
+        new = next(e for e in job['entries'] if e['originalPath'] == str(standard))
+        self.assertEqual((old['itemId'], old['disposition']), (self.new['id'], 'preserve_existing'))
+        self.assertEqual(new['identityScheme'], 'event-registration-v1')
+        self.assertNotEqual(new['itemId'], old['itemId'])
+        selected = importer.select_items(next_id)
+        self.assertEqual([i['id'] for i in selected], [new['itemId']])
 
     def test_md_import_needs_no_pdf_producer_manifest_or_status_qa(self):
         Path(self.new["files"][0]["path"]).with_suffix(".pdf").write_bytes(b"not a PDF")

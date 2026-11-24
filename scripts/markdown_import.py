@@ -194,6 +194,20 @@ def source_event(path: Path, quarter: str, ticker: str) -> str:
     return event
 
 
+def event_registration(text: str) -> str:
+    # The identifying header, not incidental references later in a report.
+    matches = set(re.findall(r"(?:\bSET registration|ทะเบียน\s+SET)\s+(\d+)\b",
+                             "\n".join(text.splitlines()[:8]), re.I))
+    require(len(matches) == 1, "Same-day events require one header registration")
+    return next(iter(matches))
+
+
+def registered_event_id(quarter: str, ticker: str, event_date: str, registration: str) -> str:
+    require(bool(re.fullmatch(r"\d+", registration)), "Invalid event registration")
+    return server.item_id([quarter, quarter, ticker, event_date,
+                           f"{ticker}-Earning call-{quarter}", "event-registration-v1", registration])
+
+
 def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
     directory = import_directory(import_id)
     require(not directory.exists(), "Use a new immutable Markdown import ID")
@@ -207,18 +221,55 @@ def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
     status = server.read_workflow_status(root.parent / f"workflow_status_{quarter}.csv")
     aliases = source_aliases(quarter, authorization)
     entries = []
-    for path in discover(quarter, aliases):
+    paths = discover(quarter, aliases)
+    cohorts = {}
+    for path in paths:
+        meta = source_metadata(path, quarter, aliases)
+        cohorts.setdefault((meta['symbol'], meta['eventDate']), []).append(path)
+    for path in paths:
         match = re.fullmatch(rf"([A-Z0-9&.\-]+)-Earning call-{quarter}", path.stem)
         alias = alias_for(path, quarter, aliases)
         require(match is not None or alias is not None, "Invalid Earning call Markdown filename")
         ticker = alias["ticker"] if alias else match[1]
         event_date = source_event(path, quarter, ticker)
         digest, text = read_markdown(path, ticker, quarter)
-        row = server.find_workflow_row(status, ticker, event_date)
+        cohort = cohorts[(ticker, event_date)]
+        candidates = [r for r in status['by_ticker'].get(ticker, []) if r['_event_date'] == event_date]
+        registration = None
+        if len(cohort) > 1 or len(candidates) > 1:
+            registration = event_registration(text)
+            if len(path.relative_to(root).parts) == 4:
+                require(path.parent.name.split('-')[3] == registration,
+                        "Nested event registration differs from header")
+            matches = [r for r in candidates if r['_registration_id'] == registration]
+            require(len(matches) == 1, "Same-day event registration has missing or ambiguous workflow status")
+            row = matches[0]
+        else:
+            row = server.find_workflow_row(status, ticker, event_date)
         meta = source_metadata(path, quarter, aliases, row)
         groups = {}
         server.add_group(groups, meta, path)
         item = next(iter(groups.values()))
+        legacy_id = item['id']
+        # Preserve a previously accepted event-bound ID even after the cohort changes.
+        if registration is None:
+            header = re.search(r"(?:\bSET registration|ทะเบียน\s+SET)\s+(\d+)\b",
+                               "\n".join(text.splitlines()[:8]), re.I)
+            registration = header.group(1) if header else None
+        event_id = registered_event_id(quarter, ticker, event_date, registration) if registration else None
+        if event_id in baseline_by_id:
+            item['id'] = event_id
+        elif len(cohort) > 1:
+            legacy_text = None
+            if legacy_id in baseline_by_id:
+                legacy_text = store.read_json(previous / 'public/data/items' / f'{legacy_id}.json')['item'].get('markdown')
+            if legacy_text is not None:
+                use_legacy = legacy_text == static.redact_local_paths(text)
+            else:
+                standard = [p for p in cohort if len(p.relative_to(root).parts) == 2]
+                use_legacy = path == (standard[0] if len(standard) == 1 else sorted(cohort)[0])
+            if not use_legacy:
+                item['id'] = event_id
         disposition = "add"
         payload_sha = None
         if item["id"] in baseline_by_id:
@@ -232,12 +283,27 @@ def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
                         "registrationId": item["registrationId"], "workflowStatus": item["workflowStatus"],
                         "originalPath": str(path), "sha256": digest, "disposition": disposition,
                         "baselinePayloadSha256": payload_sha})
+        if item['id'] != legacy_id:
+            entries[-1]['identityScheme'] = 'event-registration-v1'
     require(len({entry['itemId'] for entry in entries}) == len(entries),
             "Multiple events share a ticker and date; distinct identity required")
+    for (ticker, event_date), cohort in cohorts.items():
+        if len(cohort) > 1:
+            same = [e for e in entries if (e['ticker'], e['eventDate']) == (ticker, event_date)]
+            require(len({e['registrationId'] for e in same}) == len(same),
+                    'Same-day events have duplicate registrations')
+            legacy = server.item_id([quarter, quarter, ticker, event_date, f'{ticker}-Earning call-{quarter}'])
+            require(legacy not in baseline_by_id or any(e['itemId'] == legacy for e in same),
+                    'Existing accepted Markdown differs; history cannot be overwritten')
     job = {"schemaVersion": 1, "kind": "existing-earning-call-markdown-import",
            "importId": import_id, "quarter": quarter, "createdAt": datetime.now(timezone.utc).isoformat(),
            "baseReleaseId": previous_id, "baseIndexSha256": store.sha256(index_path), "entries": entries,
            "pdfValidation": "not_requested", "semanticValidation": "not_recertified_existing_source"}
+    same_day = [e for e in entries if len(cohorts[(e['ticker'], e['eventDate'])]) > 1]
+    if same_day:
+        job['sameDayWorkflowRows'] = [
+            {k: e[k] for k in ('ticker', 'eventDate', 'registrationId', 'runId', 'workflowStatus')}
+            for e in same_day]
     if aliases:
         job["sourceAliases"] = aliases
     directory.mkdir(parents=True)
@@ -272,6 +338,30 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
     require(all(alias in approved for alias in aliases), "Unapproved source alias")
     require(bool(entries) and len({entry["itemId"] for entry in entries}) == len(entries),
             "Missing or duplicate Markdown import entries")
+    groups = {}
+    for entry in entries:
+        groups.setdefault((entry['ticker'], entry['eventDate']), []).append(entry)
+    duplicate_entries = [e for group in groups.values() if len(group) > 1 for e in group]
+    if duplicate_entries:
+        fields = ('ticker', 'eventDate', 'registrationId', 'runId', 'workflowStatus')
+        captured = job.get('sameDayWorkflowRows', [])
+        require(len(captured) == len(duplicate_entries)
+                and sorted(tuple(r.get(k) for k in fields) for r in captured)
+                == sorted(tuple(e.get(k) for k in fields) for e in duplicate_entries),
+                'Same-day workflow evidence differs')
+        for group in groups.values():
+            if len(group) > 1:
+                require(len({e['registrationId'] for e in group}) == len(group),
+                        'Same-day events have duplicate registrations')
+        if require_complete_inventory:
+            status = server.read_workflow_status(root.parent / f"workflow_status_{job['quarter']}.csv")
+            for entry in duplicate_entries:
+                rows = [r for r in status['by_ticker'].get(entry['ticker'], [])
+                        if r['_event_date'] == entry['eventDate']
+                        and r['_registration_id'] == entry['registrationId']]
+                require(len(rows) == 1 and rows[0]['_run_id'] == entry['runId']
+                        and rows[0]['_conclusion_status'] == entry['workflowStatus'],
+                        'Same-day workflow status differs or is ambiguous')
     if require_complete_inventory:
         require({path.resolve() for path in discover(job["quarter"], aliases)}
                 == {Path(entry["originalPath"]).resolve() for entry in entries},
@@ -283,8 +373,8 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
                 "Markdown ticker/quarter differs")
         date.fromisoformat(entry["eventDate"])
         canonical = root / entry["eventDate"] / f"{ticker}-Earning call-{job['quarter']}.md"
-        alias = next((a for a in aliases if a["ticker"] == ticker and a["eventDate"] == entry["eventDate"]), None)
         source = Path(entry["originalPath"])
+        alias = alias_for(source, job['quarter'], aliases)
         canonical.resolve().relative_to(root.resolve())
         require(source.resolve().is_relative_to(root.resolve()), "Markdown source escapes summary root")
         require(source_event(source, job["quarter"], ticker) == entry["eventDate"], "Event date differs")
@@ -293,8 +383,18 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
         if alias:
             require(source.resolve() == alias_summary_path(job['quarter'], alias).resolve(), "Noncanonical alias source")
         expected_id = server.item_id([job["quarter"], job["quarter"], ticker, entry["eventDate"], canonical.stem])
+        scheme = entry.get('identityScheme')
+        require(scheme in (None, 'event-registration-v1'), 'Unknown Markdown identity scheme')
+        if scheme:
+            _, identity_text = read_markdown(source, ticker, job['quarter'])
+            registration = event_registration(identity_text)
+            require(entry['registrationId'] == registration, 'Event registration metadata differs')
+            expected_id = registered_event_id(job['quarter'], ticker, entry['eventDate'], registration)
         require(entry["itemId"] == expected_id, "Markdown record ID differs")
         digest, text = read_markdown(source, ticker, job["quarter"])
+        if len(groups[(ticker, entry['eventDate'])]) > 1:
+            require(event_registration(text) == entry['registrationId'],
+                    'Same-day event registration metadata differs')
         if alias:
             verify_alias_sources(job['quarter'], alias)
         require(digest == entry["sha256"], "Original Markdown hash changed")
@@ -323,6 +423,7 @@ def select_items(import_id: str) -> list[dict]:
         groups = {}
         server.add_group(groups, meta, path)
         item = next(iter(groups.values()))
+        item['id'] = entry['itemId']
         item.update(primaryMarkdownId=item["files"][0]["id"], primaryPdfId=None)
         items.append(item)
     return items
