@@ -42,6 +42,14 @@ def check_authorization(authorization: dict, import_id: str, quarter: str) -> No
             "Explicit current Markdown-only import authorization is required")
 
 
+def verify_scheduled_status_hash(quarter: str, authorization: dict) -> None:
+    if authorization.get('sourceAliasPolicy') == '3q69-scheduled-verified-youtube-autocaption-v1':
+        require(quarter == '3Q69', 'Automatic autocaption policy is limited to 3Q69')
+        path = summary_root(quarter).parent / f'workflow_status_{quarter}.csv'
+        require(path.is_file() and store.sha256(path) == authorization.get('sourceAliasStatusSha256'),
+                'Scheduled autocaption workflow status changed since admission')
+
+
 def summary_root(quarter: str) -> Path:
     require(bool(re.fullmatch(r"[1-4]Q\d{2}", quarter)), "Invalid Markdown import quarter")
     profile = store.read_json(store.PROFILE)
@@ -194,6 +202,67 @@ def source_event(path: Path, quarter: str, ticker: str) -> str:
     return event
 
 
+def accepted_event_keys(quarter: str) -> set[tuple[str, str]]:
+    release = store.release_directory(store.current_pointer()['releaseId'])
+    index = store.read_json(release / 'public/data/index.json')
+    return {(item['symbol'], item['eventDate']) for item in index['items'] if item.get('quarter') == quarter}
+
+
+def discover_scheduled_autocaption_aliases(quarter: str) -> list[dict]:
+    """Bind the specifically authorized 3Q69 filename variant to source bytes.
+
+    This is called only by the scheduled admission path. Generic imports still
+    require explicit aliases, and previously accepted hashes are never renewed.
+    """
+    require(quarter == "3Q69", "Automatic autocaption policy is limited to 3Q69")
+    root = summary_root(quarter)
+    aliases = source_aliases(quarter)
+    for alias in aliases:
+        verify_alias_sources(quarter, alias)
+    known = {(a['ticker'], a['eventDate']): a for a in aliases}
+    known_paths = {alias_summary_path(quarter, a).resolve() for a in aliases}
+    status = server.read_workflow_status(root.parent / f"workflow_status_{quarter}.csv")
+    accepted = accepted_event_keys(quarter)
+    pattern = re.compile(rf"([A-Z0-9&.\-]+)-Earning call-{quarter}-YouTube-autocaption\.md")
+    months = {name: i for i, name in enumerate(('มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+              'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'), 1)}
+    for path in sorted(root.rglob(f"*-Earning call-{quarter}-YouTube-autocaption.md")):
+        if path.resolve() in known_paths:
+            continue
+        match = pattern.fullmatch(path.name)
+        require(match is not None, "Invalid autocaption filename")
+        ticker = match[1]
+        event = source_event(path, quarter, ticker)
+        require((ticker, event) not in known, "Conflicting automatic alias for the same ticker and event date")
+        require((ticker, event) not in accepted, "Cannot automatically rebind an accepted event to a new source filename")
+        digest, text = read_markdown(path, ticker, quarter)
+        header = '\n'.join(text.splitlines()[:3])
+        dates = set(re.findall(r'\b\d{4}-\d{2}-\d{2}\b', header))
+        for day, month, year in re.findall(r'(\d{1,2})\s+(' + '|'.join(months) + r')\s+(\d{4})', header):
+            y = int(year) - 543 if int(year) >= 2400 else int(year)
+            dates.add(date(y, months[month], int(day)).isoformat())
+        require(dates == {event}, "Autocaption event date missing or differs from Markdown header")
+        rows = [row for row in status['by_ticker'].get(ticker, []) if row['_event_date'] == event]
+        registrations = set(re.findall(r'(?:\bSET registration|ทะเบียน(?:\s+SET)?)\s+(\d+)\b',
+                                       '\n'.join(text.splitlines()[:10]), re.I))
+        require(len(registrations) == 1, "Autocaption header needs one event registration")
+        registration = next(iter(registrations))
+        require(len([row for row in rows if row['_registration_id'] == registration]) == 1,
+                "Autocaption event registration missing, ambiguous or differs from workflow status")
+        alias = {'ticker': ticker, 'eventDate': event, 'filename': path.name, 'sha256': digest}
+        parts = path.relative_to(root).parts
+        if len(parts) == 4:
+            require(parts[2].split('-')[3] == registration,
+                    "Autocaption nested event registration differs from header and workflow")
+            alias['nestedEvent'] = parts[2]
+        require(path.resolve() == alias_summary_path(quarter, alias).resolve(), "Autocaption source path differs")
+        verify_alias_sources(quarter, alias)
+        aliases.append(alias)
+        known[(ticker, event)] = alias
+        known_paths.add(path.resolve())
+    return sorted(aliases, key=lambda a: (a['eventDate'], a['ticker']))
+
+
 def event_registration(text: str) -> str:
     # The identifying header, not incidental references later in a report.
     matches = set(re.findall(r"(?:\bSET registration|ทะเบียน\s+SET)\s+(\d+)\b",
@@ -208,10 +277,11 @@ def registered_event_id(quarter: str, ticker: str, event_date: str, registration
                            f"{ticker}-Earning call-{quarter}", "event-registration-v1", registration])
 
 
-def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
+def create_request(import_id: str, quarter: str, authorization: dict, *, expected_inventory: dict | None = None) -> dict:
     directory = import_directory(import_id)
     require(not directory.exists(), "Use a new immutable Markdown import ID")
     check_authorization(authorization, import_id, quarter)
+    verify_scheduled_status_hash(quarter, authorization)
     root = summary_root(quarter)
     previous_id = store.current_pointer()["releaseId"]
     previous = store.release_directory(previous_id)
@@ -306,6 +376,10 @@ def create_request(import_id: str, quarter: str, authorization: dict) -> dict:
             for e in same_day]
     if aliases:
         job["sourceAliases"] = aliases
+    if expected_inventory is not None:
+        require({entry['originalPath']: entry['sha256'] for entry in entries} == expected_inventory,
+                'Source inventory changed during admission')
+    verify_scheduled_status_hash(quarter, authorization)
     directory.mkdir(parents=True)
     store.write_json_atomic(directory / "authorization.json", authorization)
     store.write_json_atomic(directory / "import.json", job)
@@ -317,7 +391,10 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
     job = store.read_json(directory / "import.json")
     require(job.get("schemaVersion") == 1 and job.get("kind") == "existing-earning-call-markdown-import"
             and job.get("importId") == import_id, "Markdown import identity differs")
-    check_authorization(store.read_json(directory / "authorization.json"), import_id, job["quarter"])
+    authorization = store.read_json(directory / "authorization.json")
+    check_authorization(authorization, import_id, job["quarter"])
+    if require_complete_inventory:
+        verify_scheduled_status_hash(job['quarter'], authorization)
     require(job.get("pdfValidation") == "not_requested"
             and job.get("semanticValidation") == "not_recertified_existing_source",
             "An MD import cannot claim report/PDF QA")

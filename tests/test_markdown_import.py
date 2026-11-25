@@ -200,6 +200,37 @@ class MarkdownImportTests(unittest.TestCase):
         self.assertEqual(item['markdown'], alias.read_text(encoding='utf-8'))
         release.verify_release_admission('md-release')
 
+    def test_scheduled_alias_status_hash_is_rechecked_without_breaking_historical_release(self):
+        self.make_alias()
+        status = importer.summary_root('3Q69').parent / 'workflow_status_3Q69.csv'
+        status.write_text('ticker,event_date,registration_id,run_id,conclusion_status\n'
+                          'NEW,2026-10-27,12034,run-a,done\n', encoding='utf-8')
+        self.authorization.update(sourceAliasPolicy='3q69-scheduled-verified-youtube-autocaption-v1',
+                                  sourceAliasStatusSha256=store.sha256(status))
+        self.request()
+        importer.load_request(self.import_id)
+        status.write_text(status.read_text(encoding='utf-8') + 'NEW,2026-10-27,999,run-b,done\n', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'workflow status changed'):
+            importer.load_request(self.import_id)
+        importer.load_request(self.import_id, require_complete_inventory=False)
+
+    def test_scheduled_alias_request_rejects_stale_status_hash_before_writing(self):
+        self.make_alias()
+        status = importer.summary_root('3Q69').parent / 'workflow_status_3Q69.csv'
+        status.write_text('ticker,event_date,registration_id,run_id,conclusion_status\n'
+                          'NEW,2026-10-27,12034,run-a,done\n', encoding='utf-8')
+        self.authorization.update(sourceAliasPolicy='3q69-scheduled-verified-youtube-autocaption-v1',
+                                  sourceAliasStatusSha256='a' * 64)
+        with self.assertRaisesRegex(ValueError, 'workflow status changed'):
+            self.request()
+        self.assertFalse(importer.import_directory(self.import_id).exists())
+
+    def test_expected_inventory_drift_blocks_before_request_directory_is_created(self):
+        with self.assertRaisesRegex(ValueError, 'Source inventory changed'):
+            importer.create_request(self.import_id, '3Q69', self.authorization,
+                                    expected_inventory={'unexpected': 'a' * 64})
+        self.assertFalse(importer.import_directory(self.import_id).exists())
+
     def test_alias_is_not_discovered_without_explicit_approval(self):
         self.make_alias()
         self.authorization.pop('sourceAliases')
