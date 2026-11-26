@@ -155,6 +155,64 @@ class MarkdownImportTests(unittest.TestCase):
         selected = importer.select_items(next_id)
         self.assertEqual([i['id'] for i in selected], [new['itemId']])
 
+    def test_thai_registration_same_day_preserves_accepted_id_and_payload(self):
+        root = importer.summary_root('3Q69')
+        standard = Path(self.new['files'][0]['path'])
+        standard.unlink()
+        nested = root / '2026-10-27' / 'NEW' / '2026-10-27-123-C-Sign' / 'NEW-Earning call-3Q69.md'
+        nested.parent.mkdir(parents=True)
+        nested.write_text('# NEW Earning call 3Q69\nSET ทะเบียน 123\n', encoding='utf-8')
+        self.prepare()
+        first = store.release_directory('md-release')
+        payload = first / 'public/data/items' / f"{self.new['id']}.json"
+        before = payload.read_bytes()
+        store.write_json_atomic(store.CURRENT, {'releaseId': 'md-release',
+            'indexSha256': store.sha256(first / 'public/data/index.json')})
+        standard.write_text('# NEW Earning call 3Q69\nSET ทะเบียน 122\n', encoding='utf-8')
+        status = root.parent / 'workflow_status_3Q69.csv'
+        status.write_text('ticker,event_date,registration_id,run_id,conclusion_status\n'
+                          'NEW,2026-10-27,122,run-a,done\nNEW,2026-10-27,123,run-b,done\n', encoding='utf-8')
+        job = importer.create_request('thai-same-day', '3Q69', {**self.authorization, 'importId': 'thai-same-day'})
+        old = next(e for e in job['entries'] if e['originalPath'] == str(nested))
+        new = next(e for e in job['entries'] if e['originalPath'] == str(standard))
+        self.assertEqual((old['itemId'], old['disposition']), (self.new['id'], 'preserve_existing'))
+        self.assertEqual(new['identityScheme'], 'event-registration-v1')
+        self.assertNotEqual(new['itemId'], old['itemId'])
+        release.prepare_release('thai-release', markdown_import_id='thai-same-day')
+        self.assertEqual((store.release_directory('thai-release') / 'public/data/items' /
+                          f"{old['itemId']}.json").read_bytes(), before)
+
+    def test_thai_registration_preserves_accepted_registration_bound_id(self):
+        root = importer.summary_root('3Q69')
+        standard = Path(self.new['files'][0]['path'])
+        standard.write_text('# NEW Earning call 3Q69\nSET ทะเบียน 122\n', encoding='utf-8')
+        nested = root / '2026-10-27' / 'NEW' / '2026-10-27-123-C-Sign' / 'NEW-Earning call-3Q69.md'
+        nested.parent.mkdir(parents=True)
+        nested.write_text('# NEW Earning call 3Q69\nSET ทะเบียน 123\n', encoding='utf-8')
+        status = root.parent / 'workflow_status_3Q69.csv'
+        status.write_text('ticker,event_date,registration_id,run_id,conclusion_status\n'
+                          'NEW,2026-10-27,122,run-a,done\nNEW,2026-10-27,123,run-b,done\n', encoding='utf-8')
+        first_job = self.request()
+        bound = next(e for e in first_job['entries'] if e['originalPath'] == str(nested))
+        self.assertEqual(bound['identityScheme'], 'event-registration-v1')
+        release.prepare_release('md-release', markdown_import_id=self.import_id)
+        first = store.release_directory('md-release')
+        before = (first / 'public/data/items' / f"{bound['itemId']}.json").read_bytes()
+        store.write_json_atomic(store.CURRENT, {'releaseId': 'md-release',
+            'indexSha256': store.sha256(first / 'public/data/index.json')})
+        third = root / '2026-10-27' / 'NEW' / '2026-10-27-124-C-Sign' / 'NEW-Earning call-3Q69.md'
+        third.parent.mkdir(parents=True)
+        third.write_text('# NEW Earning call 3Q69\nSET ทะเบียน 124\n', encoding='utf-8')
+        with status.open('a', encoding='utf-8') as f:
+            f.write('NEW,2026-10-27,124,run-c,done\n')
+        job = importer.create_request('thai-third', '3Q69', {**self.authorization, 'importId': 'thai-third'})
+        old = next(e for e in job['entries'] if e['originalPath'] == str(nested))
+        self.assertEqual((old['itemId'], old['disposition'], old['identityScheme']),
+                         (bound['itemId'], 'preserve_existing', 'event-registration-v1'))
+        release.prepare_release('thai-third-release', markdown_import_id='thai-third')
+        self.assertEqual((store.release_directory('thai-third-release') / 'public/data/items' /
+                          f"{old['itemId']}.json").read_bytes(), before)
+
     def test_md_import_needs_no_pdf_producer_manifest_or_status_qa(self):
         Path(self.new["files"][0]["path"]).with_suffix(".pdf").write_bytes(b"not a PDF")
         old_bytes = (self.baseline / "public/data/items" / f"{self.kept['id']}.json").read_bytes()

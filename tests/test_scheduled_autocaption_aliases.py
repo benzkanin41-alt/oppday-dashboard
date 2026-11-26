@@ -98,6 +98,43 @@ class ScheduledAutocaptionAliasTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.discover()
 
+    def test_nested_thai_set_registration_binds_header_folder_and_workflow(self):
+        summary, primary, _ = self.pair(nested=True)
+        body = ('# NEW Earning call 3Q69\nEvent date: 2026-11-24\n'
+                '- สไลด์ SET ทะเบียน 12034 และ transcript\n')
+        for path in (summary, primary):
+            path.write_text(body, encoding='utf-8')
+        aliases = self.discover()
+        self.assertEqual(aliases[0]['sha256'], hashlib.sha256(summary.read_bytes()).hexdigest())
+        self.assertEqual(importer.event_registration(body), '12034')
+        self.assertEqual(importer.source_event(summary, '3Q69', 'NEW'), '2026-11-24')
+
+    def test_nested_thai_registration_rejects_wrong_and_ambiguous_numbers(self):
+        summary, primary, _ = self.pair(nested=True)
+        for registration in ('SET ทะเบียน 120340',
+                             'SET ทะเบียน 12034\nทะเบียน SET 999',
+                             'SET ทะเบียน 12034\nทะเบียน 999',
+                             'SET ทะเบียน\n12034'):
+            with self.subTest(registration=registration):
+                body = ('# NEW Earning call 3Q69\nEvent date: 2026-11-24\n'
+                        + registration + '\n')
+                for path in (summary, primary):
+                    path.write_text(body, encoding='utf-8')
+                with self.assertRaises(ValueError):
+                    self.discover()
+                with self.assertRaises(ValueError):
+                    importer.source_event(summary, '3Q69', 'NEW')
+
+    def test_thai_registration_requires_matching_workflow_row(self):
+        summary, primary, _ = self.pair(nested=True)
+        body = '# NEW Earning call 3Q69\nEvent date: 2026-11-24\nSET ทะเบียน 12034\n'
+        for path in (summary, primary):
+            path.write_text(body, encoding='utf-8')
+        self.rows = ['NEW,2026-11-24,999,run-new,done\n']
+        self.write_status()
+        with self.assertRaises(ValueError):
+            self.discover()
+
     def test_nested_folder_registration_cannot_be_supplied_only_in_late_body(self):
         summary, primary, _ = self.pair(nested=True, registration='123')
         self.rows = ['NEW,2026-11-24,456,run-new,done\n']
@@ -123,6 +160,33 @@ class ScheduledAutocaptionAliasTests(unittest.TestCase):
         alias = self.discover()[0]
         self.assertEqual(alias['sha256'], hashlib.sha256(summary.read_bytes()).hexdigest())
         self.assertEqual(alias['eventDate'], '2026-11-24')
+
+    def test_event_date_label_distinguishes_fiscal_period_and_later_header_line(self):
+        for event_label in ('นำเสนอ', 'Oppday', 'Oppday วันที่', 'SET Opportunity Day'):
+            with self.subTest(label=event_label):
+                header = ('# NEW Earning call 3Q69\n\nCompany\n\n'
+                          'งวดสิ้นสุด 30 กันยายน 2569 | ' + event_label + ' 24 พฤศจิกายน 2569\n')
+                self.assertEqual(importer.autocaption_header_event_dates(header), {'2026-11-24'})
+
+    def test_missing_conflicting_or_wrong_event_label_dates_block(self):
+        summary, primary, _ = self.pair()
+        headers = ('งวดสิ้นสุด 24 พฤศจิกายน 2569',
+                   'Oppday 24 พฤศจิกายน 2569 | นำเสนอ 23 พฤศจิกายน 2569',
+                   'Oppday 23 พฤศจิกายน 2569',
+                   'Oppday\n24 พฤศจิกายน 2569',
+                   'Oppday 24 พฤศจิกายน 25690',
+                   'Oppday 2026-11-240',
+                   'Oppday 24 พฤศจิกายน 2569 ถึง 25 พฤศจิกายน 2569',
+                   'Oppday 2026-11-24 / 2026-11-25',
+                   'Oppday 2026-11-24, 2026-11-25',
+                   'Oppday 24 พฤศจิกายน 2569 | Event date: unknown')
+        for header in headers:
+            with self.subTest(header=header):
+                body = '# NEW Earning call 3Q69\n' + header + '\nSET registration 12034\n'
+                for path in (summary, primary):
+                    path.write_text(body, encoding='utf-8')
+                with self.assertRaises(ValueError):
+                    self.discover()
 
     def test_registration_matches_workflow_row_when_present(self):
         _, _, alias = self.pair()

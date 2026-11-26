@@ -186,6 +186,35 @@ def discover(quarter: str, aliases: list[dict] | None = None) -> list[Path]:
     return sorted(paths)
 
 
+REGISTRATION_PATTERN = r"(?:\bSET[ \t]+(?:registration|ทะเบียน)|ทะเบียน[ \t]+SET)[ \t]+(\d+)\b"
+ALIAS_REGISTRATION_PATTERN = r"(?:\bSET[ \t]+(?:registration|ทะเบียน)|ทะเบียน(?:[ \t]+SET)?)[ \t]+(\d+)\b"
+
+
+def autocaption_header_event_dates(text: str) -> set[str]:
+    """Read explicitly labelled event dates, excluding fiscal-period dates."""
+    months = {name: i for i, name in enumerate(('มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+              'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'), 1)}
+    label = re.compile(r'\bSET[ \t]+Opportunity[ \t]+Day\b|\bOppday\b|\bEvent[ \t]+date\b|'
+                       r'\bEarnings[ \t]+Call\b|นำเสนอ', re.I)
+    date_pattern = re.compile(r'[ \t]*(?::[ \t]*)?(?:วันที่[ \t]*)?'
+                              r'(?:(\d{4}-\d{2}-\d{2})|(\d{1,2})[ \t]+('
+                              + '|'.join(months) + r')[ \t]+(\d{4}))(?!\d)')
+    result = set()
+    for line in text.splitlines()[:8]:
+        for match in label.finditer(line):
+            value = date_pattern.match(line, match.end())
+            require(value is not None, "Autocaption event date label has no valid date")
+            require(not re.match(r'[ \t]*(?:ถึง|และ|to|and|[-–—/,;&])[ \t]*\d', line[value.end():], re.I),
+                    "Autocaption event date must not be a range or multiple dates")
+            if value[1]:
+                result.add(date.fromisoformat(value[1]).isoformat())
+            else:
+                year = int(value[4])
+                result.add(date(year - 543 if year >= 2400 else year,
+                                months[value[3]], int(value[2])).isoformat())
+    return result
+
+
 def source_event(path: Path, quarter: str, ticker: str) -> str:
     """Accept the standard dated path or an explicitly identified nested event."""
     parts = path.relative_to(summary_root(quarter)).parts
@@ -197,7 +226,10 @@ def source_event(path: Path, quarter: str, ticker: str) -> str:
         match = re.fullmatch(r"(\d{4}-\d{2}-\d{2})-(\d+)-([A-Za-z0-9-]+)", parts[2])
         require(match is not None and match[1] == event, "Nested event identity differs")
         _, text = read_markdown(path, ticker, quarter)
-        require(bool(re.search(rf"(?:\bSET registration|ทะเบียน\s+SET)\s+{re.escape(match[2])}\b", text, re.I)),
+        header = '\n'.join(text.splitlines()[:10])
+        registrations = set(re.findall(REGISTRATION_PATTERN, header, re.I))
+        all_registrations = set(re.findall(ALIAS_REGISTRATION_PATTERN, header, re.I))
+        require(registrations == all_registrations == {match[2]},
                 "Nested event registration differs from Markdown")
     return event
 
@@ -224,8 +256,6 @@ def discover_scheduled_autocaption_aliases(quarter: str) -> list[dict]:
     status = server.read_workflow_status(root.parent / f"workflow_status_{quarter}.csv")
     accepted = accepted_event_keys(quarter)
     pattern = re.compile(rf"([A-Z0-9&.\-]+)-Earning call-{quarter}-YouTube-autocaption\.md")
-    months = {name: i for i, name in enumerate(('มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-              'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'), 1)}
     for path in sorted(root.rglob(f"*-Earning call-{quarter}-YouTube-autocaption.md")):
         if path.resolve() in known_paths:
             continue
@@ -236,14 +266,10 @@ def discover_scheduled_autocaption_aliases(quarter: str) -> list[dict]:
         require((ticker, event) not in known, "Conflicting automatic alias for the same ticker and event date")
         require((ticker, event) not in accepted, "Cannot automatically rebind an accepted event to a new source filename")
         digest, text = read_markdown(path, ticker, quarter)
-        header = '\n'.join(text.splitlines()[:3])
-        dates = set(re.findall(r'\b\d{4}-\d{2}-\d{2}\b', header))
-        for day, month, year in re.findall(r'(\d{1,2})\s+(' + '|'.join(months) + r')\s+(\d{4})', header):
-            y = int(year) - 543 if int(year) >= 2400 else int(year)
-            dates.add(date(y, months[month], int(day)).isoformat())
+        dates = autocaption_header_event_dates(text)
         require(dates == {event}, "Autocaption event date missing or differs from Markdown header")
         rows = [row for row in status['by_ticker'].get(ticker, []) if row['_event_date'] == event]
-        registrations = set(re.findall(r'(?:\bSET registration|ทะเบียน(?:\s+SET)?)\s+(\d+)\b',
+        registrations = set(re.findall(ALIAS_REGISTRATION_PATTERN,
                                        '\n'.join(text.splitlines()[:10]), re.I))
         require(len(registrations) == 1, "Autocaption header needs one event registration")
         registration = next(iter(registrations))
@@ -265,9 +291,10 @@ def discover_scheduled_autocaption_aliases(quarter: str) -> list[dict]:
 
 def event_registration(text: str) -> str:
     # The identifying header, not incidental references later in a report.
-    matches = set(re.findall(r"(?:\bSET registration|ทะเบียน\s+SET)\s+(\d+)\b",
-                             "\n".join(text.splitlines()[:8]), re.I))
-    require(len(matches) == 1, "Same-day events require one header registration")
+    header = "\n".join(text.splitlines()[:8])
+    matches = set(re.findall(REGISTRATION_PATTERN, header, re.I))
+    all_matches = set(re.findall(ALIAS_REGISTRATION_PATTERN, header, re.I))
+    require(len(matches) == 1 and matches == all_matches, "Same-day events require one header registration")
     return next(iter(matches))
 
 
@@ -323,9 +350,12 @@ def create_request(import_id: str, quarter: str, authorization: dict, *, expecte
         legacy_id = item['id']
         # Preserve a previously accepted event-bound ID even after the cohort changes.
         if registration is None:
-            header = re.search(r"(?:\bSET registration|ทะเบียน\s+SET)\s+(\d+)\b",
-                               "\n".join(text.splitlines()[:8]), re.I)
-            registration = header.group(1) if header else None
+            header_text = "\n".join(text.splitlines()[:8])
+            headers = set(re.findall(REGISTRATION_PATTERN, header_text, re.I))
+            all_headers = set(re.findall(ALIAS_REGISTRATION_PATTERN, header_text, re.I))
+            require(not headers or headers == all_headers and len(headers) == 1,
+                    "Header event registration is ambiguous")
+            registration = next(iter(headers)) if headers else None
         event_id = registered_event_id(quarter, ticker, event_date, registration) if registration else None
         if event_id in baseline_by_id:
             item['id'] = event_id
