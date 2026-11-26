@@ -51,9 +51,9 @@ class MarkdownImportTests(unittest.TestCase):
                               "preserveOriginals": True, "preserveHistory": True,
                               "userRequest": "Import existing Earning call Markdown without PDF QA"}
 
-    def make_item(self, ticker, quarter):
+    def make_item(self, ticker, quarter, event_date="2026-10-27"):
         root = self.sources / quarter / "Oppday" / server.SUMMARY_DIR_NAME
-        path = root / "2026-10-27" / f"{ticker}-Earning call-{quarter}.md"
+        path = root / event_date / f"{ticker}-Earning call-{quarter}.md"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(f"# {ticker} Earning call {quarter}\n\nExisting source text", encoding="utf-8")
         groups = {}
@@ -68,6 +68,71 @@ class MarkdownImportTests(unittest.TestCase):
     def prepare(self):
         self.request()
         return release.prepare_release("md-release", markdown_import_id=self.import_id)
+
+    def test_date_scoped_release_adds_only_requested_event_and_keeps_history(self):
+        new = self.make_item("DATED", "3Q69", "2026-11-25")
+        self.authorization["additionEventDate"] = "2026-11-25"
+        historical_payload = self.baseline / "public/data/items" / f"{self.kept['id']}.json"
+        historical_hash = store.sha256(historical_payload)
+        self.prepare()
+        job, _, _ = importer.load_request(self.import_id)
+        self.assertEqual(job["additionEventDate"], "2026-11-25")
+        self.assertEqual({entry["ticker"]: entry["disposition"] for entry in job["entries"]},
+                         {"DATED": "add", "KEEP": "preserve_existing", "NEW": "defer"})
+        target = store.release_directory("md-release")
+        published = store.read_json(target / "public/data/index.json")["items"]
+        self.assertEqual({item["id"] for item in published}, {self.old["id"], self.kept["id"], new["id"]})
+        self.assertEqual(store.sha256(target / "public/data/items" / historical_payload.name), historical_hash)
+        # Later changes to a deferred file are handled by a fresh import.
+        Path(self.new["files"][0]["path"]).unlink()
+        manifest = store.read_json(target / "manifest.json")
+        proof = importer.verify_prepared_release("md-release", manifest)
+        self.assertEqual(proof["cohortItemIds"], sorted([self.kept["id"], new["id"]]))
+        with self.assertRaisesRegex(ValueError, "cohort changed"):
+            importer.load_request(self.import_id)
+
+    def test_date_scope_validates_format_and_rejects_changes_to_selection(self):
+        for invalid in ("20261125", "2026-11-31", None, 20261125):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                importer.create_request(self.import_id, "3Q69", {**self.authorization, "additionEventDate": invalid})
+        self.authorization["additionEventDate"] = "2026-11-25"
+        job = self.request()
+        directory = importer.import_directory(self.import_id)
+        altered = store.read_json(directory / "import.json")
+        altered["additionEventDate"] = "2026-10-27"
+        store.write_json_atomic(directory / "import.json", altered)
+        with self.assertRaisesRegex(ValueError, "addition date differs from authorization"):
+            importer.load_request(self.import_id)
+        deferred = next(entry for entry in job["entries"] if entry["disposition"] == "defer")
+        deferred["disposition"] = "add"
+        store.write_json_atomic(directory / "import.json", job)
+        with self.assertRaisesRegex(ValueError, "disposition differs"):
+            importer.load_request(self.import_id)
+
+    def test_date_scoped_release_only_inherits_aliases_for_published_records(self):
+        root = importer.summary_root("3Q69")
+        aliases = []
+        for ticker, event in (("ALLOWED", "2026-11-25"), ("DEFERRED", "2026-11-26")):
+            filename = f"{ticker}-Earning call-3Q69-YouTube-autocaption.md"
+            summary = root / event / filename
+            primary = root.parent / event / ticker / filename
+            for path in (summary, primary):
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(f"# {ticker} Earning call 3Q69\n\nExisting text\n", encoding="utf-8")
+            aliases.append({"ticker": ticker, "eventDate": event, "filename": filename,
+                            "sha256": store.sha256(summary)})
+        self.authorization.update(additionEventDate="2026-11-25", sourceAliases=aliases)
+        self.prepare()
+        target = store.release_directory("md-release")
+        store.write_json_atomic(store.CURRENT, {"releaseId": "md-release",
+            "indexSha256": store.sha256(target / "public/data/index.json")})
+        self.assertEqual(importer.source_aliases("3Q69"), [aliases[0]])
+        approved = {**self.authorization, "importId": "next-date", "additionEventDate": "2026-11-26",
+                    "sourceAliases": [aliases[1]]}
+        job = importer.create_request("next-date", "3Q69", approved)
+        records = {entry["ticker"]: entry["disposition"] for entry in job["entries"]}
+        self.assertEqual((records["ALLOWED"], records["DEFERRED"]), ("preserve_existing", "add"))
+        self.assertEqual([item["symbol"] for item in importer.select_items("next-date")], ["DEFERRED"])
 
     def test_nested_event_is_distinct_and_bound_to_registration(self):
         root = importer.summary_root('3Q69')
@@ -282,6 +347,22 @@ class MarkdownImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'workflow status changed'):
             self.request()
         self.assertFalse(importer.import_directory(self.import_id).exists())
+
+    def test_manual_date_scoped_alias_requires_date_and_bound_status_hash(self):
+        self.make_alias()
+        status = importer.summary_root('3Q69').parent / 'workflow_status_3Q69.csv'
+        status.write_text('ticker,event_date,registration_id,run_id,conclusion_status\n'
+                          'NEW,2026-10-27,12034,run-a,done\n', encoding='utf-8')
+        self.authorization.update(sourceAliasPolicy='3q69-manual-date-scoped-verified-autocaption-v1',
+                                  sourceAliasStatusSha256=store.sha256(status))
+        with self.assertRaisesRegex(ValueError, 'requires an authorized addition date'):
+            self.request()
+        self.authorization['additionEventDate'] = '2026-10-27'
+        self.request()
+        importer.load_request(self.import_id)
+        status.write_text(status.read_text(encoding='utf-8').replace('done', 'blocked'), encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'workflow status changed'):
+            importer.load_request(self.import_id)
 
     def test_expected_inventory_drift_blocks_before_request_directory_is_created(self):
         with self.assertRaisesRegex(ValueError, 'Source inventory changed'):

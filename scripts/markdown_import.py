@@ -42,12 +42,28 @@ def check_authorization(authorization: dict, import_id: str, quarter: str) -> No
             "Explicit current Markdown-only import authorization is required")
 
 
+def addition_event_date(authorization: dict, quarter: str) -> str | None:
+    if "additionEventDate" not in authorization:
+        return None
+    selected = authorization["additionEventDate"]
+    require(quarter == "3Q69" and isinstance(selected, str)
+            and re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", selected) is not None,
+            "Date-scoped Markdown intake requires a 3Q69 ISO event date")
+    date.fromisoformat(selected)
+    return selected
+
+
 def verify_scheduled_status_hash(quarter: str, authorization: dict) -> None:
-    if authorization.get('sourceAliasPolicy') == '3q69-scheduled-verified-youtube-autocaption-v1':
+    policy = authorization.get('sourceAliasPolicy')
+    if policy in ('3q69-scheduled-verified-youtube-autocaption-v1',
+                  '3q69-manual-date-scoped-verified-autocaption-v1'):
         require(quarter == '3Q69', 'Automatic autocaption policy is limited to 3Q69')
+        if policy == '3q69-manual-date-scoped-verified-autocaption-v1':
+            require(addition_event_date(authorization, quarter) is not None,
+                    'Manual autocaption evidence requires an authorized addition date')
         path = summary_root(quarter).parent / f'workflow_status_{quarter}.csv'
         require(path.is_file() and store.sha256(path) == authorization.get('sourceAliasStatusSha256'),
-                'Scheduled autocaption workflow status changed since admission')
+                'Autocaption workflow status changed since admission')
 
 
 def summary_root(quarter: str) -> Path:
@@ -71,6 +87,16 @@ def read_markdown(path: Path, ticker: str, quarter: str) -> tuple[str, str]:
     return hashlib.sha256(data).hexdigest(), text
 
 
+def accepted_source_aliases(job: dict) -> list[dict]:
+    aliases = job.get("sourceAliases", [])
+    if "additionEventDate" not in job:
+        return aliases
+    accepted_sources = {Path(entry["originalPath"]).resolve() for entry in job["entries"]
+                        if entry["disposition"] in ("add", "preserve_existing")}
+    return [alias for alias in aliases
+            if alias_summary_path(job["quarter"], alias).resolve() in accepted_sources]
+
+
 def source_aliases(quarter: str, authorization: dict | None = None) -> list[dict]:
     """Inherit only hash-bound accepted aliases, plus explicit current exceptions."""
     inherited = []
@@ -88,7 +114,7 @@ def source_aliases(quarter: str, authorization: dict | None = None) -> list[dict
                         and store.sha256(directory / "authorization.json") == proof["authorizationSha256"],
                         "Accepted source alias evidence changed")
                 if job["quarter"] == quarter:
-                    inherited = job.get("sourceAliases", [])
+                    inherited = accepted_source_aliases(job)
     result = {}
     for alias in inherited + (authorization or {}).get("sourceAliases", []):
         require(set(alias) in ({"ticker", "eventDate", "filename", "sha256"},
@@ -308,6 +334,7 @@ def create_request(import_id: str, quarter: str, authorization: dict, *, expecte
     directory = import_directory(import_id)
     require(not directory.exists(), "Use a new immutable Markdown import ID")
     check_authorization(authorization, import_id, quarter)
+    selected_date = addition_event_date(authorization, quarter)
     verify_scheduled_status_hash(quarter, authorization)
     root = summary_root(quarter)
     previous_id = store.current_pointer()["releaseId"]
@@ -370,7 +397,7 @@ def create_request(import_id: str, quarter: str, authorization: dict, *, expecte
                 use_legacy = path == (standard[0] if len(standard) == 1 else sorted(cohort)[0])
             if not use_legacy:
                 item['id'] = event_id
-        disposition = "add"
+        disposition = "defer" if selected_date and event_date != selected_date else "add"
         payload_sha = None
         if item["id"] in baseline_by_id:
             payload_path = previous / "public/data/items" / f"{item['id']}.json"
@@ -399,6 +426,8 @@ def create_request(import_id: str, quarter: str, authorization: dict, *, expecte
            "importId": import_id, "quarter": quarter, "createdAt": datetime.now(timezone.utc).isoformat(),
            "baseReleaseId": previous_id, "baseIndexSha256": store.sha256(index_path), "entries": entries,
            "pdfValidation": "not_requested", "semanticValidation": "not_recertified_existing_source"}
+    if selected_date is not None:
+        job["additionEventDate"] = selected_date
     same_day = [e for e in entries if len(cohorts[(e['ticker'], e['eventDate'])]) > 1]
     if same_day:
         job['sameDayWorkflowRows'] = [
@@ -423,6 +452,10 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
             and job.get("importId") == import_id, "Markdown import identity differs")
     authorization = store.read_json(directory / "authorization.json")
     check_authorization(authorization, import_id, job["quarter"])
+    selected_date = addition_event_date(authorization, job["quarter"])
+    require(job.get("additionEventDate") == selected_date
+            and ("additionEventDate" in job) == (selected_date is not None),
+            "Requested Markdown addition date differs from authorization")
     if require_complete_inventory:
         verify_scheduled_status_hash(job['quarter'], authorization)
     require(job.get("pdfValidation") == "not_requested"
@@ -436,12 +469,12 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
     entries = job["entries"]
     aliases = job.get("sourceAliases", [])
     # Each exception must be explicitly approved or inherited from this request's baseline.
-    approved = store.read_json(directory / "authorization.json").get("sourceAliases", [])
+    approved = list(authorization.get("sourceAliases", []))
     base_manifest = base / "manifest.json"
     if base_manifest.exists():
         prior_import = store.read_json(base_manifest).get("markdownImportId")
         if prior_import:
-            approved += store.read_json(import_directory(prior_import) / "import.json").get("sourceAliases", [])
+            approved += accepted_source_aliases(store.read_json(import_directory(prior_import) / "import.json"))
     require(all(alias in approved for alias in aliases), "Unapproved source alias")
     require(bool(entries) and len({entry["itemId"] for entry in entries}) == len(entries),
             "Missing or duplicate Markdown import entries")
@@ -479,6 +512,17 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
         require(bool(re.fullmatch(r"[A-Z0-9&.\-]+", ticker)) and entry["quarter"] == job["quarter"],
                 "Markdown ticker/quarter differs")
         date.fromisoformat(entry["eventDate"])
+        if entry["itemId"] in baseline_by_id:
+            require(entry["disposition"] == "preserve_existing", "MD imports cannot replace history")
+        else:
+            require(entry["baselinePayloadSha256"] is None, "New Markdown cannot carry an accepted payload hash")
+            expected_disposition = "defer" if selected_date and entry["eventDate"] != selected_date else "add"
+            require(entry["disposition"] == expected_disposition,
+                    "Markdown disposition differs from its authorized addition date")
+            if expected_disposition == "defer" and not require_complete_inventory:
+                # The immutable request binds the inventory observed at preparation;
+                # unpublished sources are not dependencies of the accepted release.
+                continue
         canonical = root / entry["eventDate"] / f"{ticker}-Earning call-{job['quarter']}.md"
         source = Path(entry["originalPath"])
         alias = alias_for(source, job['quarter'], aliases)
@@ -506,14 +550,10 @@ def load_request(import_id: str, *, require_complete_inventory: bool = True) -> 
             verify_alias_sources(job['quarter'], alias)
         require(digest == entry["sha256"], "Original Markdown hash changed")
         if entry["disposition"] == "preserve_existing":
-            require(entry["itemId"] in baseline_by_id, "Preserved record is absent from the baseline")
             payload = base / "public/data/items" / f"{entry['itemId']}.json"
             require(store.sha256(payload) == entry["baselinePayloadSha256"]
                     and store.read_json(payload)["item"].get("markdown") == static.redact_local_paths(text),
                     "Accepted historical Markdown differs")
-        else:
-            require(entry["disposition"] == "add" and entry["itemId"] not in baseline_by_id,
-                    "MD imports may add records, never replace history")
         checked.append((entry, text))
     return job, baseline, checked
 
@@ -557,7 +597,7 @@ def verify_import(import_id: str, items: list[dict], *, require_complete_invento
     return {"pass": True, "kind": "explicit-existing-markdown-import", "importId": import_id,
             "authorizationSha256": store.sha256(directory / "authorization.json"),
             "requestSha256": store.sha256(directory / "import.json"),
-            "cohortItemIds": sorted(entry["itemId"] for entry, _ in checked),
+            "cohortItemIds": sorted(entry["itemId"] for entry, _ in checked if entry["disposition"] != "defer"),
             "selectedItemIds": sorted(expected), "baseReleaseId": job["baseReleaseId"],
             "pdfValidation": "not_requested", "semanticValidation": "not_recertified_existing_source"}
 
