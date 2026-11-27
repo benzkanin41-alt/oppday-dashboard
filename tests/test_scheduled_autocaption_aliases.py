@@ -161,6 +161,21 @@ class ScheduledAutocaptionAliasTests(unittest.TestCase):
         self.assertEqual(alias['sha256'], hashlib.sha256(summary.read_bytes()).hexdigest())
         self.assertEqual(alias['eventDate'], '2026-11-24')
 
+    def test_exact_autocaption_description_in_heading_and_thai_date(self):
+        summary, primary, _ = self.pair('STARM', '2026-11-26')
+        body = ('# STARM Earning call 3Q69 — YouTube autocaption\n\n'
+                'บริษัท สตาร์ มันนี่ จำกัด (มหาชน) | Oppday 26 พฤศจิกายน 2569 | ผล 3Q69 และ 9M69\n')
+        for path in (summary, primary):
+            path.write_text(body, encoding='utf-8')
+        aliases = importer.discover_scheduled_autocaption_aliases(
+            '3Q69', require_workflow_registration=False)
+        self.assertEqual(aliases[0]['eventDate'], '2026-11-26')
+        self.assertEqual(aliases[0]['sha256'], hashlib.sha256(summary.read_bytes()).hexdigest())
+        standard = summary.with_name('STARM-Earning call-3Q69.md')
+        standard.write_text(body, encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'heading differs'):
+            importer.read_markdown(standard, 'STARM', '3Q69')
+
     def test_event_date_label_distinguishes_fiscal_period_and_later_header_line(self):
         for event_label in ('นำเสนอ', 'Oppday', 'Oppday วันที่', 'SET Opportunity Day'):
             with self.subTest(label=event_label):
@@ -217,6 +232,36 @@ class ScheduledAutocaptionAliasTests(unittest.TestCase):
             path.write_text('# NEW Earning call 3Q69\nEvent date: 2026-11-24\nContent\n', encoding='utf-8')
         with self.assertRaises(ValueError):
             self.discover()
+
+    def test_v2_flat_missing_registration_and_missing_or_ambiguous_status(self):
+        summary, primary, _ = self.pair()
+        body = '# NEW Earning call 3Q69\nEvent date: 2026-11-24\nContent\n'
+        for path in (summary, primary):
+            path.write_text(body, encoding='utf-8')
+        for rows in ([], ['NEW,2026-11-24,1,run-a,done\n',
+                          'NEW,2026-11-24,2,run-b,done\n']):
+            self.rows = rows
+            self.write_status()
+            aliases = importer.discover_scheduled_autocaption_aliases(
+                '3Q69', require_workflow_registration=False)
+            self.assertEqual(aliases[0]['sha256'], hashlib.sha256(summary.read_bytes()).hexdigest())
+            self.assertEqual(importer.discover('3Q69', aliases), [summary])
+
+    def test_v2_nested_missing_registration_keeps_path_and_pair_checks(self):
+        summary, primary, _ = self.pair(nested=True)
+        body = '# NEW Earning call 3Q69\nEvent date: 2026-11-24\nContent\n'
+        for path in (summary, primary):
+            path.write_text(body, encoding='utf-8')
+        self.status.unlink()
+        aliases = importer.discover_scheduled_autocaption_aliases(
+            '3Q69', require_workflow_registration=False)
+        self.assertEqual(importer.source_event(summary, '3Q69', 'NEW'), '2026-11-24')
+        self.assertEqual(importer.discover('3Q69', aliases), [summary])
+        for path in (summary, primary):
+            path.write_text(body + 'SET registration 999\n', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'registration differs'):
+            importer.discover_scheduled_autocaption_aliases(
+                '3Q69', require_workflow_registration=False)
 
     def test_accepted_canonical_event_is_not_rebound_to_new_alias(self):
         self.pair()

@@ -134,6 +134,49 @@ class MarkdownImportTests(unittest.TestCase):
         self.assertEqual((records["ALLOWED"], records["DEFERRED"]), ("preserve_existing", "add"))
         self.assertEqual([item["symbol"] for item in importer.select_items("next-date")], ["DEFERRED"])
 
+    def test_v2_nested_missing_registration_roundtrips_and_preserves_history(self):
+        path = Path(self.new['files'][0]['path'])
+        event = path.parent.name
+        nested = path.parent / 'NEW' / f'{event}-12042-C-Sign' / 'NEW-Earning call-3Q69-YouTube-autocaption.md'
+        nested.parent.mkdir(parents=True)
+        body = f'# NEW Earning call 3Q69\nEvent date: {event}\nText\n'
+        nested.write_text(body, encoding='utf-8')
+        path.unlink()
+        root = importer.summary_root('3Q69')
+        primary = root.parent / nested.relative_to(root)
+        primary.parent.mkdir(parents=True)
+        primary.write_bytes(nested.read_bytes())
+        alias = {'ticker': 'NEW', 'eventDate': event, 'filename': nested.name,
+                 'nestedEvent': nested.parent.name, 'sha256': store.sha256(nested)}
+        self.authorization.update(sourceAliasPolicy='3q69-scheduled-verified-youtube-autocaption-v2',
+                                  sourceAliases=[alias])
+        job = self.request()
+        entry = next(e for e in job['entries'] if e['ticker'] == 'NEW')
+        self.assertEqual(entry['disposition'], 'add')
+        self.assertEqual(entry['registrationId'], '')
+        self.assertEqual(importer.select_items(self.import_id)[0]['symbol'], 'NEW')
+        self.assertEqual(next(e for e in job['entries'] if e['ticker'] == 'KEEP')['disposition'],
+                         'preserve_existing')
+        release.prepare_release('md-release', markdown_import_id=self.import_id)
+        target = store.release_directory('md-release')
+        store.write_json_atomic(store.CURRENT, {'releaseId': 'md-release',
+                                'indexSha256': store.sha256(target / 'public/data/index.json')})
+        self.assertEqual(importer.source_aliases('3Q69'), [alias])
+        next_auth = {**self.authorization, 'importId': 'next-v2-nested'}
+        next_auth.pop('sourceAliases')
+        importer.create_request('next-v2-nested', '3Q69', next_auth)
+        self.assertEqual(importer.select_items('next-v2-nested'), [])
+
+    def test_v2_ambiguous_workflow_rows_are_not_used_for_one_source(self):
+        status = importer.summary_root('3Q69').parent / 'workflow_status_3Q69.csv'
+        status.write_text('ticker,event_date,registration_id,run_id,conclusion_status\n'
+                          'NEW,2026-10-27,1,run-a,done\n'
+                          'NEW,2026-10-27,2,run-b,done\n', encoding='utf-8')
+        self.authorization['sourceAliasPolicy'] = '3q69-scheduled-verified-youtube-autocaption-v2'
+        entry = next(e for e in self.request()['entries'] if e['ticker'] == 'NEW')
+        self.assertEqual((entry['registrationId'], entry['runId'], entry['workflowStatus']), ('', '', ''))
+        self.assertEqual(importer.select_items(self.import_id)[0]['symbol'], 'NEW')
+
     def test_nested_event_is_distinct_and_bound_to_registration(self):
         root = importer.summary_root('3Q69')
         path = root / '2026-11-16' / 'KEEP' / '2026-11-16-11984-C-Sign' / 'KEEP-Earning call-3Q69.md'

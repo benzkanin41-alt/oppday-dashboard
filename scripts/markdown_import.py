@@ -55,6 +55,13 @@ def addition_event_date(authorization: dict, quarter: str) -> str | None:
 
 def verify_scheduled_status_hash(quarter: str, authorization: dict) -> None:
     policy = authorization.get('sourceAliasPolicy')
+    if policy in ('3q69-scheduled-verified-youtube-autocaption-v2',
+                  '3q69-manual-date-scoped-verified-autocaption-v2'):
+        require(quarter == '3Q69', 'Automatic autocaption policy is limited to 3Q69')
+        if policy == '3q69-manual-date-scoped-verified-autocaption-v2':
+            require(addition_event_date(authorization, quarter) is not None,
+                    'Manual autocaption evidence requires an authorized addition date')
+        return
     if policy in ('3q69-scheduled-verified-youtube-autocaption-v1',
                   '3q69-manual-date-scoped-verified-autocaption-v1'):
         require(quarter == '3Q69', 'Automatic autocaption policy is limited to 3Q69')
@@ -78,9 +85,11 @@ def read_markdown(path: Path, ticker: str, quarter: str) -> tuple[str, str]:
     text = data.decode("utf-8-sig").replace("\r\n", "\n").replace("\r", "\n")
     require(bool(text.strip()) and "\x00" not in text and "\ufffd" not in text,
             "Markdown is empty or has invalid text")
-    require(bool(re.match(rf"^#\s+{re.escape(ticker)}\s+Earning call\s+{quarter}\s*$",
+    descriptive_suffix = (r"(?:\s+—\s+YouTube autocaption)?"
+                          if path.name == f"{ticker}-Earning call-{quarter}-YouTube-autocaption.md" else "")
+    require(bool(re.match(rf"^#\s+{re.escape(ticker)}\s+Earning call\s+{quarter}{descriptive_suffix}\s*$",
                           text.splitlines()[0], re.IGNORECASE)),
-            "Markdown heading differs from its ticker/quarter")
+            f"Markdown heading differs from its ticker/quarter: {path}")
     after = path.stat()
     require((before.st_size, before.st_mtime_ns) == (after.st_size, after.st_mtime_ns),
             "Markdown changed while being read")
@@ -255,7 +264,12 @@ def source_event(path: Path, quarter: str, ticker: str) -> str:
         header = '\n'.join(text.splitlines()[:10])
         registrations = set(re.findall(REGISTRATION_PATTERN, header, re.I))
         all_registrations = set(re.findall(ALIAS_REGISTRATION_PATTERN, header, re.I))
-        require(registrations == all_registrations == {match[2]},
+        markers = re.search(r'(?:\bSET[ \t]+(?:registration|ทะเบียน)|ทะเบียน(?:[ \t]+SET)?)', header, re.I)
+        # A unique nested folder can identify a source even when its report
+        # omits a registration.  If a number is printed it must agree; cases
+        # with multiple same-day events retain the stricter checks below.
+        require((not markers and not all_registrations)
+                or registrations == all_registrations == {match[2]},
                 "Nested event registration differs from Markdown")
     return event
 
@@ -266,7 +280,7 @@ def accepted_event_keys(quarter: str) -> set[tuple[str, str]]:
     return {(item['symbol'], item['eventDate']) for item in index['items'] if item.get('quarter') == quarter}
 
 
-def discover_scheduled_autocaption_aliases(quarter: str) -> list[dict]:
+def discover_scheduled_autocaption_aliases(quarter: str, *, require_workflow_registration: bool = True) -> list[dict]:
     """Bind the specifically authorized 3Q69 filename variant to source bytes.
 
     This is called only by the scheduled admission path. Generic imports still
@@ -279,7 +293,8 @@ def discover_scheduled_autocaption_aliases(quarter: str) -> list[dict]:
         verify_alias_sources(quarter, alias)
     known = {(a['ticker'], a['eventDate']): a for a in aliases}
     known_paths = {alias_summary_path(quarter, a).resolve() for a in aliases}
-    status = server.read_workflow_status(root.parent / f"workflow_status_{quarter}.csv")
+    status = (server.read_workflow_status(root.parent / f"workflow_status_{quarter}.csv")
+              if require_workflow_registration else None)
     accepted = accepted_event_keys(quarter)
     pattern = re.compile(rf"([A-Z0-9&.\-]+)-Earning call-{quarter}-YouTube-autocaption\.md")
     for path in sorted(root.rglob(f"*-Earning call-{quarter}-YouTube-autocaption.md")):
@@ -294,18 +309,17 @@ def discover_scheduled_autocaption_aliases(quarter: str) -> list[dict]:
         digest, text = read_markdown(path, ticker, quarter)
         dates = autocaption_header_event_dates(text)
         require(dates == {event}, "Autocaption event date missing or differs from Markdown header")
-        rows = [row for row in status['by_ticker'].get(ticker, []) if row['_event_date'] == event]
-        registrations = set(re.findall(ALIAS_REGISTRATION_PATTERN,
-                                       '\n'.join(text.splitlines()[:10]), re.I))
-        require(len(registrations) == 1, "Autocaption header needs one event registration")
-        registration = next(iter(registrations))
-        require(len([row for row in rows if row['_registration_id'] == registration]) == 1,
-                "Autocaption event registration missing, ambiguous or differs from workflow status")
+        if require_workflow_registration:
+            rows = [row for row in status['by_ticker'].get(ticker, []) if row['_event_date'] == event]
+            registrations = set(re.findall(ALIAS_REGISTRATION_PATTERN,
+                                           '\n'.join(text.splitlines()[:10]), re.I))
+            require(len(registrations) == 1, "Autocaption header needs one event registration")
+            registration = next(iter(registrations))
+            require(len([row for row in rows if row['_registration_id'] == registration]) == 1,
+                    "Autocaption event registration missing, ambiguous or differs from workflow status")
         alias = {'ticker': ticker, 'eventDate': event, 'filename': path.name, 'sha256': digest}
         parts = path.relative_to(root).parts
         if len(parts) == 4:
-            require(parts[2].split('-')[3] == registration,
-                    "Autocaption nested event registration differs from header and workflow")
             alias['nestedEvent'] = parts[2]
         require(path.resolve() == alias_summary_path(quarter, alias).resolve(), "Autocaption source path differs")
         verify_alias_sources(quarter, alias)
@@ -343,6 +357,11 @@ def create_request(import_id: str, quarter: str, authorization: dict, *, expecte
     baseline = store.read_json(index_path)
     baseline_by_id = {item["id"]: item for item in baseline["items"]}
     status = server.read_workflow_status(root.parent / f"workflow_status_{quarter}.csv")
+    independent_sources = authorization.get('sourceAliasPolicy') in (
+        '3q69-scheduled-verified-youtube-autocaption-v2',
+        '3q69-manual-date-scoped-verified-autocaption-v2')
+    if independent_sources:
+        require(quarter == '3Q69', 'Automatic autocaption policy is limited to 3Q69')
     aliases = source_aliases(quarter, authorization)
     entries = []
     paths = discover(quarter, aliases)
@@ -360,7 +379,7 @@ def create_request(import_id: str, quarter: str, authorization: dict, *, expecte
         cohort = cohorts[(ticker, event_date)]
         candidates = [r for r in status['by_ticker'].get(ticker, []) if r['_event_date'] == event_date]
         registration = None
-        if len(cohort) > 1 or len(candidates) > 1:
+        if len(cohort) > 1 or (len(candidates) > 1 and not independent_sources):
             registration = event_registration(text)
             if len(path.relative_to(root).parts) == 4:
                 require(path.parent.name.split('-')[3] == registration,
@@ -368,6 +387,10 @@ def create_request(import_id: str, quarter: str, authorization: dict, *, expecte
             matches = [r for r in candidates if r['_registration_id'] == registration]
             require(len(matches) == 1, "Same-day event registration has missing or ambiguous workflow status")
             row = matches[0]
+        elif independent_sources:
+            # Workflow metadata is optional and is used only when unambiguous
+            # for this exact ticker and date; never borrow another event's row.
+            row = candidates[0] if len(candidates) == 1 else None
         else:
             row = server.find_workflow_row(status, ticker, event_date)
         meta = source_metadata(path, quarter, aliases, row)
