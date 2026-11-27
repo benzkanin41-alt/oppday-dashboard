@@ -262,14 +262,18 @@ def source_event(path: Path, quarter: str, ticker: str) -> str:
         require(match is not None and match[1] == event, "Nested event identity differs")
         _, text = read_markdown(path, ticker, quarter)
         header = '\n'.join(text.splitlines()[:10])
-        registrations = set(re.findall(REGISTRATION_PATTERN, header, re.I))
-        all_registrations = set(re.findall(ALIAS_REGISTRATION_PATTERN, header, re.I))
-        markers = re.search(r'(?:\bSET[ \t]+(?:registration|ทะเบียน)|ทะเบียน(?:[ \t]+SET)?)', header, re.I)
+        # Do not mistake company registration or an ordinary mention of
+        # registration for an event identifier. Retain standalone numeric
+        # references as conflicts when a SET identifier is also present.
+        explicit = r'(?:\bSET[ \t]+(?:registration|ทะเบียน)|(?<![ก-๙])ทะเบียน[ \t]+SET)'
+        standalone = r'(?<![ก-๙])ทะเบียน(?:[ \t]+SET)?'
+        registrations = set(re.findall(explicit + r'[ \t]+(\d+)\b', header, re.I))
+        all_registrations = set(re.findall(r'(?:' + explicit + '|' + standalone + r')[ \t]+(\d+)\b', header, re.I))
+        markers = re.search(explicit, header, re.I)
         # A unique nested folder can identify a source even when its report
         # omits a registration.  If a number is printed it must agree; cases
         # with multiple same-day events retain the stricter checks below.
-        require((not markers and not all_registrations)
-                or registrations == all_registrations == {match[2]},
+        require(not markers or registrations == all_registrations == {match[2]},
                 "Nested event registration differs from Markdown")
     return event
 
@@ -402,7 +406,8 @@ def create_request(import_id: str, quarter: str, authorization: dict, *, expecte
         if registration is None:
             header_text = "\n".join(text.splitlines()[:8])
             headers = set(re.findall(REGISTRATION_PATTERN, header_text, re.I))
-            all_headers = set(re.findall(ALIAS_REGISTRATION_PATTERN, header_text, re.I))
+            all_headers = (headers if independent_sources else
+                           set(re.findall(ALIAS_REGISTRATION_PATTERN, header_text, re.I)))
             require(not headers or headers == all_headers and len(headers) == 1,
                     "Header event registration is ambiguous")
             registration = next(iter(headers)) if headers else None

@@ -263,6 +263,23 @@ class ScheduledAutocaptionAliasTests(unittest.TestCase):
             importer.discover_scheduled_autocaption_aliases(
                 '3Q69', require_workflow_registration=False)
 
+    def test_nested_company_registration_is_not_event_registration(self):
+        summary, primary, _ = self.pair(nested=True)
+        for company in ('เลขทะเบียนบริษัท 0101234567890', 'เลขทะเบียน 0101234567890', 'ทะเบียน 0101234567890',
+                        'ทะเบียน: ไม่มี'):
+            with self.subTest(company=company):
+                body = '# NEW Earning call 3Q69\nEvent date: 2026-11-24\n' + company + '\n'
+                for path in (summary, primary):
+                    path.write_text(body, encoding='utf-8')
+                self.assertEqual(importer.source_event(summary, '3Q69', 'NEW'), '2026-11-24')
+                self.assertEqual(len(importer.discover_scheduled_autocaption_aliases(
+                    '3Q69', require_workflow_registration=False)), 1)
+        for path in (summary, primary):
+            path.write_text('# NEW Earning call 3Q69\nEvent date: 2026-11-24\n'
+                            'เลขทะเบียนบริษัท 0101234567890\nSET registration 999\n', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'registration differs'):
+            importer.source_event(summary, '3Q69', 'NEW')
+
     def test_accepted_canonical_event_is_not_rebound_to_new_alias(self):
         self.pair()
         self.accepted.add(('NEW', '2026-11-24'))
