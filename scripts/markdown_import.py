@@ -221,32 +221,56 @@ def discover(quarter: str, aliases: list[dict] | None = None) -> list[Path]:
     return sorted(paths)
 
 
-REGISTRATION_PATTERN = r"(?:\bSET[ \t]+(?:registration|ทะเบียน)|ทะเบียน[ \t]+SET)[ \t]+(\d+)\b"
-ALIAS_REGISTRATION_PATTERN = r"(?:\bSET[ \t]+(?:registration|ทะเบียน)|ทะเบียน(?:[ \t]+SET)?)[ \t]+(\d+)\b"
+REGISTRATION_LABEL = (r"(?:\bSET[ \t]+(?:Earnings[ \t]+Call[ \t]+)?(?:registration|ทะเบียน)"
+                      r"|(?<![ก-๙])ทะเบียน[ \t]+SET(?:[ \t]+C-Sign)?)")
+REGISTRATION_PATTERN = REGISTRATION_LABEL + r"[ \t]+(\d+)\b"
+ALIAS_REGISTRATION_PATTERN = (r"(?:" + REGISTRATION_LABEL
+                              + r"|(?<![ก-๙])ทะเบียน)[ \t]+(\d+)\b")
 
 
 def autocaption_header_event_dates(text: str) -> set[str]:
-    """Read explicitly labelled event dates, excluding fiscal-period dates."""
+    """Read labelled event dates and the bounded identifying metadata field."""
     months = {name: i for i, name in enumerate(('มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
               'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'), 1)}
     label = re.compile(r'\bSET[ \t]+Opportunity[ \t]+Day\b|\bOppday\b|\bEvent[ \t]+date\b|'
-                       r'\bEarnings[ \t]+Call\b|นำเสนอ', re.I)
+                       r'\bEarnings[ \t]+Call\b|(?<![ก-๙])นำเสนอ', re.I)
     date_pattern = re.compile(r'[ \t]*(?::[ \t]*)?(?:วันที่[ \t]*)?'
                               r'(?:(\d{4}-\d{2}-\d{2})|(\d{1,2})[ \t]+('
                               + '|'.join(months) + r')[ \t]+(\d{4}))(?!\d)')
+    def add_date(value):
+        if value[1]:
+            result.add(date.fromisoformat(value[1]).isoformat())
+        else:
+            year = int(value[4])
+            result.add(date(year - 543 if year >= 2400 else year,
+                            months[value[3]], int(value[2])).isoformat())
+
     result = set()
-    for line in text.splitlines()[:8]:
+    lines = text.splitlines()
+    # Some source reports use the final, standalone date field of the second
+    # identifying line. Require a company marker and at least three fields;
+    # never infer it from later prose, a fiscal label, or multiple date fields.
+    if len(lines) > 1:
+        fields = [field.strip() for field in lines[1].split('|')]
+        if len(fields) >= 3 and re.search(r'บริษัท|\bcompany\b', '|'.join(fields[:-1]), re.I):
+            standalone = [date_pattern.fullmatch(field) for field in fields]
+            if standalone[-1]:
+                require(sum(bool(value) for value in standalone) == 1,
+                        "Autocaption metadata has multiple standalone dates")
+                require(not re.search(r'(?:งวด|สิ้นสุด|ณ วันที่|as of|period end)[ \t]*$', fields[-2], re.I),
+                        "Autocaption metadata date is a fiscal-period date")
+                add_date(standalone[-1])
+    for line in lines[:8]:
         for match in label.finditer(line):
+            if (re.fullmatch(r'Earnings[ \t]+Call', match.group(), re.I)
+                    and re.search(r'\bSET[ \t]+$', line[:match.start()], re.I)
+                    and re.match(r'[ \t]+ทะเบียน[ \t]+\d+\b', line[match.end():], re.I)):
+                continue  # Explicit SET registration, not a date label.
             value = date_pattern.match(line, match.end())
             require(value is not None, "Autocaption event date label has no valid date")
             require(not re.match(r'[ \t]*(?:ถึง|และ|to|and|[-–—/,;&])[ \t]*\d', line[value.end():], re.I),
                     "Autocaption event date must not be a range or multiple dates")
-            if value[1]:
-                result.add(date.fromisoformat(value[1]).isoformat())
-            else:
-                year = int(value[4])
-                result.add(date(year - 543 if year >= 2400 else year,
-                                months[value[3]], int(value[2])).isoformat())
+            add_date(value)
     return result
 
 
@@ -265,7 +289,7 @@ def source_event(path: Path, quarter: str, ticker: str) -> str:
         # Do not mistake company registration or an ordinary mention of
         # registration for an event identifier. Retain standalone numeric
         # references as conflicts when a SET identifier is also present.
-        explicit = r'(?:\bSET[ \t]+(?:registration|ทะเบียน)|(?<![ก-๙])ทะเบียน[ \t]+SET)'
+        explicit = REGISTRATION_LABEL
         standalone = r'(?<![ก-๙])ทะเบียน(?:[ \t]+SET)?'
         registrations = set(re.findall(explicit + r'[ \t]+(\d+)\b', header, re.I))
         all_registrations = set(re.findall(r'(?:' + explicit + '|' + standalone + r')[ \t]+(\d+)\b', header, re.I))

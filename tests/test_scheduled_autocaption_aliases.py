@@ -183,6 +183,62 @@ class ScheduledAutocaptionAliasTests(unittest.TestCase):
                           'งวดสิ้นสุด 30 กันยายน 2569 | ' + event_label + ' 24 พฤศจิกายน 2569\n')
                 self.assertEqual(importer.autocaption_header_event_dates(header), {'2026-11-24'})
 
+    def test_metadata_last_pipe_field_identifies_event_date_for_flat_and_nested_sources(self):
+        fixtures = (
+            ('PIN', False, 'บริษัท ปิ่นทอง จำกัด (มหาชน) | ผลดำเนินงานถึง 30 กันยายน 2569 | 24 พฤศจิกายน 2569'),
+            ('QDC', True, 'Public Presentation CB | บริษัท ควอนตัม จำกัด (มหาชน) | การชี้แจงสถานะ C-Sign | 24 พฤศจิกายน 2569'),
+            ('RML', True, 'บริษัท ไรมอน จำกัด (มหาชน) | การนำเสนอ C-Sign สำหรับเครื่องหมาย CB | 24 พฤศจิกายน 2569'),
+        )
+        for ticker, nested, metadata in fixtures:
+            with self.subTest(ticker=ticker):
+                summary, primary, _ = self.pair(ticker, nested=nested)
+                body = f'# {ticker} Earning call 3Q69\n{metadata}\n'
+                try:
+                    for path in (summary, primary):
+                        path.write_text(body, encoding='utf-8')
+                    aliases = importer.discover_scheduled_autocaption_aliases('3Q69', require_workflow_registration=False)
+                    self.assertIn(ticker, [alias['ticker'] for alias in aliases])
+                finally:
+                    summary.unlink()
+                    primary.unlink()
+
+    def test_metadata_date_keeps_conflicting_missing_and_fiscal_dates_blocked(self):
+        summary, primary, _ = self.pair()
+        invalid_metadata = (
+            'บริษัท ทดสอบ จำกัด | ผล 3Q69 | 23 พฤศจิกายน 2569',
+            'บริษัท ทดสอบ จำกัด | ผล 3Q69 | 24 พฤศจิกายน 2569 | 25 พฤศจิกายน 2569',
+            'บริษัท ทดสอบ จำกัด | งวดสิ้นสุด | 24 พฤศจิกายน 2569',
+            'บริษัท ทดสอบ จำกัด | ผล 3Q69 | 24 พฤศจิกายน 2569 ถึง 25 พฤศจิกายน 2569',
+            'บริษัท ทดสอบ จำกัด | ผล 3Q69 | 24 พฤศจิกายน 2569\nEvent date: 2026-11-23',
+        )
+        for metadata in invalid_metadata:
+            with self.subTest(metadata=metadata):
+                body = '# NEW Earning call 3Q69\n' + metadata + '\n'
+                for path in (summary, primary):
+                    path.write_text(body, encoding='utf-8')
+                with self.assertRaises(ValueError):
+                    importer.discover_scheduled_autocaption_aliases('3Q69', require_workflow_registration=False)
+
+    def test_explicit_same_day_earning_call_and_csign_registration_formats(self):
+        self.assertEqual(importer.event_registration('# RML Earning call 3Q69\nSET Earnings Call ทะเบียน 12030\n'), '12030')
+        self.assertEqual(importer.event_registration('# RML Earning call 3Q69\nทะเบียน SET C-Sign 12024\n'), '12024')
+        summary, primary, _ = self.pair('RML', nested=True, registration='12024')
+        for path in (summary, primary):
+            path.write_text('# RML Earning call 3Q69\nทะเบียน SET C-Sign 12024\n', encoding='utf-8')
+        self.assertEqual(importer.source_event(summary, '3Q69', 'RML'), '2026-11-24')
+        for path in (summary, primary):
+            path.write_text('# RML Earning call 3Q69\nทะเบียน SET C-Sign 999\n', encoding='utf-8')
+        with self.assertRaises(ValueError):
+            importer.source_event(summary, '3Q69', 'RML')
+        with self.assertRaises(ValueError):
+            importer.event_registration('SET Earnings Call ทะเบียน 12030\nทะเบียน SET C-Sign 12024\n')
+
+    def test_earning_call_registration_label_is_not_an_event_date_label(self):
+        body = ('# NEW Earning call 3Q69\n'
+                'บริษัท ตัวอย่าง จำกัด | ผล 3Q69 | 24 พฤศจิกายน 2569\n'
+                'สไลด์ SET Earnings Call ทะเบียน 12030\n')
+        self.assertEqual(importer.autocaption_header_event_dates(body), {'2026-11-24'})
+
     def test_missing_conflicting_or_wrong_event_label_dates_block(self):
         summary, primary, _ = self.pair()
         headers = ('งวดสิ้นสุด 24 พฤศจิกายน 2569',

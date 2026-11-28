@@ -238,6 +238,22 @@ class MarkdownImportTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'missing or ambiguous workflow status'):
             self.request()
 
+    def test_same_day_explicit_earning_call_and_csign_headers_bind_distinct_events(self):
+        root = importer.summary_root('3Q69')
+        nested = root / '2026-10-27' / 'NEW' / '2026-10-27-12024-C-Sign' / 'NEW-Earning call-3Q69.md'
+        nested.parent.mkdir(parents=True)
+        nested.write_text('# NEW Earning call 3Q69\nทะเบียน SET C-Sign 12024\n', encoding='utf-8')
+        standard = Path(self.new['files'][0]['path'])
+        standard.write_text('# NEW Earning call 3Q69\nSET Earnings Call ทะเบียน 12030\n', encoding='utf-8')
+        status = root.parent / 'workflow_status_3Q69.csv'
+        status.write_text('ticker,event_date,registration_id,run_id,conclusion_status\n'
+                          'NEW,2026-10-27,12030,run-a,done\nNEW,2026-10-27,12024,run-b,done\n', encoding='utf-8')
+        entries = [e for e in self.request()['entries'] if e['ticker'] == 'NEW']
+        self.assertEqual({(e['registrationId'], e['runId']) for e in entries},
+                         {('12030', 'run-a'), ('12024', 'run-b')})
+        self.assertEqual(len({e['itemId'] for e in entries}), 2)
+        importer.load_request(self.import_id)
+
     def test_previously_accepted_nested_event_keeps_its_id_when_standard_arrives(self):
         root = importer.summary_root('3Q69')
         standard = Path(self.new['files'][0]['path'])
