@@ -222,6 +222,7 @@ def discover(quarter: str, aliases: list[dict] | None = None) -> list[Path]:
 
 
 REGISTRATION_LABEL = (r"(?:\bSET[ \t]+(?:Earnings[ \t]+Call[ \t]+)?(?:registration|ทะเบียน)"
+                      r"|รายงานเสริมทะเบียน[ \t]+SET[ \t]+C-Sign"
                       r"|(?<![ก-๙])ทะเบียน[ \t]+SET(?:[ \t]+C-Sign)?)")
 REGISTRATION_PATTERN = REGISTRATION_LABEL + r"[ \t]+(\d+)\b"
 ALIAS_REGISTRATION_PATTERN = (r"(?:" + REGISTRATION_LABEL

@@ -239,6 +239,21 @@ class ScheduledAutocaptionAliasTests(unittest.TestCase):
                 'สไลด์ SET Earnings Call ทะเบียน 12030\n')
         self.assertEqual(importer.autocaption_header_event_dates(body), {'2026-11-24'})
 
+    def test_csign_report_compound_label_binds_nested_event_registration(self):
+        summary, primary, _ = self.pair('RML', nested=True, registration='12024')
+        for number in ('12024', '999'):
+            body = f'# RML Earning call 3Q69\n- รายงานเสริมทะเบียน SET C-Sign {number} ใช้สไลด์\n'
+            for path in (summary, primary):
+                path.write_text(body, encoding='utf-8')
+            self.assertEqual(importer.event_registration(body), number)
+            if number == '12024':
+                self.assertEqual(importer.source_event(summary, '3Q69', 'RML'), '2026-11-24')
+            else:
+                with self.assertRaises(ValueError):
+                    importer.source_event(summary, '3Q69', 'RML')
+        with self.assertRaises(ValueError):
+            importer.event_registration('รายงานเสริมทะเบียน SET C-Sign 12024\nSET registration 999\n')
+
     def test_missing_conflicting_or_wrong_event_label_dates_block(self):
         summary, primary, _ = self.pair()
         headers = ('งวดสิ้นสุด 24 พฤศจิกายน 2569',
