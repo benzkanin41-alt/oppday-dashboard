@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "snapshot_generated_at": "2026-11-27 14:06:19 Bangkok",
+  "snapshot_generated_at": "2026-11-28 13:39:30 Bangkok",
   "prices": {
     "IBB": {
       "label": "Nasdaq theme: Biotechnology",
@@ -25953,6 +25953,10 @@
         {
           "date": "2026-11-25",
           "value": 218.259995
+        },
+        {
+          "date": "2026-11-27",
+          "value": 219.600006
         }
       ]
     },
@@ -54063,6 +54067,10 @@
         {
           "date": "2026-11-25",
           "value": 183.679993
+        },
+        {
+          "date": "2026-11-27",
+          "value": 184.199997
         }
       ]
     },
@@ -65537,6 +65545,10 @@
         {
           "date": "2026-11-25",
           "value": 94.830002
+        },
+        {
+          "date": "2026-11-27",
+          "value": 97.690002
         }
       ]
     },
@@ -81035,6 +81047,10 @@
         {
           "date": "2026-11-25",
           "value": 142.190002
+        },
+        {
+          "date": "2026-11-27",
+          "value": 146.399994
         }
       ]
     },
@@ -109145,6 +109161,10 @@
         {
           "date": "2026-11-25",
           "value": 56.509998
+        },
+        {
+          "date": "2026-11-27",
+          "value": 57.16
         }
       ]
     },
@@ -137255,6 +137275,10 @@
         {
           "date": "2026-11-25",
           "value": 92.300003
+        },
+        {
+          "date": "2026-11-27",
+          "value": 92.68
         }
       ]
     },
@@ -156053,6 +156077,10 @@
         {
           "date": "2026-11-25",
           "value": 148.0
+        },
+        {
+          "date": "2026-11-27",
+          "value": 150.580002
         }
       ]
     },
@@ -184163,6 +184191,10 @@
         {
           "date": "2026-11-25",
           "value": 51.209999
+        },
+        {
+          "date": "2026-11-27",
+          "value": 52.150002
         }
       ]
     },
@@ -221349,6 +221381,10 @@
         {
           "date": "2026-11-25",
           "value": 7182.779785
+        },
+        {
+          "date": "2026-11-27",
+          "value": 7297.490234
         }
       ]
     },
@@ -249459,6 +249495,10 @@
         {
           "date": "2026-11-25",
           "value": 60.900002
+        },
+        {
+          "date": "2026-11-27",
+          "value": 61.669998
         }
       ]
     },
@@ -249468,7 +249508,7 @@
       "chart_symbol": "^SET.BK",
       "source": "SET Index daily history: Yahoo Finance plus TradingView SET:SET; official quote separate",
       "source_url": "https://finance.yahoo.com/quote/%5ESET.BK/history",
-      "note": "Completed daily history through 2026-11-26; official SET quote retained separately at 2026-11-27 14:03:24 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-11-27; official SET quote retained separately at 2026-11-28 03:20:12 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "points": [
         {
           "date": "1996-12-11",
@@ -286871,6 +286911,18 @@
           "source_url": "https://www.tradingview.com/symbols/SET-SET/",
           "source_kind": "TradingView daily SET Index history",
           "completed_session": true
+        },
+        {
+          "date": "2026-11-27",
+          "value": 1440.29,
+          "open": 1417.31,
+          "high": 1440.29,
+          "low": 1412.08,
+          "close": 1440.29,
+          "volume": null,
+          "source_url": "https://www.tradingview.com/symbols/SET-SET/",
+          "source_kind": "TradingView daily SET Index history",
+          "completed_session": true
         }
       ],
       "provisional_points": [
@@ -286915,14 +286967,14 @@
           "value": 1432.089966
         }
       ],
-      "completed_through": "2026-11-26",
+      "completed_through": "2026-11-27",
       "source_urls": [
         "https://finance.yahoo.com/quote/%5ESET.BK/history",
         "https://www.tradingview.com/symbols/SET-SET/",
         "https://www.set.or.th/en/market/index/set/overview"
       ],
       "history_fetch_mode": "live",
-      "market_session_date": "2026-11-26"
+      "market_session_date": "2026-11-27"
     },
     "mai": {
       "label": "mai Index",
@@ -286930,14 +286982,14 @@
       "chart_symbol": "SET:MAI",
       "source": "TradingView chart history for SET:MAI",
       "source_url": "https://www.tradingview.com/symbols/SET-MAI/",
-      "note": "Completed daily history through 2026-11-26; official SET quote retained separately at 2026-11-27 14:03:39 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
+      "note": "Completed daily history through 2026-11-27; official SET quote retained separately at 2026-11-28 03:20:12 Bangkok. Quote/history reconciliation: session_unresolved. Price-return metrics use completed historical closes, not the page-update timestamp.",
       "history_fetch_mode": "live",
       "history_fetch_status": {
         "mode": "live",
-        "fetched_at": "2026-11-27T07:05:52.979598+00:00",
-        "attempted_at": "2026-11-27T07:05:52.979598+00:00"
+        "fetched_at": "2026-11-28T06:39:14.786077+00:00",
+        "attempted_at": "2026-11-28T06:39:14.786077+00:00"
       },
-      "market_session_date": "2026-11-26",
+      "market_session_date": "2026-11-27",
       "points": [
         {
           "date": "2004-08-10",
@@ -308530,6 +308582,10 @@
         {
           "date": "2026-11-26",
           "value": 205.8
+        },
+        {
+          "date": "2026-11-27",
+          "value": 205.75
         }
       ]
     },
@@ -345716,6 +345772,10 @@
         {
           "date": "2026-11-25",
           "value": 26046.900391
+        },
+        {
+          "date": "2026-11-27",
+          "value": 26726.390625
         }
       ]
     },
@@ -382902,6 +382962,10 @@
         {
           "date": "2026-11-25",
           "value": 2704.060059
+        },
+        {
+          "date": "2026-11-27",
+          "value": 2750.300049
         }
       ]
     },
@@ -402632,6 +402696,10 @@
         {
           "date": "2026-11-26",
           "value": 6014.740234
+        },
+        {
+          "date": "2026-11-27",
+          "value": 6089.200195
         }
       ]
     },
@@ -424498,6 +424566,10 @@
         {
           "date": "2026-11-25",
           "value": 84.949997
+        },
+        {
+          "date": "2026-11-27",
+          "value": 85.910004
         }
       ]
     },
@@ -489229,7 +489301,7 @@
         },
         {
           "date": "2026-11-27",
-          "value": 3608.374756
+          "value": 3606.487061
         }
       ]
     },
@@ -525675,7 +525747,7 @@
         },
         {
           "date": "2026-11-27",
-          "value": 22650.189453
+          "value": 22694.769531
         }
       ]
     },
@@ -544521,7 +544593,7 @@
         },
         {
           "date": "2026-11-27",
-          "value": 25719.199219
+          "value": 25607.199219
         }
       ]
     },
@@ -586182,6 +586254,10 @@
         {
           "date": "2026-11-25",
           "value": 67.360001
+        },
+        {
+          "date": "2026-11-27",
+          "value": 69.5
         }
       ]
     },
@@ -612832,6 +612908,10 @@
         {
           "date": "2026-11-25",
           "value": 422.459991
+        },
+        {
+          "date": "2026-11-27",
+          "value": 440.059998
         }
       ]
     },
@@ -640942,6 +641022,10 @@
         {
           "date": "2026-11-25",
           "value": 155.789993
+        },
+        {
+          "date": "2026-11-27",
+          "value": 160.149994
         }
       ]
     },
@@ -669052,6 +669136,10 @@
         {
           "date": "2026-11-25",
           "value": 117.489998
+        },
+        {
+          "date": "2026-11-27",
+          "value": 119.970001
         }
       ]
     },
@@ -680262,6 +680350,10 @@
         {
           "date": "2026-11-25",
           "value": 43.860001
+        },
+        {
+          "date": "2026-11-27",
+          "value": 44.139999
         }
       ]
     }
@@ -680272,12 +680364,12 @@
       "label": "U.S. Treasury Daily Treasury Rates",
       "source": "FRED historical series plus U.S. Treasury official daily XML for current year/latest",
       "source_url": "https://home.treasury.gov/resource-center/data-chart-center/interest-rates/pages/xml?data=daily_treasury_yield_curve&field_tdr_date_value=2026",
-      "as_of": "2026-11-25",
+      "as_of": "2026-11-27",
       "latest": {
-        "2Y": 4.61,
-        "5Y": 4.65,
-        "10Y": 4.85,
-        "30Y": 5.24
+        "2Y": 4.69,
+        "5Y": 4.74,
+        "10Y": 4.94,
+        "30Y": 5.33
       },
       "history": [
         {
@@ -744896,6 +744988,13 @@
           "5Y": 4.65,
           "10Y": 4.85,
           "30Y": 5.24
+        },
+        {
+          "date": "2026-11-27",
+          "2Y": 4.69,
+          "5Y": 4.74,
+          "10Y": 4.94,
+          "30Y": 5.33
         }
       ]
     },
@@ -781925,6 +782024,13 @@
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/h100",
           "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-27",
+          "value": 3.07,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+          "basis": "Published dated observation; no interpolation"
         }
       ],
       "NeoCloud B200": [
@@ -782446,6 +782552,13 @@
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/b200",
           "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-27",
+          "value": 7.02,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/b200",
+          "basis": "Published dated observation; no interpolation"
         }
       ],
       "Hyperscaler H100": [
@@ -782956,6 +783069,13 @@
         },
         {
           "date": "2026-11-26",
+          "value": 7.06,
+          "source": "Silicon Data official public index reading",
+          "source_url": "https://www.silicondata.com/products/silicon-index/h100",
+          "basis": "Published dated observation; no interpolation"
+        },
+        {
+          "date": "2026-11-27",
           "value": 7.06,
           "source": "Silicon Data official public index reading",
           "source_url": "https://www.silicondata.com/products/silicon-index/h100",
